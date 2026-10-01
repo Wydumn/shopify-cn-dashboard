@@ -14,8 +14,8 @@ export const DEFAULT_SHIPPING_RATE = 20;
 export const DEFAULT_MARKETING_RATE = 25;
 
 /** 退货风险阈值 (%) */
-export const REFUND_LOW_THRESHOLD = 1.0;
-export const REFUND_HIGH_THRESHOLD = 1.5;
+export const REFUND_LOW_THRESHOLD = 3.0;
+export const REFUND_HIGH_THRESHOLD = 5.0;
 
 /** 演示数据覆盖天数 */
 export const DEMO_LOOKBACK_DAYS = 14;

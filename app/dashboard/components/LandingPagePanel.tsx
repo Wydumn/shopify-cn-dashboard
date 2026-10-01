@@ -627,6 +627,7 @@ export default function LandingPagePanel({
           <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
             <Target className="h-5 w-5 text-emerald-400" />
             着陆页分析
+            <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">加购率为估算值</span>
           </h2>
           <p className="mt-1 text-sm text-zinc-500">
             {shopName} · 着陆页排行、高流量低转化检测与页面级下钻

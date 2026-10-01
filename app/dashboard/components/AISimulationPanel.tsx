@@ -366,7 +366,10 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
       <div className="flex items-center gap-2">
         <Sparkles size={20} className="text-indigo-400" />
         <div>
-          <h2 className="text-lg font-semibold text-zinc-100">AI 引用概率模拟</h2>
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-100">
+            AI 引用概率模拟
+            <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">模拟 · 非真实测量</span>
+          </h2>
           <p className="text-sm text-zinc-500">模拟 AI 搜索引擎的引用决策：语义匹配 40% + Schema 完整度 35% + 内容权威度 25%</p>
         </div>
       </div>

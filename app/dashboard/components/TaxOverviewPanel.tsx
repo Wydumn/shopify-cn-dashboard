@@ -91,25 +91,25 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
 
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg border border-success-border bg-success-bg px-4 py-2 text-base font-medium text-success shadow-2xl">{toast}</div>}
 
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Receipt className="h-6 w-6 text-rose-400" />税务总览</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName} · {markets.length} 个市场{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Receipt className="h-6 w-6 text-primary" />税务总览</h2>
+        <p className="mt-1 text-base text-muted-foreground">{shopName} · {markets.length} 个市场{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       {/* Risk Scan Alerts */}
       {allRisks.length > 0 && (
         <div className="space-y-2">
           {allRisks.map(({ market, risk, idx }) => (
-            <Card key={`${market.marketId}-${idx}`} className={`border-2 ${risk.level === "high" ? "border-red-500/30 bg-red-500/5" : "border-amber-500/30 bg-amber-500/5"}`}>
+            <Card key={`${market.marketId}-${idx}`} className={`border ${risk.level === "high" ? "border-destructive-border bg-destructive-bg" : "border-warning-border bg-warning-bg"}`}>
               <CardContent className="p-3 flex items-start gap-2">
-                {risk.level === "high" ? <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5"/> : <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5"/>}
+                {risk.level === "high" ? <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive-text"/> : <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning"/>}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2"><Badge className={`text-[8px] px-1 py-0 ${risk.level==="high"?"bg-red-500/15 text-red-400":"bg-amber-500/15 text-amber-400"}`}>{risk.level==="high"?"高风险":"中风险"}</Badge>
+                  <div className="flex items-center gap-2"><Badge className={`text-[8px] px-1 py-0 ${risk.level==="high"?"border-destructive-border bg-destructive-bg text-destructive-text":"border-warning-border bg-warning-bg text-warning"}`}>{risk.level==="high"?"高风险":"中风险"}</Badge>
                     <span className="text-xs text-muted-foreground">{countryCodeToFlag(market.countryCode)} {market.countryName}</span>
                   </div>
-                  <p className="text-sm text-foreground mt-0.5">{risk.message}</p>
+                  <p className="mt-0.5 text-sm text-foreground">{risk.message}</p>
                 </div>
                 <div className="flex gap-1 shrink-0">
                   <Button size="sm" variant="ghost" onClick={() => setExpandedMarket(market.marketId)} className="h-6 text-[9px]">详情</Button>
@@ -123,8 +123,8 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
 
       {/* Status Cards */}
       <div className="grid grid-cols-3 gap-3">
-        {[{v:stats.configured,l:"已配置",c:"text-emerald-400",bg:"bg-emerald-500/10"},{v:stats.withRisk,l:"需关注",c:"text-amber-400",bg:"bg-amber-500/10"},{v:stats.unconfigured,l:"未配置",c:"text-red-400",bg:"bg-red-500/10"}].map((s,i)=>
-          <Card key={i} className="border-border/40 bg-card/60"><CardContent className="p-3 text-center"><p className={`text-2xl font-bold tabular-nums ${s.c}`}>{s.v}</p><p className="text-xs text-muted-foreground mt-0.5">{s.l}</p></CardContent></Card>
+        {[{v:stats.configured,l:"已配置",c:"text-success",bg:"bg-success-bg"},{v:stats.withRisk,l:"需关注",c:"text-warning",bg:"bg-warning-bg"},{v:stats.unconfigured,l:"未配置",c:"text-destructive-text",bg:"bg-destructive-bg"}].map((s,i)=>
+          <Card key={i} className="border-border/40 bg-card/60"><CardContent className="p-3 text-center"><p className={`text-2xl font-bold tabular-nums ${s.c}`}>{s.v}</p><p className="mt-0.5 text-xs text-muted-foreground">{s.l}</p></CardContent></Card>
         )}
       </div>
 
@@ -144,10 +144,10 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
                     <td className="py-2 pl-3 text-foreground font-medium sticky left-0 bg-card/60">{label}</td>
                     {markets.map((m) => {
                       let cell: React.ReactNode;
-                      if (row === "standardTax") cell = m.taxRate ? <span className="text-foreground">{m.taxRate}%{m.risks.some((r) => r.level === "high") ? "" : " ✓"}</span> : <span className="text-red-400">未配置</span>;
-                      else if (row === "taxIncluded") cell = m.taxIncluded ? <span className="text-emerald-400">✓ 含税</span> : <span className="text-muted-foreground">✗ 不含</span>;
+                      if (row === "standardTax") cell = m.taxRate ? <span className="text-foreground">{m.taxRate}%{m.risks.some((r) => r.level === "high") ? "" : " ✓"}</span> : <span className="text-destructive-text">未配置</span>;
+                      else if (row === "taxIncluded") cell = m.taxIncluded ? <span className="text-success">✓ 含税</span> : <span className="text-muted-foreground">✗ 不含</span>;
                       else if (row === "reducedTax") cell = m.reducedRate ? <span className="text-foreground">{m.reducedRate}%</span> : "—";
-                      else cell = m.importTaxCollected ? <span className="text-emerald-400">✓ 代收</span> : <span className="text-amber-400">⚠ 未代收</span>;
+                      else cell = m.importTaxCollected ? <span className="text-success">✓ 代收</span> : <span className="text-warning">⚠ 未代收</span>;
                       return (
                         <td key={m.marketId} className="py-2 px-3 text-center cursor-pointer hover:bg-muted/10" onClick={() => setExpandedMarket(expandedMarket === m.marketId ? null : m.marketId)}>
                           {cell}
@@ -171,7 +171,7 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
           <Card className="border-border/40 bg-card/60 shadow-lg border-l-2 border-l-rose-500">
             <CardContent className="p-4 space-y-2">
               <div className="flex items-center justify-between">
-                <p className="text-base font-semibold flex items-center gap-2">{countryCodeToFlag(m.countryCode)} {m.countryName}<Badge className={`text-[9px] ${m.taxConfigured?"bg-emerald-500/15 text-emerald-400":"bg-red-500/15 text-red-400"}`}>{m.taxConfigured?"已配置":"未配置"}</Badge></p>
+                <p className="text-base font-semibold flex items-center gap-2">{countryCodeToFlag(m.countryCode)} {m.countryName}<Badge className={`text-[9px] ${m.taxConfigured?"border-success-border bg-success-bg text-success":"border-destructive-border bg-destructive-bg text-destructive-text"}`}>{m.taxConfigured?"已配置":"未配置"}</Badge></p>
                 <Button size="sm" variant="ghost" onClick={()=>setExpandedMarket(null)}><X className="h-4 w-4"/></Button>
               </div>
               <div className="grid grid-cols-3 gap-2 text-xs">
@@ -180,14 +180,14 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
                 <div className="bg-muted/10 rounded px-2 py-1.5"><p className="text-muted-foreground">VAT/IOSS号</p><p className="text-foreground font-semibold font-mono">{m.vatId || "—"}</p></div>
                 <div className="bg-muted/10 rounded px-2 py-1.5"><p className="text-muted-foreground">定价方式</p><p className="text-foreground font-semibold">{m.taxIncluded ? "含税定价" : "不含税定价"}</p></div>
                 <div className="bg-muted/10 rounded px-2 py-1.5"><p className="text-muted-foreground">运费计税</p><p className="text-foreground font-semibold">{m.shippingTaxed ? "✓" : "✗"}</p></div>
-                <div className="bg-muted/10 rounded px-2 py-1.5"><p className="text-muted-foreground">代收关税</p><p className={`font-semibold ${m.importTaxCollected?"text-emerald-400":"text-amber-400"}`}>{m.importTaxCollected?"✓":"✗"}</p></div>
+                <div className="bg-muted/10 rounded px-2 py-1.5"><p className="text-muted-foreground">代收关税</p><p className={`font-semibold ${m.importTaxCollected?"text-success":"text-warning"}`}>{m.importTaxCollected?"✓":"✗"}</p></div>
               </div>
               {m.risks.length > 0 && (
                 <div className="pt-2 border-t border-border/20">
                   <p className="text-xs font-semibold text-muted-foreground mb-1">风险项</p>
                   {m.risks.map((r,i) => (
                     <div key={i} className="flex items-center gap-1.5 text-xs">
-                      <span className={r.level==="high"?"text-red-400":"text-amber-400"}>{r.level==="high"?"🔴":"🟡"}</span><span className="text-muted-foreground">{r.message}</span>
+                      <span className={r.level==="high"?"text-destructive-text":"text-warning"}>{r.level==="high"?"🔴":"🟡"}</span><span className="text-muted-foreground">{r.message}</span>
                     </div>
                   ))}
                 </div>

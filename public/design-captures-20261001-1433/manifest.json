@@ -1,0 +1,1498 @@
+{
+  "createdAt": "2026-10-01T06:53:25.622Z",
+  "viewports": [
+    {
+      "name": "desktop-1440x900",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "laptop-1280x800",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "tablet-1024x768",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "mobile-390x844",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "pages": [
+    {
+      "key": "config",
+      "textLength": 312,
+      "screenshots": [
+        {
+          "file": "config--desktop-1440x900.png",
+          "bytes": 76607,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "config--laptop-1280x800.png",
+          "bytes": 70804,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "config--tablet-1024x768.png",
+          "bytes": 64661,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "config--mobile-390x844.png",
+          "bytes": 59545,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "overview",
+      "textLength": 844,
+      "screenshots": [
+        {
+          "file": "overview--desktop-1440x900.png",
+          "bytes": 76519,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "overview--laptop-1280x800.png",
+          "bytes": 65252,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "overview--tablet-1024x768.png",
+          "bytes": 62141,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "overview--mobile-390x844.png",
+          "bytes": 39677,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "ai-assistant",
+      "textLength": 249,
+      "screenshots": [
+        {
+          "file": "ai-assistant--desktop-1440x900.png",
+          "bytes": 44340,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "ai-assistant--laptop-1280x800.png",
+          "bytes": 40876,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "ai-assistant--tablet-1024x768.png",
+          "bytes": 39491,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "ai-assistant--mobile-390x844.png",
+          "bytes": 27059,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "finance",
+      "textLength": 306,
+      "screenshots": [
+        {
+          "file": "finance--desktop-1440x900.png",
+          "bytes": 61956,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "finance--laptop-1280x800.png",
+          "bytes": 61195,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "finance--tablet-1024x768.png",
+          "bytes": 60459,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "finance--mobile-390x844.png",
+          "bytes": 36436,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "risk",
+      "textLength": 1123,
+      "screenshots": [
+        {
+          "file": "risk--desktop-1440x900.png",
+          "bytes": 115052,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "risk--laptop-1280x800.png",
+          "bytes": 100580,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "risk--tablet-1024x768.png",
+          "bytes": 79806,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "risk--mobile-390x844.png",
+          "bytes": 45368,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "trend",
+      "textLength": 372,
+      "screenshots": [
+        {
+          "file": "trend--desktop-1440x900.png",
+          "bytes": 65707,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "trend--laptop-1280x800.png",
+          "bytes": 64058,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "trend--tablet-1024x768.png",
+          "bytes": 60294,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "trend--mobile-390x844.png",
+          "bytes": 44437,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "aggregator",
+      "textLength": 473,
+      "screenshots": [
+        {
+          "file": "aggregator--desktop-1440x900.png",
+          "bytes": 55105,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "aggregator--laptop-1280x800.png",
+          "bytes": 51255,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "aggregator--tablet-1024x768.png",
+          "bytes": 48850,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "aggregator--mobile-390x844.png",
+          "bytes": 33494,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "gateway",
+      "textLength": 618,
+      "screenshots": [
+        {
+          "file": "gateway--desktop-1440x900.png",
+          "bytes": 95510,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "gateway--laptop-1280x800.png",
+          "bytes": 85591,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "gateway--tablet-1024x768.png",
+          "bytes": 77753,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "gateway--mobile-390x844.png",
+          "bytes": 48533,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "funnel",
+      "textLength": 374,
+      "screenshots": [
+        {
+          "file": "funnel--desktop-1440x900.png",
+          "bytes": 60872,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "funnel--laptop-1280x800.png",
+          "bytes": 56174,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "funnel--tablet-1024x768.png",
+          "bytes": 53376,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "funnel--mobile-390x844.png",
+          "bytes": 38701,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "ad",
+      "textLength": 1594,
+      "screenshots": [
+        {
+          "file": "ad--desktop-1440x900.png",
+          "bytes": 96657,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "ad--laptop-1280x800.png",
+          "bytes": 86442,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "ad--tablet-1024x768.png",
+          "bytes": 83222,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "ad--mobile-390x844.png",
+          "bytes": 47509,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "product-control",
+      "textLength": 439,
+      "screenshots": [
+        {
+          "file": "product-control--desktop-1440x900.png",
+          "bytes": 91071,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "product-control--laptop-1280x800.png",
+          "bytes": 80824,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "product-control--tablet-1024x768.png",
+          "bytes": 64376,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "product-control--mobile-390x844.png",
+          "bytes": 34021,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "batch-op",
+      "textLength": 496,
+      "screenshots": [
+        {
+          "file": "batch-op--desktop-1440x900.png",
+          "bytes": 56970,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "batch-op--laptop-1280x800.png",
+          "bytes": 54476,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "batch-op--tablet-1024x768.png",
+          "bytes": 52351,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "batch-op--mobile-390x844.png",
+          "bytes": 37870,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "scheduled-tasks",
+      "textLength": 274,
+      "screenshots": [
+        {
+          "file": "scheduled-tasks--desktop-1440x900.png",
+          "bytes": 51657,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "scheduled-tasks--laptop-1280x800.png",
+          "bytes": 49472,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "scheduled-tasks--tablet-1024x768.png",
+          "bytes": 48012,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "scheduled-tasks--mobile-390x844.png",
+          "bytes": 33643,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "rule-engine",
+      "textLength": 315,
+      "screenshots": [
+        {
+          "file": "rule-engine--desktop-1440x900.png",
+          "bytes": 63648,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "rule-engine--laptop-1280x800.png",
+          "bytes": 61152,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "rule-engine--tablet-1024x768.png",
+          "bytes": 59413,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "rule-engine--mobile-390x844.png",
+          "bytes": 41391,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "orders",
+      "textLength": 1277,
+      "screenshots": [
+        {
+          "file": "orders--desktop-1440x900.png",
+          "bytes": 138690,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "orders--laptop-1280x800.png",
+          "bytes": 120915,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "orders--tablet-1024x768.png",
+          "bytes": 107178,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "orders--mobile-390x844.png",
+          "bytes": 46414,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "customers",
+      "textLength": 305,
+      "screenshots": [
+        {
+          "file": "customers--desktop-1440x900.png",
+          "bytes": 45855,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "customers--laptop-1280x800.png",
+          "bytes": 43943,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "customers--tablet-1024x768.png",
+          "bytes": 43837,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "customers--mobile-390x844.png",
+          "bytes": 32371,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "fulfillment",
+      "textLength": 6826,
+      "screenshots": [
+        {
+          "file": "fulfillment--desktop-1440x900.png",
+          "bytes": 65167,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "fulfillment--laptop-1280x800.png",
+          "bytes": 58398,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "fulfillment--tablet-1024x768.png",
+          "bytes": 54476,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "fulfillment--mobile-390x844.png",
+          "bytes": 32102,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "navigation",
+      "textLength": 231,
+      "screenshots": [
+        {
+          "file": "navigation--desktop-1440x900.png",
+          "bytes": 44322,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "navigation--laptop-1280x800.png",
+          "bytes": 42317,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "navigation--tablet-1024x768.png",
+          "bytes": 40766,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "navigation--mobile-390x844.png",
+          "bytes": 26005,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "metafields",
+      "textLength": 257,
+      "screenshots": [
+        {
+          "file": "metafields--desktop-1440x900.png",
+          "bytes": 49211,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "metafields--laptop-1280x800.png",
+          "bytes": 46873,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "metafields--tablet-1024x768.png",
+          "bytes": 45434,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "metafields--mobile-390x844.png",
+          "bytes": 30114,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "operation-history",
+      "textLength": 329,
+      "screenshots": [
+        {
+          "file": "operation-history--desktop-1440x900.png",
+          "bytes": 60179,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "operation-history--laptop-1280x800.png",
+          "bytes": 57829,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "operation-history--tablet-1024x768.png",
+          "bytes": 55490,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "operation-history--mobile-390x844.png",
+          "bytes": 40499,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "inventory-alert",
+      "textLength": 541,
+      "screenshots": [
+        {
+          "file": "inventory-alert--desktop-1440x900.png",
+          "bytes": 78612,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "inventory-alert--laptop-1280x800.png",
+          "bytes": 67997,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "inventory-alert--tablet-1024x768.png",
+          "bytes": 64201,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "inventory-alert--mobile-390x844.png",
+          "bytes": 38441,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "markets",
+      "textLength": 511,
+      "screenshots": [
+        {
+          "file": "markets--desktop-1440x900.png",
+          "bytes": 63394,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "markets--laptop-1280x800.png",
+          "bytes": 61682,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "markets--tablet-1024x768.png",
+          "bytes": 58978,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "markets--mobile-390x844.png",
+          "bytes": 34241,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "multi-currency",
+      "textLength": 874,
+      "screenshots": [
+        {
+          "file": "multi-currency--desktop-1440x900.png",
+          "bytes": 88037,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "multi-currency--laptop-1280x800.png",
+          "bytes": 80650,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "multi-currency--tablet-1024x768.png",
+          "bytes": 82939,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "multi-currency--mobile-390x844.png",
+          "bytes": 48772,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "multi-location",
+      "textLength": 379,
+      "screenshots": [
+        {
+          "file": "multi-location--desktop-1440x900.png",
+          "bytes": 56030,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "multi-location--laptop-1280x800.png",
+          "bytes": 53761,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "multi-location--tablet-1024x768.png",
+          "bytes": 52355,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "multi-location--mobile-390x844.png",
+          "bytes": 34027,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "translations",
+      "textLength": 854,
+      "screenshots": [
+        {
+          "file": "translations--desktop-1440x900.png",
+          "bytes": 63381,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "translations--laptop-1280x800.png",
+          "bytes": 54919,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "translations--tablet-1024x768.png",
+          "bytes": 50198,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "translations--mobile-390x844.png",
+          "bytes": 39062,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "shipping-rates",
+      "textLength": 366,
+      "screenshots": [
+        {
+          "file": "shipping-rates--desktop-1440x900.png",
+          "bytes": 48770,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "shipping-rates--laptop-1280x800.png",
+          "bytes": 46275,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "shipping-rates--tablet-1024x768.png",
+          "bytes": 45586,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "shipping-rates--mobile-390x844.png",
+          "bytes": 30091,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "tax-overview",
+      "textLength": 441,
+      "screenshots": [
+        {
+          "file": "tax-overview--desktop-1440x900.png",
+          "bytes": 56401,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "tax-overview--laptop-1280x800.png",
+          "bytes": 47396,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "tax-overview--tablet-1024x768.png",
+          "bytes": 46031,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "tax-overview--mobile-390x844.png",
+          "bytes": 33502,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "product-analytics",
+      "textLength": 601,
+      "screenshots": [
+        {
+          "file": "product-analytics--desktop-1440x900.png",
+          "bytes": 81821,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "product-analytics--laptop-1280x800.png",
+          "bytes": 77802,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "product-analytics--tablet-1024x768.png",
+          "bytes": 75096,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "product-analytics--mobile-390x844.png",
+          "bytes": 34429,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "category-analytics",
+      "textLength": 684,
+      "screenshots": [
+        {
+          "file": "category-analytics--desktop-1440x900.png",
+          "bytes": 72254,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "category-analytics--laptop-1280x800.png",
+          "bytes": 68412,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "category-analytics--tablet-1024x768.png",
+          "bytes": 66206,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "category-analytics--mobile-390x844.png",
+          "bytes": 45285,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "customer-segmentation",
+      "textLength": 3651,
+      "screenshots": [
+        {
+          "file": "customer-segmentation--desktop-1440x900.png",
+          "bytes": 80372,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "customer-segmentation--laptop-1280x800.png",
+          "bytes": 67012,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "customer-segmentation--tablet-1024x768.png",
+          "bytes": 62230,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "customer-segmentation--mobile-390x844.png",
+          "bytes": 37119,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "sales-forecast",
+      "textLength": 405,
+      "screenshots": [
+        {
+          "file": "sales-forecast--desktop-1440x900.png",
+          "bytes": 57005,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "sales-forecast--laptop-1280x800.png",
+          "bytes": 54524,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "sales-forecast--tablet-1024x768.png",
+          "bytes": 56864,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "sales-forecast--mobile-390x844.png",
+          "bytes": 34932,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "product-affinity",
+      "textLength": 690,
+      "screenshots": [
+        {
+          "file": "product-affinity--desktop-1440x900.png",
+          "bytes": 84241,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "product-affinity--laptop-1280x800.png",
+          "bytes": 68705,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "product-affinity--tablet-1024x768.png",
+          "bytes": 65468,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "product-affinity--mobile-390x844.png",
+          "bytes": 32829,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "schema-audit",
+      "textLength": 916,
+      "screenshots": [
+        {
+          "file": "schema-audit--desktop-1440x900.png",
+          "bytes": 118895,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "schema-audit--laptop-1280x800.png",
+          "bytes": 116407,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "schema-audit--tablet-1024x768.png",
+          "bytes": 99761,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "schema-audit--mobile-390x844.png",
+          "bytes": 57823,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "schema-generator",
+      "textLength": 408,
+      "screenshots": [
+        {
+          "file": "schema-generator--desktop-1440x900.png",
+          "bytes": 63554,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "schema-generator--laptop-1280x800.png",
+          "bytes": 61226,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "schema-generator--tablet-1024x768.png",
+          "bytes": 61390,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "schema-generator--mobile-390x844.png",
+          "bytes": 45740,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "ai-indexability",
+      "textLength": 1752,
+      "screenshots": [
+        {
+          "file": "ai-indexability--desktop-1440x900.png",
+          "bytes": 74346,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "ai-indexability--laptop-1280x800.png",
+          "bytes": 64201,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "ai-indexability--tablet-1024x768.png",
+          "bytes": 60683,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "ai-indexability--mobile-390x844.png",
+          "bytes": 34214,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "competitor-geo",
+      "textLength": 1031,
+      "screenshots": [
+        {
+          "file": "competitor-geo--desktop-1440x900.png",
+          "bytes": 87519,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "competitor-geo--laptop-1280x800.png",
+          "bytes": 81854,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "competitor-geo--tablet-1024x768.png",
+          "bytes": 78517,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "competitor-geo--mobile-390x844.png",
+          "bytes": 45042,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "ai-simulation",
+      "textLength": 605,
+      "screenshots": [
+        {
+          "file": "ai-simulation--desktop-1440x900.png",
+          "bytes": 91276,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "ai-simulation--laptop-1280x800.png",
+          "bytes": 80501,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "ai-simulation--tablet-1024x768.png",
+          "bytes": 75353,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "ai-simulation--mobile-390x844.png",
+          "bytes": 34141,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "geo-wizard",
+      "textLength": 257,
+      "screenshots": [
+        {
+          "file": "geo-wizard--desktop-1440x900.png",
+          "bytes": 68279,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "geo-wizard--laptop-1280x800.png",
+          "bytes": 66347,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "geo-wizard--tablet-1024x768.png",
+          "bytes": 64679,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "geo-wizard--mobile-390x844.png",
+          "bytes": 41760,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "seo-health",
+      "textLength": 8578,
+      "screenshots": [
+        {
+          "file": "seo-health--desktop-1440x900.png",
+          "bytes": 81682,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "seo-health--laptop-1280x800.png",
+          "bytes": 76291,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "seo-health--tablet-1024x768.png",
+          "bytes": 72036,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "seo-health--mobile-390x844.png",
+          "bytes": 38297,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "search-console",
+      "textLength": 1385,
+      "screenshots": [
+        {
+          "file": "search-console--desktop-1440x900.png",
+          "bytes": 86458,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "search-console--laptop-1280x800.png",
+          "bytes": 73820,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "search-console--tablet-1024x768.png",
+          "bytes": 71557,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "search-console--mobile-390x844.png",
+          "bytes": 42733,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "keyword-research",
+      "textLength": 1415,
+      "screenshots": [
+        {
+          "file": "keyword-research--desktop-1440x900.png",
+          "bytes": 127285,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "keyword-research--laptop-1280x800.png",
+          "bytes": 106023,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "keyword-research--tablet-1024x768.png",
+          "bytes": 91447,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "keyword-research--mobile-390x844.png",
+          "bytes": 41549,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "analytics",
+      "textLength": 271,
+      "screenshots": [
+        {
+          "file": "analytics--desktop-1440x900.png",
+          "bytes": 60125,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "analytics--laptop-1280x800.png",
+          "bytes": 75639,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "analytics--tablet-1024x768.png",
+          "bytes": 69375,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "analytics--mobile-390x844.png",
+          "bytes": 34444,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "landing-page",
+      "textLength": 792,
+      "screenshots": [
+        {
+          "file": "landing-page--desktop-1440x900.png",
+          "bytes": 102672,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "landing-page--laptop-1280x800.png",
+          "bytes": 100402,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "landing-page--tablet-1024x768.png",
+          "bytes": 92738,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "landing-page--mobile-390x844.png",
+          "bytes": 39377,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "product-conversion",
+      "textLength": 541,
+      "screenshots": [
+        {
+          "file": "product-conversion--desktop-1440x900.png",
+          "bytes": 83317,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "product-conversion--laptop-1280x800.png",
+          "bytes": 74724,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "product-conversion--tablet-1024x768.png",
+          "bytes": 68643,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "product-conversion--mobile-390x844.png",
+          "bytes": 42322,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "ab-testing",
+      "textLength": 236,
+      "screenshots": [
+        {
+          "file": "ab-testing--desktop-1440x900.png",
+          "bytes": 45131,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "ab-testing--laptop-1280x800.png",
+          "bytes": 41719,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "ab-testing--tablet-1024x768.png",
+          "bytes": 40323,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "ab-testing--mobile-390x844.png",
+          "bytes": 29998,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "ai",
+      "textLength": 433,
+      "screenshots": [
+        {
+          "file": "ai--desktop-1440x900.png",
+          "bytes": 21927,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "ai--laptop-1280x800.png",
+          "bytes": 29167,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "ai--tablet-1024x768.png",
+          "bytes": 28041,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "ai--mobile-390x844.png",
+          "bytes": 17374,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "bulk-edit",
+      "textLength": 175,
+      "screenshots": [
+        {
+          "file": "bulk-edit--desktop-1440x900.png",
+          "bytes": 43229,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "bulk-edit--laptop-1280x800.png",
+          "bytes": 40810,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "bulk-edit--tablet-1024x768.png",
+          "bytes": 39436,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "bulk-edit--mobile-390x844.png",
+          "bytes": 23723,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "collections",
+      "textLength": 137,
+      "screenshots": [
+        {
+          "file": "collections--desktop-1440x900.png",
+          "bytes": 43323,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "collections--laptop-1280x800.png",
+          "bytes": 41291,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "collections--tablet-1024x768.png",
+          "bytes": 39740,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "collections--mobile-390x844.png",
+          "bytes": 25514,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "key": "content-pages",
+      "textLength": 144,
+      "screenshots": [
+        {
+          "file": "content-pages--desktop-1440x900.png",
+          "bytes": 44175,
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "file": "content-pages--laptop-1280x800.png",
+          "bytes": 42178,
+          "width": 1280,
+          "height": 800
+        },
+        {
+          "file": "content-pages--tablet-1024x768.png",
+          "bytes": 40547,
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "file": "content-pages--mobile-390x844.png",
+          "bytes": 26458,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    }
+  ],
+  "failures": []
+}

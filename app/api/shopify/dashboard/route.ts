@@ -1295,15 +1295,32 @@ function buildProducts(orders: ShopifyOrder[]): Array<{
 
 // ─── PUT / GET Handler ────────────────────────────────
 
-async function handleGetDashboard(shopUrl: string, accessToken: string) {
+async function handleGetDashboard(shopUrl: string, accessToken: string, isDemo = false) {
   const exchangeRate = getExchangeRate();
 
   // Demo 模式直接返回模拟数据，不调真实 Shopify API
-  var demoIdx = DEMO_DOMAINS.indexOf(shopUrl);
+  var demoIdx = isDemo ? DEMO_DOMAINS.indexOf(shopUrl) : -1;
   if (demoIdx !== -1) {
     var demoStore = DEMO_STORES[demoIdx];
     var demoOrders = demoIdx === 0 ? DEMO_ORDERS_A : DEMO_ORDERS_B;
     var demoCharts = demoIdx === 0 ? DEMO_CHARTS_A : DEMO_CHARTS_B;
+    const demoProductTotals = new Map<number, { totalSold: number; totalRevenue: number }>();
+    for (const order of demoOrders) {
+      for (const item of order.line_items ?? []) {
+        const totals = demoProductTotals.get(item.product_id) ?? { totalSold: 0, totalRevenue: 0 };
+        totals.totalSold += item.quantity;
+        totals.totalRevenue += parseFloat(item.price) * item.quantity;
+        demoProductTotals.set(item.product_id, totals);
+      }
+    }
+    const demoProducts = demoStore.products.map(function (product) {
+      const totals = demoProductTotals.get(product.id);
+      return {
+        ...product,
+        totalSold: totals?.totalSold ?? product.totalSold,
+        totalRevenue: Math.round((totals?.totalRevenue ?? 0) * 100) / 100,
+      };
+    });
     var demoGmvUsd = demoOrders.reduce(function (s: number, o: any) { return s + parseFloat(o.total_price); }, 0);
     var demoGmv = Math.round(demoGmvUsd * exchangeRate * 100) / 100;
     var demoCompactOrders = demoOrders.map(function (o: any) {
@@ -1318,7 +1335,7 @@ async function handleGetDashboard(shopUrl: string, accessToken: string) {
       success: true, shopName: demoStore.shopName, domain: demoStore.domain,
       currency: demoStore.currency || "USD", exchangeRate: exchangeRate,
       gmv: demoGmv, orderCount: demoOrders.length, conversionRate: 0,  // 注：Shopify REST 不提供访客数据，需 Analytics API 获取
-      charts: demoCharts, products: demoStore.products,
+      charts: demoCharts, products: demoProducts,
       orders: demoCompactOrders, holidaysData: [],
       topCountries: ["US", "JP", "GB", "DE", "FR"],
       fullProducts: [], customers: [], collections: null,
@@ -2106,7 +2123,7 @@ export async function POST(request: NextRequest) {
     // GET-compatible dashboard data fetch (migrated from GET to POST)
     // ═════════════════════════════════════════════════════
     if (body.action === "getDashboard" && body.shopUrl && body.accessToken) {
-      return await handleGetDashboard(body.shopUrl as string, body.accessToken as string);
+      return await handleGetDashboard(body.shopUrl as string, body.accessToken as string, body.isDemo === true);
     }
 
     // 按需数据接口 — 重型数据仅在用户首次打开对应面板时调用

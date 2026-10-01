@@ -1,48 +1,30 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo } from "react";
 import {
-  Package,
   Search,
-  Filter,
   Download,
   ChevronDown,
-  ChevronUp,
   ChevronLeft,
   ChevronRight,
   X,
-  Check,
   Eye,
   Tag,
   Truck,
   Archive,
   Ban,
-  MoreHorizontal,
   ShoppingBag,
   User,
   Mail,
   Phone,
-  MapPin,
-  Clock,
-  CreditCard,
-  Globe,
-  Hash,
   Layers,
-  AlertCircle,
-  Loader2,
   Inbox,
 } from "lucide-react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { formatCny, formatTimeAgo } from "../helpers";
+import { formatCny } from "../helpers";
 import OrderTags from "./OrderTags";
 
 // ─── Types ────────────────────────────────────────────
@@ -194,17 +176,17 @@ function generateDemoOrders(count: number): OrderItem[] {
 
 // ─── Status badges ──────────────────────────────────
 
-const FINANCIAL_STATUS_MAP: Record<string, { label: string; cls: string; icon: string }> = {
-  paid: { label: "已付款", cls: "bg-emerald-500/15 text-emerald-400", icon: "✓" },
-  pending: { label: "待付款", cls: "bg-amber-500/15 text-amber-400", icon: "⏳" },
-  refunded: { label: "已退款", cls: "bg-red-500/15 text-red-400", icon: "↩" },
-  cancelled: { label: "已取消", cls: "bg-zinc-500/15 text-zinc-400", icon: "✕" },
+const FINANCIAL_STATUS_MAP: Record<string, { label: string; cls: string }> = {
+  paid: { label: "已付款", cls: "border-success-border bg-success-bg text-success" },
+  pending: { label: "待付款", cls: "border-warning-border bg-warning-bg text-warning" },
+  refunded: { label: "已退款", cls: "border-destructive-border bg-destructive-bg text-destructive-text" },
+  cancelled: { label: "已取消", cls: "border-border bg-muted text-muted-foreground" },
 };
 
 const FULFILLMENT_STATUS_MAP: Record<string, { label: string; cls: string }> = {
-  fulfilled: { label: "已发货", cls: "bg-sky-500/15 text-sky-400" },
-  in_transit: { label: "运输中", cls: "bg-purple-500/15 text-purple-400" },
-  partial: { label: "部分发货", cls: "bg-amber-500/15 text-amber-400" },
+  fulfilled: { label: "已发货", cls: "border-info-border bg-info-bg text-info" },
+  in_transit: { label: "运输中", cls: "border-info-border bg-info-bg text-info" },
+  partial: { label: "部分发货", cls: "border-warning-border bg-warning-bg text-warning" },
 };
 
 function FulfillmentBadge({ status }: { status: string | null }) {
@@ -235,6 +217,7 @@ function Pagination({
           size="sm"
           variant="outline"
           disabled={page <= 1}
+          aria-label="上一页"
           onClick={() => onPage(page - 1)}
           className="h-9 w-8 p-0"
         >
@@ -250,7 +233,7 @@ function Pagination({
               size="sm"
               variant={p === page ? "default" : "outline"}
               onClick={() => onPage(p)}
-              className={"h-9 w-8 p-0 text-sm " + (p === page ? "bg-emerald-600 hover:bg-emerald-500" : "")}
+              className="h-9 w-8 p-0 text-sm"
             >
               {p}
             </Button>
@@ -260,6 +243,7 @@ function Pagination({
           size="sm"
           variant="outline"
           disabled={page >= totalPages}
+          aria-label="下一页"
           onClick={() => onPage(page + 1)}
           className="h-9 w-8 p-0"
         >
@@ -323,6 +307,10 @@ export default function OrderCenterPanel({
 
   // Pagination
   const [page, setPage] = useState(1);
+  const updateFilter = (setValue: (value: string) => void, value: string) => {
+    setValue(value);
+    setPage(1);
+  };
 
   // ── Filter logic ──
   const filtered = useMemo(() => {
@@ -356,19 +344,12 @@ export default function OrderCenterPanel({
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pagedOrders = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  // When filters change, reset page
-  const prevFilterRef = useRef("");
-  const filterFingerprint = [filterStatus, filterFulfillment, filterCountry, filterKeyword, dateFrom, dateTo, amountMin, amountMax].join("|");
-  if (filterFingerprint !== prevFilterRef.current) {
-    prevFilterRef.current = filterFingerprint;
-    if (page !== 1) setPage(1);
-  }
-
   // Selection helpers
   const toggleSelect = (id: number) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   };
@@ -408,7 +389,8 @@ export default function OrderCenterPanel({
   const toggleColumn = (col: ColumnKey) => {
     setVisibleColumns((prev) => {
       const next = new Set(prev);
-      next.has(col) ? next.delete(col) : next.add(col);
+      if (next.has(col)) next.delete(col);
+      else next.add(col);
       return next;
     });
   };
@@ -427,7 +409,7 @@ export default function OrderCenterPanel({
           <div className="h-7 w-40 animate-pulse rounded bg-muted/30" />
           <div className="h-7 w-20 animate-pulse rounded bg-muted/30" />
         </div>
-        <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
+        <Card>
           <CardContent className="p-6 space-y-3">
             {Array.from({ length: 8 }, (_, i) => (
               <div key={i} className="flex items-center gap-4 animate-pulse">
@@ -449,18 +431,18 @@ export default function OrderCenterPanel({
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
-            <ShoppingBag className="h-6 w-6 text-emerald-400" />
+            <ShoppingBag className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
             订单管理中心
           </h2>
           <p className="mt-1 text-base text-muted-foreground">
             {shopName} · 共 {filtered.length} 笔订单
-            {isDemo && <span className="ml-2 text-sm text-amber-400">(演示数据)</span>}
+            {isDemo && <span className="ml-2 text-xs text-muted-foreground">(演示数据)</span>}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
             <Button
               size="sm"
@@ -474,7 +456,7 @@ export default function OrderCenterPanel({
             {colMenuOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setColMenuOpen(false)} />
-                <div className="absolute right-0 top-full z-20 mt-1 rounded-lg border border-border/40 bg-card p-2 shadow-xl backdrop-blur-lg w-40">
+                <div className="absolute right-0 top-full z-20 mt-1 w-40 rounded-lg border border-border bg-card p-2 shadow-popover">
                   {ALL_COLUMNS.map((col) => (
                     <label
                       key={col}
@@ -501,12 +483,12 @@ export default function OrderCenterPanel({
       </div>
 
       {/* Filters */}
-      <Card className="border-border/40 bg-card/50 shadow-sm backdrop-blur-sm">
-        <CardContent className="flex flex-wrap items-center gap-2 px-4 py-2.5">
+      <Card>
+        <CardContent className="flex flex-wrap items-center gap-2 px-3 py-3 sm:px-4">
           <select
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="h-9 rounded border border-border/40 bg-background px-2 text-sm text-foreground"
+            onChange={(e) => updateFilter(setFilterStatus, e.target.value)}
+            className="h-9 max-w-full rounded-md border border-input bg-background px-2 text-sm text-foreground"
           >
             <option value="all">全部状态</option>
             <option value="paid">已付款</option>
@@ -517,8 +499,8 @@ export default function OrderCenterPanel({
 
           <select
             value={filterFulfillment}
-            onChange={(e) => setFilterFulfillment(e.target.value)}
-            className="h-9 rounded border border-border/40 bg-background px-2 text-sm text-foreground"
+            onChange={(e) => updateFilter(setFilterFulfillment, e.target.value)}
+            className="h-9 max-w-full rounded-md border border-input bg-background px-2 text-sm text-foreground"
           >
             <option value="all">全部履约</option>
             <option value="fulfilled">已发货</option>
@@ -528,8 +510,8 @@ export default function OrderCenterPanel({
 
           <select
             value={filterCountry}
-            onChange={(e) => setFilterCountry(e.target.value)}
-            className="h-9 rounded border border-border/40 bg-background px-2 text-sm text-foreground"
+            onChange={(e) => updateFilter(setFilterCountry, e.target.value)}
+            className="h-9 max-w-full rounded-md border border-input bg-background px-2 text-sm text-foreground"
           >
             <option value="all">全部国家</option>
             {countries.map((c) => (
@@ -540,40 +522,40 @@ export default function OrderCenterPanel({
           <Input
             type="date"
             value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
-            className="h-9 w-34 text-sm"
+            onChange={(e) => updateFilter(setDateFrom, e.target.value)}
+            className="h-9 w-34 max-w-[calc(50%-0.25rem)] text-sm"
             placeholder="开始日期"
           />
-          <span className="text-sm text-muted-foreground">-</span>
+          <span className="hidden text-sm text-muted-foreground sm:inline">-</span>
           <Input
             type="date"
             value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
-            className="h-9 w-34 text-sm"
+            onChange={(e) => updateFilter(setDateTo, e.target.value)}
+            className="h-9 w-34 max-w-[calc(50%-0.25rem)] text-sm"
             placeholder="结束日期"
           />
 
           <Input
             type="number"
             value={amountMin}
-            onChange={(e) => setAmountMin(e.target.value)}
+            onChange={(e) => updateFilter(setAmountMin, e.target.value)}
             placeholder="¥最低"
             className="h-9 w-20 text-sm"
           />
-          <span className="text-sm text-muted-foreground">-</span>
+          <span className="hidden text-sm text-muted-foreground sm:inline">-</span>
           <Input
             type="number"
             value={amountMax}
-            onChange={(e) => setAmountMax(e.target.value)}
+            onChange={(e) => updateFilter(setAmountMax, e.target.value)}
             placeholder="¥最高"
             className="h-9 w-20 text-sm"
           />
 
-          <div className="relative flex-1 min-w-[160px]">
+          <div className="relative min-w-[160px] flex-1">
             <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={filterKeyword}
-              onChange={(e) => setFilterKeyword(e.target.value)}
+              onChange={(e) => updateFilter(setFilterKeyword, e.target.value)}
               placeholder="搜索订单号/客户/商品..."
               className="h-9 pl-7 text-sm"
             />
@@ -593,6 +575,7 @@ export default function OrderCenterPanel({
                 setDateTo("");
                 setAmountMin("");
                 setAmountMax("");
+                setPage(1);
               }}
             >
               <X className="h-3 w-3" />清除筛选
@@ -603,7 +586,7 @@ export default function OrderCenterPanel({
 
       {/* Batch bar */}
       {selectedIds.size > 0 && (
-        <div className="sticky bottom-0 z-30 -mx-1 flex items-center gap-2 rounded-lg border border-border/40 bg-card/95 px-4 py-2.5 shadow-2xl backdrop-blur-xl">
+        <div className="sticky bottom-0 z-30 -mx-1 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-3 py-2.5 shadow-popover sm:px-4">
           <span className="text-base font-medium text-foreground">已选 {selectedIds.size} 笔</span>
           <Button size="sm" variant="outline" className="h-9 gap-1 text-sm"><Truck className="h-3 w-3" />标记已发货</Button>
           <Button size="sm" variant="outline" className="h-9 gap-1 text-sm"><Archive className="h-3 w-3" />归档</Button>
@@ -614,16 +597,66 @@ export default function OrderCenterPanel({
       )}
 
       {/* Orders table */}
-      <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
+      <Card>
         <CardContent className="p-0">
           {pagedOrders.length > 0 ? (
             <>
+              <div className="divide-y divide-border md:hidden">
+                <label className="flex items-center gap-2 border-b border-border px-4 py-3 text-sm text-muted-foreground">
+                  <input
+                    type="checkbox"
+                    aria-label="选择当前页全部订单"
+                    checked={pagedOrders.length > 0 && pagedOrders.every((o) => selectedIds.has(o.id))}
+                    onChange={() => pagedOrders.every((o) => selectedIds.has(o.id)) ? clearSelection() : selectAllPage()}
+                    className="h-4 w-4 accent-primary"
+                  />
+                  选择当前页 ({pagedOrders.length})
+                </label>
+                {pagedOrders.map((o) => (
+                  <article key={o.id} className="flex gap-3 p-4">
+                    <input
+                      type="checkbox"
+                      aria-label={`选择订单 ${o.orderNumber}`}
+                      checked={selectedIds.has(o.id)}
+                      onChange={() => toggleSelect(o.id)}
+                      className="mt-1 h-4 w-4 shrink-0 accent-primary"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => { setDetailOrder(o); setDetailTab("info"); }}
+                      className="min-w-0 flex-1 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="font-mono text-sm font-medium text-foreground">{o.orderNumber}</p>
+                          <p className="mt-0.5 truncate text-sm text-muted-foreground">{o.customer.name}</p>
+                        </div>
+                        <p className="shrink-0 text-sm font-semibold tabular-nums text-foreground">{formatCny(o.totalPrice * 7.25)}</p>
+                      </div>
+                      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                        <Badge className={"text-xs " + (FINANCIAL_STATUS_MAP[o.financialStatus]?.cls ?? "border-border bg-muted text-muted-foreground")}>
+                          {FINANCIAL_STATUS_MAP[o.financialStatus]?.label ?? o.financialStatus}
+                        </Badge>
+                        <FulfillmentBadge status={o.fulfillmentStatus} />
+                      </div>
+                      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                        <span>{o.currency}</span>
+                        <span>{new Date(o.createdAt).toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}</span>
+                        <span>{o.countryCode}</span>
+                        <span>{o.itemCount} 件商品</span>
+                      </div>
+                    </button>
+                  </article>
+                ))}
+              </div>
+              <div className="hidden overflow-x-auto md:block">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border/20">
                     <th className="py-2.5 pl-4 pr-2 text-left w-8">
                       <input
                         type="checkbox"
+                        aria-label="选择当前页全部订单"
                         checked={pagedOrders.length > 0 && pagedOrders.every((o) => selectedIds.has(o.id))}
                         onChange={() => pagedOrders.every((o) => selectedIds.has(o.id)) ? clearSelection() : selectAllPage()}
                         className="accent-emerald-500"
@@ -670,6 +703,7 @@ export default function OrderCenterPanel({
                       <td className="py-2.5 pl-4 pr-2">
                         <input
                           type="checkbox"
+                          aria-label={`选择订单 ${o.orderNumber}`}
                           checked={selectedIds.has(o.id)}
                           onChange={() => toggleSelect(o.id)}
                           className="accent-emerald-500"
@@ -679,7 +713,7 @@ export default function OrderCenterPanel({
                         <td className="py-2.5 px-2">
                           <button
                             onClick={() => { setDetailOrder(o); setDetailTab("info"); }}
-                            className="text-sm font-mono font-medium text-emerald-400 hover:underline cursor-pointer"
+                            className="text-sm font-mono font-medium text-primary hover:underline cursor-pointer"
                           >
                             {o.orderNumber}
                           </button>
@@ -689,7 +723,7 @@ export default function OrderCenterPanel({
                         <td className="py-2.5 px-2 text-base text-foreground">{o.customer.name}</td>
                       )}
                       {visibleColumns.has("amount") && (
-                        <td className="py-2.5 px-2 text-right tabular-nums text-base font-semibold text-emerald-400">
+                        <td className="py-2.5 px-2 text-right tabular-nums text-sm font-medium text-foreground">
                           {formatCny(o.totalPrice * 7.25)}
                         </td>
                       )}
@@ -742,6 +776,7 @@ export default function OrderCenterPanel({
                   ))}
                 </tbody>
               </table>
+              </div>
 
               {/* Pagination */}
               <div className="px-4 pb-3">
@@ -761,17 +796,17 @@ export default function OrderCenterPanel({
       {/* Order Detail Sheet */}
       {detailOrder && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" onClick={() => setDetailOrder(null)} />
-          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-lg bg-card border-l border-border/40 shadow-2xl overflow-y-auto">
+          <div className="fixed inset-0 z-40 bg-black/40" onClick={() => setDetailOrder(null)} />
+          <div role="dialog" aria-modal="true" aria-label={`订单详情 ${detailOrder.orderNumber}`} className="fixed inset-y-0 right-0 z-50 w-full max-w-lg overflow-y-auto border-l border-border bg-card shadow-popover">
             {/* Sheet Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/20 bg-card/95 px-5 py-3 backdrop-blur-md">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card px-5 py-3">
               <div>
                 <p className="text-base font-semibold text-foreground">{detailOrder.orderNumber}</p>
                 <p className="text-sm text-muted-foreground">
                   {new Date(detailOrder.createdAt).toLocaleString("zh-CN")}
                 </p>
               </div>
-              <Button size="sm" variant="ghost" onClick={() => setDetailOrder(null)} className="h-9 w-8 p-0">
+              <Button size="sm" variant="ghost" aria-label="关闭订单详情" onClick={() => setDetailOrder(null)} className="h-9 w-8 p-0">
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -784,7 +819,7 @@ export default function OrderCenterPanel({
                   onClick={() => setDetailTab(tab)}
                   className={`px-3 py-2.5 text-sm font-semibold border-b-2 transition-colors ${
                     detailTab === tab
-                      ? "border-emerald-500 text-emerald-400"
+                      ? "border-primary text-primary"
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -828,7 +863,7 @@ export default function OrderCenterPanel({
                       </div>
                       <div className="flex items-center justify-between text-base">
                         <span className="text-muted-foreground">金额</span>
-                        <span className="text-emerald-400 font-semibold">{detailOrder.currency} {detailOrder.totalPrice.toFixed(2)}</span>
+                        <span className="font-semibold text-foreground">{detailOrder.currency} {detailOrder.totalPrice.toFixed(2)}</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">状态</span>
@@ -893,8 +928,8 @@ export default function OrderCenterPanel({
                     ].map((step, i) => (
                       <div key={i} className="flex gap-3">
                         <div className="flex flex-col items-center">
-                          <div className={`h-3 w-3 rounded-full border-2 ${step.done ? "bg-emerald-500 border-emerald-500" : "border-muted-foreground/30"}`} />
-                          {i < 3 && <div className={`w-0.5 flex-1 my-0.5 ${step.done ? "bg-emerald-500" : "bg-muted/20"}`} />}
+                          <div className={`h-3 w-3 rounded-full border-2 ${step.done ? "border-success bg-success" : "border-muted-foreground/30"}`} />
+                          {i < 3 && <div className={`my-0.5 w-0.5 flex-1 ${step.done ? "bg-success" : "bg-muted"}`} />}
                         </div>
                         <div className="pb-4">
                           <p className={`text-base font-medium ${step.done ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</p>

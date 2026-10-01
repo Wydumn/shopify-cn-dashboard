@@ -31,15 +31,26 @@ export default function ConfigPage() {
   var [loading, setLoading] = useState(false);
   var [demoLoading, setDemoLoading] = useState(false);
 
+  var normalizeShopDomain = function (value: string) {
+    var input = value.trim();
+    if (!input) return "";
+    try {
+      var url = new URL(input.includes("://") ? input : "https://" + input);
+      return url.hostname.toLowerCase();
+    } catch {
+      return input.replace(/^https?:\/\//i, "").split(/[/?#]/)[0].replace(/\/$/, "").toLowerCase();
+    }
+  };
+
   // ── Connect real store ──
   var handleConnect = function () {
     setLoading(true);
 
     var newStore = {
       id: crypto.randomUUID(),
-      shopUrl: domain.trim(),
+      shopUrl: normalizeShopDomain(domain),
       accessToken: token.trim(),
-      shopName: domain.trim().replace(".myshopify.com", ""),
+      shopName: normalizeShopDomain(domain).replace(".myshopify.com", ""),
     };
 
     var raw = localStorage.getItem("shopify_stores");
@@ -79,15 +90,14 @@ export default function ConfigPage() {
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-background px-4">
       {/* Background decorative elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-emerald-500/5 blur-3xl" />
-        <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-sky-500/5 blur-3xl" />
-        <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-500/3 blur-3xl" />
+        <div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-muted/80 blur-3xl" />
+        <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
       </div>
 
       {/* Header */}
       <div className="relative mb-10 text-center">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
-          <ShoppingBag className="h-7 w-7 text-emerald-500" />
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20">
+          <ShoppingBag className="h-7 w-7 text-primary" />
         </div>
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Shopify 店铺配置
@@ -98,7 +108,7 @@ export default function ConfigPage() {
       </div>
 
       {/* Form Card */}
-      <Card className="relative w-full max-w-md border-border/40 bg-card/80 shadow-2xl shadow-black/5 backdrop-blur-lg">
+      <Card className="relative w-full max-w-md border-border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
         <CardHeader>
           <CardTitle className="text-lg">店铺连接</CardTitle>
           <CardDescription>
@@ -181,7 +191,7 @@ export default function ConfigPage() {
       <Button
         variant="outline"
         size="lg"
-        className="w-full max-w-md gap-2 border-dashed border-amber-500/40 bg-amber-500/5 text-amber-400 transition-all hover:border-amber-500/60 hover:bg-amber-500/10 hover:text-amber-300"
+        className="w-full max-w-md gap-2 border border-border bg-card text-foreground transition-all hover:bg-muted"
         disabled={demoLoading}
         onClick={handleLoadDemo}
       >
@@ -199,20 +209,20 @@ export default function ConfigPage() {
       </Button>
 
       {/* Security Notice */}
-      <Card className="relative mt-6 w-full max-w-md border-emerald-500/20 bg-emerald-500/5 ring-1 ring-emerald-500/10 backdrop-blur-sm">
+      <Card className="relative mt-6 w-full max-w-md border-border bg-card">
         <CardContent className="p-5">
           <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 ring-1 ring-emerald-500/20">
-              <Shield className="h-4 w-4 text-emerald-400" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-success-bg ring-1 ring-success-border">
+              <Shield className="h-4 w-4 text-success" />
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="text-base font-semibold text-emerald-400">
+                <span className="text-base font-semibold text-foreground">
                   安全声明
                 </span>
                 <Badge
                   variant="default"
-                  className="bg-emerald-500/20 px-1.5 py-0 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20"
+                  className="bg-success-bg px-1.5 py-0 text-xs font-medium text-success hover:bg-success-bg"
                 >
                   隐私优先
                 </Badge>

@@ -346,6 +346,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-2 text-lg font-semibold text-foreground">
           <Swords className="h-6 w-6 text-emerald-400" />GEO 竞品对比
+          <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">竞品数据为公开页模拟</span>
           {isDemo && <span className="ml-1 text-sm text-amber-400">(演示)</span>}
         </div>
         <div className="ml-auto flex items-center gap-2">

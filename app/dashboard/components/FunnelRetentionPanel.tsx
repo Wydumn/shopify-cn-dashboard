@@ -94,10 +94,10 @@ interface FunnelData {
 /* ─── 常量 ──────────────────────────────────────────── */
 
 const STAGE_COLORS = {
-  visitors: "#6b7280",
-  atc: "#3b82f6",
-  checkout: "#f59e0b",
-  purchase: "#10b981",
+  visitors: "var(--chart-1)",
+  atc: "var(--chart-2)",
+  checkout: "var(--chart-4)",
+  purchase: "var(--chart-3)",
 };
 
 const BOTTLENECK_RATIO = 0.75; // 低于店均 25% 触发瓶颈（使示例 Social 8.5% vs 11.5% 可触发）
@@ -485,10 +485,10 @@ export default function FunnelRetentionPanel({
     const repeatRate = paidOrders.length > 0 ? (repeat / paidOrders.length) * 100 : 0;
     const totalRev = repeatRev + newRev;
     const repeatRevPct = totalRev > 0 ? (repeatRev / totalRev) * 100 : 0;
-    const grade = repeatRate >= 25 ? { label: "优秀", color: "text-emerald-400" }
-      : repeatRate >= 15 ? { label: "良好", color: "text-sky-400" }
-      : repeatRate >= 5 ? { label: "一般", color: "text-amber-400" }
-      : { label: "偏低", color: "text-red-400" };
+    const grade = repeatRate >= 25 ? { label: "优秀", color: "text-success" }
+      : repeatRate >= 15 ? { label: "良好", color: "text-info" }
+      : repeatRate >= 5 ? { label: "一般", color: "text-warning" }
+      : { label: "偏低", color: "text-destructive-text" };
     return { repeatRate, repeatRevPct, grade, totalRev };
   }, [orders, isDemo]);
 
@@ -509,11 +509,11 @@ export default function FunnelRetentionPanel({
         variant="outline"
         className={cn(
           "mr-1 mt-1 text-[10px]",
-          f.type === "bottleneck" ? "border-red-500/30 bg-red-500/10 text-red-400" : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+          f.type === "bottleneck" ? "border-destructive-border bg-destructive-bg text-destructive-text" : "border-success-border bg-success-bg text-success",
         )}
         title={f.message}
       >
-        {f.type === "bottleneck" ? "🔴 瓶颈" : "🟢 优秀"} · {f.stage}
+        {f.type === "bottleneck" ? "瓶颈" : "优秀"} · {f.stage}
       </Badge>
     ));
 
@@ -522,22 +522,22 @@ export default function FunnelRetentionPanel({
       {/* 标题 */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
-            <Filter className="h-5 w-5 text-violet-400" />
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+            <Filter className="h-5 w-5 text-muted-foreground" />
             多维转化漏斗分析
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             {shopName} · 按来源 / 设备 / 着陆页 / 国家下钻，定位转化瓶颈
           </p>
         </div>
-        {isDemo && <Badge variant="outline" className="border-amber-500/30 text-amber-400">Demo 演示数据</Badge>}
+        {isDemo && <Badge variant="outline" className="border-warning-border bg-warning-bg text-warning">Demo 演示数据</Badge>}
       </div>
 
       {ga4Missing && !isDemo && (
-        <Card className="border-amber-500/30 bg-amber-500/5">
+        <Card className="border-warning-border bg-warning-bg">
           <CardContent className="flex items-center gap-3 p-4">
-            <AlertTriangle className="h-5 w-5 text-amber-400" />
-            <p className="text-sm text-amber-200">
+            <AlertTriangle className="h-5 w-5 text-warning" />
+            <p className="text-sm text-foreground">
               未检测到 GA4 缓存数据。漏斗各维度需要 GA4 的「流量来源 / 设备 / 着陆页」维度；请先在「GA4 流量分析」面板配置并拉取数据。
             </p>
           </CardContent>
@@ -546,7 +546,7 @@ export default function FunnelRetentionPanel({
 
       {!ga4Missing && data && (
         <Tabs value={tab} onValueChange={setTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 rounded-lg bg-zinc-800/60 p-1 sm:grid-cols-5">
+          <TabsList className="grid w-full grid-cols-2 rounded-lg bg-muted p-1 sm:grid-cols-5">
             <TabsTrigger value="all" className="gap-1.5"><TrendingUp className="h-4 w-4" />全部</TabsTrigger>
             <TabsTrigger value="source" className="gap-1.5"><Globe2 className="h-4 w-4" />按来源</TabsTrigger>
             <TabsTrigger value="device" className="gap-1.5"><Smartphone className="h-4 w-4" />按设备</TabsTrigger>
@@ -557,13 +557,13 @@ export default function FunnelRetentionPanel({
           {/* ── 全部：汇总漏斗 ── */}
           <TabsContent value="all" className="mt-4 space-y-4">
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-              <KpiCard title="总访客" value={fmtInt(totalVisitors)} subtitle="GA4 会话数" icon={<Users className="h-5 w-5" />} accent="sky" />
-              <KpiCard title="总成交" value={fmtInt(totalPurchases)} subtitle="Shopify 订单" icon={<ShoppingCart className="h-5 w-5" />} accent="emerald" />
-              <KpiCard title="整体转化率" value={overallCvr} subtitle={`加购率 ${data.storeAvg.atcRate}%`} icon={<TrendingUp className="h-5 w-5" />} accent="violet" />
-              <KpiCard title="复购率" value={retention.repeatRate.toFixed(1) + "%"} subtitle={`复购贡献 ${retention.repeatRevPct.toFixed(0)}%`} icon={<Repeat className="h-5 w-5" />} accent="amber" />
+              <KpiCard title="总访客" value={fmtInt(totalVisitors)} subtitle="GA4 会话数" icon={<Users className="h-4 w-4" />} />
+              <KpiCard title="总成交" value={fmtInt(totalPurchases)} subtitle="Shopify 订单" icon={<ShoppingCart className="h-4 w-4" />} />
+              <KpiCard title="整体转化率" value={overallCvr} subtitle={`加购率 ${data.storeAvg.atcRate}%`} icon={<TrendingUp className="h-4 w-4" />} />
+              <KpiCard title="复购率" value={retention.repeatRate.toFixed(1) + "%"} subtitle={`复购贡献 ${retention.repeatRevPct.toFixed(0)}%`} icon={<Repeat className="h-4 w-4" />} />
             </div>
 
-            <Card className="border-zinc-800 bg-zinc-900/50">
+            <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">全店转化漏斗</CardTitle>
                 <CardDescription>访客 → 加购 → 结账 → 成交，每段标注环比流失</CardDescription>
@@ -572,16 +572,16 @@ export default function FunnelRetentionPanel({
                 {all.map((s, i) => (
                   <div key={i}>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium text-zinc-200">{s.label}</span>
-                      <span className="tabular-nums text-zinc-300">
-                        {fmtInt(s.count)} <span className="text-zinc-500">· {s.percent}%</span>
+                      <span className="font-medium text-foreground">{s.label}</span>
+                      <span className="tabular-nums text-foreground">
+                        {fmtInt(s.count)} <span className="text-muted-foreground">· {s.percent}%</span>
                       </span>
                     </div>
-                    <div className="mt-1 h-7 w-full overflow-hidden rounded bg-zinc-800/50">
+                    <div className="mt-1 h-7 w-full overflow-hidden rounded bg-muted">
                       <div className="h-full rounded transition-all" style={{ width: `${s.percent}%`, backgroundColor: s.color }} />
                     </div>
                     {i < drops.length && (
-                      <div className="mt-0.5 flex items-center gap-1 text-xs text-red-400">
+                      <div className="mt-0.5 flex items-center gap-1 text-xs text-destructive-text">
                         <ArrowDown className="h-3 w-3" />
                         环比 {drops[i]}%
                       </div>
@@ -589,7 +589,7 @@ export default function FunnelRetentionPanel({
                   </div>
                 ))}
                 {data.estimatedStages && (
-                  <p className="pt-1 text-xs text-zinc-500">
+                  <p className="pt-1 text-xs text-muted-foreground">
                     注：真实模式下加购 / 结账阶段为店铺均值估算（GA4 缓存未含分维度电商事件），成交数由 Shopify 订单按来源 / 着陆页归因。
                   </p>
                 )}
@@ -599,29 +599,29 @@ export default function FunnelRetentionPanel({
 
           {/* ── 按来源 ── */}
           <TabsContent value="source" className="mt-4 space-y-4">
-            <Card className="border-zinc-800 bg-zinc-900/50">
+            <Card>
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-zinc-800 hover:bg-transparent">
-                      <TableHead className="text-zinc-400">来源</TableHead>
-                      <TableHead className="text-right text-zinc-400">访客</TableHead>
-                      <TableHead className="text-right text-zinc-400">加购率</TableHead>
-                      <TableHead className="text-right text-zinc-400">结账率</TableHead>
-                      <TableHead className="text-right text-zinc-400">成交率</TableHead>
-                      <TableHead className="text-right text-zinc-400">成交数</TableHead>
-                      <TableHead className="text-zinc-400">迷你漏斗 / 异常</TableHead>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead>来源</TableHead>
+                      <TableHead className="text-right">访客</TableHead>
+                      <TableHead className="text-right">加购率</TableHead>
+                      <TableHead className="text-right">结账率</TableHead>
+                      <TableHead className="text-right">成交率</TableHead>
+                      <TableHead className="text-right">成交数</TableHead>
+                      <TableHead>迷你漏斗 / 异常</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {data.source.map((r) => (
-                      <TableRow key={r.key} className="border-zinc-800">
-                        <TableCell className="font-medium text-zinc-200">{r.label}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtInt(r.visitors)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtPct(r.atcRate)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtPct(r.checkoutRate)}</TableCell>
-                        <TableCell className={cn("text-right font-semibold", r.purchaseRate < data.storeAvg.purchaseRate * BOTTLENECK_RATIO ? "text-red-400" : r.purchaseRate > data.storeAvg.purchaseRate * EXCELLENT_RATIO ? "text-emerald-400" : "text-zinc-300")}>{fmtPct(r.purchaseRate)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtInt(r.purchases)}</TableCell>
+                      <TableRow key={r.key}>
+                        <TableCell className="font-medium">{r.label}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtInt(r.visitors)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtPct(r.atcRate)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtPct(r.checkoutRate)}</TableCell>
+                        <TableCell className={cn("text-right font-semibold tabular-nums", r.purchaseRate < data.storeAvg.purchaseRate * BOTTLENECK_RATIO ? "text-destructive-text" : r.purchaseRate > data.storeAvg.purchaseRate * EXCELLENT_RATIO ? "text-success" : "text-foreground")}>{fmtPct(r.purchaseRate)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtInt(r.purchases)}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <MiniFunnel row={r} />
@@ -631,7 +631,7 @@ export default function FunnelRetentionPanel({
                       </TableRow>
                     ))}
                     {data.source.length === 0 && (
-                      <TableRow className="border-zinc-800"><TableCell colSpan={7} className="py-8 text-center text-zinc-500">无来源数据</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={7} className="py-8 text-center text-muted-foreground">无来源数据</TableCell></TableRow>
                     )}
                   </TableBody>
                 </Table>
@@ -641,40 +641,40 @@ export default function FunnelRetentionPanel({
 
           {/* ── 按设备 ── */}
           <TabsContent value="device" className="mt-4 space-y-4">
-            <Card className="border-zinc-800 bg-zinc-900/50">
+            <Card>
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-zinc-800 hover:bg-transparent">
-                      <TableHead className="text-zinc-400">设备</TableHead>
-                      <TableHead className="text-right text-zinc-400">访客</TableHead>
-                      <TableHead className="text-right text-zinc-400">加购率</TableHead>
-                      <TableHead className="text-right text-zinc-400">成交率</TableHead>
-                      <TableHead className="text-right text-zinc-400">客单价</TableHead>
-                      <TableHead className="text-zinc-400">优化建议</TableHead>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead>设备</TableHead>
+                      <TableHead className="text-right">访客</TableHead>
+                      <TableHead className="text-right">加购率</TableHead>
+                      <TableHead className="text-right">成交率</TableHead>
+                      <TableHead className="text-right">客单价</TableHead>
+                      <TableHead>优化建议</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {data.device.map((r) => (
-                      <TableRow key={r.key} className="border-zinc-800">
-                        <TableCell className="font-medium text-zinc-200">{r.label}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtInt(r.visitors)}</TableCell>
-                        <TableCell className={cn("text-right", r.atcRate < (Math.max(...data.device.map((d) => d.atcRate)) - 5) ? "text-red-400" : "text-zinc-300")}>{fmtPct(r.atcRate)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtPct(r.purchaseRate)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{r.aov ? formatCny(r.aov) : "—"}</TableCell>
+                      <TableRow key={r.key}>
+                        <TableCell className="font-medium">{r.label}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtInt(r.visitors)}</TableCell>
+                        <TableCell className={cn("text-right tabular-nums", r.atcRate < (Math.max(...data.device.map((d) => d.atcRate)) - 5) ? "text-destructive-text" : "text-foreground")}>{fmtPct(r.atcRate)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtPct(r.purchaseRate)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{r.aov ? formatCny(r.aov) : "—"}</TableCell>
                         <TableCell className="max-w-[260px]">
                           {r.hint ? (
-                            <span className="flex items-start gap-1.5 text-xs text-amber-300">
+                            <span className="flex items-start gap-1.5 text-xs text-warning">
                               <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0" />{r.hint}
                             </span>
                           ) : (
-                            <span className="text-zinc-600">—</span>
+                            <span className="text-muted-foreground">—</span>
                           )}
                         </TableCell>
                       </TableRow>
                     ))}
                     {data.device.length === 0 && (
-                      <TableRow className="border-zinc-800"><TableCell colSpan={6} className="py-8 text-center text-zinc-500">无设备数据</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="py-8 text-center text-muted-foreground">无设备数据</TableCell></TableRow>
                     )}
                   </TableBody>
                 </Table>
@@ -684,42 +684,42 @@ export default function FunnelRetentionPanel({
 
           {/* ── 按着陆页 ── */}
           <TabsContent value="landing" className="mt-4 space-y-4">
-            <Card className="border-zinc-800 bg-zinc-900/50">
+            <Card>
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-zinc-800 hover:bg-transparent">
-                      <TableHead className="text-zinc-400">入口页面</TableHead>
-                      <TableHead className="text-right text-zinc-400">访客</TableHead>
-                      <TableHead className="text-right text-zinc-400">加购率</TableHead>
-                      <TableHead className="text-right text-zinc-400">结账率</TableHead>
-                      <TableHead className="text-right text-zinc-400">成交率</TableHead>
-                      <TableHead className="text-right text-zinc-400">成交数</TableHead>
-                      <TableHead className="text-zinc-400">标记</TableHead>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead>入口页面</TableHead>
+                      <TableHead className="text-right">访客</TableHead>
+                      <TableHead className="text-right">加购率</TableHead>
+                      <TableHead className="text-right">结账率</TableHead>
+                      <TableHead className="text-right">成交率</TableHead>
+                      <TableHead className="text-right">成交数</TableHead>
+                      <TableHead>标记</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {data.landing.map((r) => (
-                      <TableRow key={r.key} className="border-zinc-800">
+                      <TableRow key={r.key}>
                         <TableCell>
-                          <div className="max-w-[240px] truncate font-medium text-zinc-200" title={r.label}>{r.label}</div>
+                          <div className="max-w-[240px] truncate font-medium" title={r.label}>{r.label}</div>
                         </TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtInt(r.visitors)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtPct(r.atcRate)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtPct(r.checkoutRate)}</TableCell>
-                        <TableCell className={cn("text-right font-semibold", r.purchaseRate < data.storeAvg.purchaseRate * BOTTLENECK_RATIO ? "text-red-400" : "text-zinc-300")}>{fmtPct(r.purchaseRate)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtInt(r.purchases)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtInt(r.visitors)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtPct(r.atcRate)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtPct(r.checkoutRate)}</TableCell>
+                        <TableCell className={cn("text-right font-semibold tabular-nums", r.purchaseRate < data.storeAvg.purchaseRate * BOTTLENECK_RATIO ? "text-destructive-text" : "text-foreground")}>{fmtPct(r.purchaseRate)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{fmtInt(r.purchases)}</TableCell>
                         <TableCell>
                           {r.isHighLow ? (
-                            <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-400">高流量低转化</Badge>
+                            <Badge variant="outline" className="border-warning-border bg-warning-bg text-warning">高流量低转化</Badge>
                           ) : (
-                            <span className="text-zinc-600">—</span>
+                            <span className="text-muted-foreground">—</span>
                           )}
                         </TableCell>
                       </TableRow>
                     ))}
                     {data.landing.length === 0 && (
-                      <TableRow className="border-zinc-800"><TableCell colSpan={7} className="py-8 text-center text-zinc-500">无着陆页数据</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={7} className="py-8 text-center text-muted-foreground">无着陆页数据</TableCell></TableRow>
                     )}
                   </TableBody>
                 </Table>
@@ -730,38 +730,38 @@ export default function FunnelRetentionPanel({
           {/* ── 按国家 ── */}
           <TabsContent value="country" className="mt-4 space-y-4">
             {data.countryMissing ? (
-              <Card className="border-amber-500/30 bg-amber-500/5">
+              <Card className="border-warning-border bg-warning-bg">
                 <CardContent className="flex items-center gap-3 p-4">
-                  <Globe2 className="h-5 w-5 text-amber-400" />
-                  <p className="text-sm text-amber-200">
+                  <Globe2 className="h-5 w-5 text-warning" />
+                  <p className="text-sm text-foreground">
                     按国家维度需要 GA4 的「国家 / 地区」维度数据，当前 GA4 缓存未包含该维度。Demo 模式可查看预置国家分布。
                   </p>
                 </CardContent>
               </Card>
             ) : (
-              <Card className="border-zinc-800 bg-zinc-900/50">
+              <Card>
                 <CardContent className="p-0">
                   <Table>
                     <TableHeader>
-                      <TableRow className="border-zinc-800 hover:bg-transparent">
-                        <TableHead className="text-zinc-400">国家 / 地区</TableHead>
-                        <TableHead className="text-right text-zinc-400">访客</TableHead>
-                        <TableHead className="text-right text-zinc-400">加购率</TableHead>
-                        <TableHead className="text-right text-zinc-400">结账率</TableHead>
-                        <TableHead className="text-right text-zinc-400">成交率</TableHead>
-                        <TableHead className="text-right text-zinc-400">成交数</TableHead>
-                        <TableHead className="text-zinc-400">异常</TableHead>
+                      <TableRow className="hover:bg-transparent">
+                        <TableHead>国家 / 地区</TableHead>
+                        <TableHead className="text-right">访客</TableHead>
+                        <TableHead className="text-right">加购率</TableHead>
+                        <TableHead className="text-right">结账率</TableHead>
+                        <TableHead className="text-right">成交率</TableHead>
+                        <TableHead className="text-right">成交数</TableHead>
+                        <TableHead>异常</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {data.country.map((r) => (
-                        <TableRow key={r.key} className="border-zinc-800">
-                          <TableCell className="font-medium text-zinc-200">{r.label}</TableCell>
-                          <TableCell className="text-right text-zinc-300">{fmtInt(r.visitors)}</TableCell>
-                          <TableCell className="text-right text-zinc-300">{fmtPct(r.atcRate)}</TableCell>
-                          <TableCell className="text-right text-zinc-300">{fmtPct(r.checkoutRate)}</TableCell>
-                          <TableCell className={cn("text-right font-semibold", r.purchaseRate < data.storeAvg.purchaseRate * BOTTLENECK_RATIO ? "text-red-400" : "text-zinc-300")}>{fmtPct(r.purchaseRate)}</TableCell>
-                          <TableCell className="text-right text-zinc-300">{fmtInt(r.purchases)}</TableCell>
+                        <TableRow key={r.key}>
+                          <TableCell className="font-medium">{r.label}</TableCell>
+                          <TableCell className="text-right tabular-nums">{fmtInt(r.visitors)}</TableCell>
+                          <TableCell className="text-right tabular-nums">{fmtPct(r.atcRate)}</TableCell>
+                          <TableCell className="text-right tabular-nums">{fmtPct(r.checkoutRate)}</TableCell>
+                          <TableCell className={cn("text-right font-semibold tabular-nums", r.purchaseRate < data.storeAvg.purchaseRate * BOTTLENECK_RATIO ? "text-destructive-text" : "text-foreground")}>{fmtPct(r.purchaseRate)}</TableCell>
+                          <TableCell className="text-right tabular-nums">{fmtInt(r.purchases)}</TableCell>
                           <TableCell><div className="flex flex-wrap max-w-[180px]">{renderFlags(r.flags)}</div></TableCell>
                         </TableRow>
                       ))}
@@ -776,30 +776,30 @@ export default function FunnelRetentionPanel({
 
       {/* 复购健康（Retention）*/}
       {!ga4Missing && data && (
-        <Card className="border-zinc-800 bg-zinc-900/50">
+        <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Repeat className="h-4 w-4 text-amber-400" />复购健康度
+              <Repeat className="h-4 w-4 text-muted-foreground" />复购健康度
             </CardTitle>
             <CardDescription>基于 Shopify 订单的复购率与复购贡献占比</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <p className="text-xs text-zinc-500">复购率</p>
+                <p className="text-xs text-muted-foreground">复购率</p>
                 <p className={cn("text-2xl font-bold", retention.grade.color)}>{retention.repeatRate.toFixed(1)}%</p>
               </div>
               <div>
-                <p className="text-xs text-zinc-500">复购贡献</p>
-                <p className="text-2xl font-bold text-zinc-100">{retention.repeatRevPct.toFixed(0)}%</p>
+                <p className="text-xs text-muted-foreground">复购贡献</p>
+                <p className="text-2xl font-bold text-foreground">{retention.repeatRevPct.toFixed(0)}%</p>
               </div>
               <div>
-                <p className="text-xs text-zinc-500">评级</p>
+                <p className="text-xs text-muted-foreground">评级</p>
                 <p className={cn("text-2xl font-bold", retention.grade.color)}>{retention.grade.label}</p>
               </div>
             </div>
-            <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-zinc-800">
-              <div className="h-full rounded-full bg-amber-500" style={{ width: `${Math.min(100, retention.repeatRevPct)}%` }} />
+            <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-muted">
+              <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(100, retention.repeatRevPct)}%` }} />
             </div>
           </CardContent>
         </Card>
@@ -810,28 +810,20 @@ export default function FunnelRetentionPanel({
 
 /* ─── 子组件 ──────────────────────────────────────── */
 
-function KpiCard({ title, value, subtitle, icon, accent }: {
+function KpiCard({ title, value, subtitle, icon }: {
   title: string; value: string; subtitle: string;
   icon: ReactNode;
-  accent: "emerald" | "sky" | "amber" | "red" | "violet";
 }) {
-  const colors: Record<string, string> = {
-    emerald: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
-    sky: "bg-sky-500/10 text-sky-400 ring-sky-500/20",
-    amber: "bg-amber-500/10 text-amber-400 ring-amber-500/20",
-    red: "bg-red-500/10 text-red-400 ring-red-500/20",
-    violet: "bg-violet-500/10 text-violet-400 ring-violet-500/20",
-  };
   return (
-    <Card className="border-zinc-800 bg-zinc-900/50">
+    <Card>
       <CardContent className="relative p-5">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <p className="text-sm font-medium text-zinc-500">{title}</p>
-            <p className="text-2xl font-bold tracking-tight text-zinc-100">{value}</p>
-            <p className="text-xs text-zinc-500">{subtitle}</p>
+            <p className="text-[13px] font-medium text-muted-foreground">{title}</p>
+            <p className="text-[28px] font-semibold leading-[34px] tracking-[-0.025em] tabular-nums text-foreground">{value}</p>
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
           </div>
-          <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl ring-1", colors[accent])}>
+          <div className="text-muted-foreground">
             {icon}
           </div>
         </div>

@@ -195,14 +195,14 @@ export default function ScheduledTasksPanel({ isDemo, shopUrl, accessToken, shop
   /* ── Render ────────────────────────────────────────── */
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-border bg-card px-4 py-2 text-base font-medium text-foreground shadow-popover">{toast}</div>}
 
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><CalendarClock className="h-6 w-6 text-cyan-400" />定时任务</h2>
-          <p className="mt-1 text-base text-muted-foreground">{shopName} · {tasks.length} 个任务{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><CalendarClock className="h-5 w-5 text-muted-foreground" />定时任务</h2>
+          <p className="mt-1 text-base text-muted-foreground">{shopName} · {tasks.length} 个任务{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
         </div>
-        <Button size="sm" onClick={openCreate} className="h-9 gap-1 bg-cyan-600 hover:bg-cyan-500 text-white text-sm"><Plus className="h-3 w-3"/>创建任务</Button>
+        <Button size="sm" onClick={openCreate} className="h-9 gap-1 text-sm"><Plus className="h-3 w-3"/>创建任务</Button>
       </div>
 
       {tasks.length === 0 && (
@@ -211,11 +211,11 @@ export default function ScheduledTasksPanel({ isDemo, shopUrl, accessToken, shop
 
       <div className="space-y-3">
         {tasks.map((task) => (
-          <Card key={task.id} className={`border-border/40 bg-card/60 shadow-lg backdrop-blur-lg ${task.running ? "ring-1 ring-cyan-500/50" : ""}`}>
+          <Card key={task.id} className={task.running ? "border-info-border" : undefined}>
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
                 {/* Toggle */}
-                <button onClick={() => toggleTask(task.id)} className={`mt-0.5 w-9 h-5 rounded-full relative transition-colors shrink-0 ${task.enabled ? "bg-cyan-500" : "bg-zinc-600"}`}>
+                <button type="button" role="switch" aria-checked={task.enabled} aria-label={`${task.name}任务${task.enabled ? "已启用" : "已停用"}`} onClick={() => toggleTask(task.id)} className={`mt-0.5 relative h-5 w-9 shrink-0 rounded-full transition-colors ${task.enabled ? "bg-primary" : "bg-muted-foreground/50"}`}>
                   <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${task.enabled ? "left-4" : "left-0.5"}`} />
                 </button>
 
@@ -223,23 +223,23 @@ export default function ScheduledTasksPanel({ isDemo, shopUrl, accessToken, shop
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-base font-semibold text-foreground truncate">{task.name}</p>
-                    <Badge className="text-[9px] px-1.5 py-0 gap-1 bg-cyan-500/15 text-cyan-400">{ACTION_ICONS[task.actionType]}{ACTION_LABELS[task.actionType]}</Badge>
-                    {task.running && <Badge className="text-[9px] bg-cyan-500/20 text-cyan-400 animate-pulse">执行中</Badge>}
+                    <Badge className="gap-1 border-border bg-muted text-muted-foreground text-[11px]">{ACTION_ICONS[task.actionType]}{ACTION_LABELS[task.actionType]}</Badge>
+                    {task.running && <Badge className="border-info-border bg-info-bg text-info text-[11px]">执行中</Badge>}
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">{task.description || "—"}</p>
                   <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
-                    <span>⏰ {freqLabel(task)}</span>
-                    <span>⬆ {task.lastRun ? formatNextRun(task.lastRun) : "从未"}</span>
-                    <span>⬇ {formatNextRun(task.nextRun)}</span>
-                    <span className="text-[9px]">📋 {task.logs.length} 条日志</span>
+                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{freqLabel(task)}</span>
+                    <span>上次执行：{task.lastRun ? formatNextRun(task.lastRun) : "从未"}</span>
+                    <span>下次执行：{formatNextRun(task.nextRun)}</span>
+                    <span>{task.logs.length} 条日志</span>
                   </div>
                 </div>
 
                 {/* Actions */}
                 <div className="flex items-center gap-1 shrink-0">
-                  <Button size="sm" variant="ghost" onClick={() => executeTask(task)} disabled={task.running} className="h-7 w-7 p-0" title="立即执行"><Play className="h-3.5 w-3.5 text-cyan-400"/></Button>
+                  <Button size="sm" variant="ghost" onClick={() => executeTask(task)} disabled={task.running} className="h-7 w-7 p-0" title="立即执行"><Play className="h-3.5 w-3.5 text-primary"/></Button>
                   <Button size="sm" variant="ghost" onClick={() => openEdit(task)} className="h-7 w-7 p-0"><Edit3 className="h-3.5 w-3.5 text-muted-foreground"/></Button>
-                  <Button size="sm" variant="ghost" onClick={() => deleteTask(task.id)} className="h-7 w-7 p-0"><Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-red-400"/></Button>
+                  <Button size="sm" variant="ghost" onClick={() => deleteTask(task.id)} className="h-7 w-7 p-0"><Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive-text"/></Button>
                   <button onClick={() => setExpandedId(expandedId === task.id ? null : task.id)} className="h-7 w-7 flex items-center justify-center">{expandedId === task.id ? <ChevronDown className="h-3.5 w-3.5"/> : <ChevronRight className="h-3.5 w-3.5"/>}</button>
                 </div>
               </div>
@@ -252,7 +252,7 @@ export default function ScheduledTasksPanel({ isDemo, shopUrl, accessToken, shop
                     <div className="space-y-0.5 max-h-48 overflow-y-auto">
                       {task.logs.map((log) => (
                         <div key={log.id} className="flex items-center gap-2 text-xs py-0.5">
-                          <span className={log.status === "ok" ? "text-emerald-400" : "text-red-400"}>{log.status === "ok" ? "🟢" : "🔴"}</span>
+                          {log.status === "ok" ? <CheckCircle2 className="h-3.5 w-3.5 text-success" aria-label="成功" /> : <AlertCircle className="h-3.5 w-3.5 text-destructive-text" aria-label="失败" />}
                           <span className="text-muted-foreground tabular-nums">{new Date(log.timestamp).toLocaleString("zh-CN")}</span>
                           <span className="text-muted-foreground">{log.duration}ms</span>
                           <span className="text-foreground truncate flex-1">{log.summary}</span>
@@ -281,7 +281,7 @@ export default function ScheduledTasksPanel({ isDemo, shopUrl, accessToken, shop
               {/* Step indicator */}
               <div className="flex items-center gap-1 px-5 py-2 border-b border-border/20">
                 {["基本信息","触发条件","执行动作"].map((label, i) => (
-                  <button key={i} onClick={() => setModalStep(i)} className={`px-3 py-1 rounded text-xs font-medium ${modalStep===i?"bg-cyan-500/15 text-cyan-400":"text-muted-foreground"}`}>
+                  <button key={i} onClick={() => setModalStep(i)} className={`rounded px-3 py-1 text-xs font-medium ${modalStep===i?"bg-accent text-accent-foreground":"text-muted-foreground hover:bg-muted"}`}>
                     {i+1}. {label}
                   </button>
                 ))}
@@ -292,7 +292,7 @@ export default function ScheduledTasksPanel({ isDemo, shopUrl, accessToken, shop
                 {modalStep === 0 && (<>
                   <div><label className="text-sm font-semibold text-muted-foreground mb-0.5 block">任务名称 *</label><Input value={modalTask.name} onChange={(e)=>setModalTask({...modalTask,name:e.target.value})} autoFocus className="h-9 text-sm"/></div>
                   <div><label className="text-sm font-semibold text-muted-foreground mb-0.5 block">描述</label><textarea value={modalTask.description} onChange={(e)=>setModalTask({...modalTask,description:e.target.value})} rows={2} className="w-full rounded-md border border-border/40 bg-background px-3 py-2 text-sm resize-none"/></div>
-                  <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={modalTask.enabled} onChange={()=>setModalTask({...modalTask,enabled:!modalTask.enabled})} className="accent-cyan-500"/>启用任务</label>
+                  <label className="flex cursor-pointer items-center gap-2 text-sm"><input type="checkbox" checked={modalTask.enabled} onChange={()=>setModalTask({...modalTask,enabled:!modalTask.enabled})} className="accent-primary"/>启用任务</label>
                 </>)}
 
                 {/* Step 1: Schedule */}
@@ -326,11 +326,11 @@ export default function ScheduledTasksPanel({ isDemo, shopUrl, accessToken, shop
               </div>
 
               <div className="flex items-center justify-between border-t border-border/20 px-5 py-3">
-                <div className="flex gap-1">{[0,1,2].map((s)=><span key={s} className={`h-1.5 w-6 rounded ${modalStep>=s?"bg-cyan-500":"bg-muted/20"}`}/>)}</div>
+                <div className="flex gap-1">{[0,1,2].map((s)=><span key={s} className={`h-1.5 w-6 rounded ${modalStep>=s?"bg-primary":"bg-muted"}`}/>)}</div>
                 <div className="flex gap-2">
                   {modalStep > 0 && <Button variant="outline" onClick={()=>setModalStep((s)=>s-1)} className="h-9 text-sm">上一步</Button>}
-                  {modalStep < 2 ? <Button onClick={()=>setModalStep((s)=>s+1)} className="h-9 text-sm bg-cyan-600 hover:bg-cyan-500 text-white">下一步</Button>
-                  : <Button onClick={saveModal} disabled={!modalTask.name.trim()} className="h-9 gap-1 bg-emerald-600 text-white text-sm"><Save className="h-3 w-3"/>保存任务</Button>}
+                  {modalStep < 2 ? <Button onClick={()=>setModalStep((s)=>s+1)} className="h-9 text-sm">下一步</Button>
+                  : <Button onClick={saveModal} disabled={!modalTask.name.trim()} className="h-9 gap-1 text-sm"><Save className="h-3 w-3"/>保存任务</Button>}
                 </div>
               </div>
             </div>

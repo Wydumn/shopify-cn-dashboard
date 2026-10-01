@@ -389,6 +389,7 @@ export default function ProductConversionPanel({
           <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
             <ShoppingCart className="h-5 w-5 text-emerald-400" />
             商品转化分析
+            <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">加购率/评价含估算</span>
           </h2>
           <p className="mt-1 text-sm text-zinc-500">
             {shopName} · 商品转化率排行、逐品优化建议与横向对比

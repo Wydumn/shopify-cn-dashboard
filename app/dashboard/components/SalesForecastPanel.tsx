@@ -145,7 +145,9 @@ export default function SalesForecastPanel({ isDemo, shopUrl, accessToken, shopN
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><TrendingUp className="h-6 w-6 text-amber-400" />销售预测</h2>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><TrendingUp className="h-6 w-6 text-amber-400" />销售预测
+          <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">模型预测 · 非承诺</span>
+        </h2>
         <p className="mt-1 text-base text-muted-foreground">{shopName} · {demoData.length} 天历史数据{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
       </div>
 

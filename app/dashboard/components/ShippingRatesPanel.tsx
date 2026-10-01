@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Truck, Package, Calculator, ChevronDown, ChevronRight, Search, AlertCircle, Globe, DollarSign } from "lucide-react";
+import { Truck, Calculator, ChevronDown, ChevronRight, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EXCHANGE_RATE } from "../config";
 import { formatCny } from "../helpers";
@@ -43,11 +42,6 @@ interface ShippingRatesPanelProps {
 }
 
 /* ─── Helpers ─────────────────────────────────────────── */
-
-function countryCodeToFlag(code: string): string {
-  if (!code || code.length !== 2) return "🏳️";
-  return String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1F1E6 + c.charCodeAt(0) - 65));
-}
 
 function toCny(price: number, currency: string): number {
   const rates: Record<string, number> = { USD: EXCHANGE_RATE, GBP: EXCHANGE_RATE * 1.27, EUR: EXCHANGE_RATE * 1.08, JPY: EXCHANGE_RATE * 0.049, AUD: EXCHANGE_RATE * 0.65, CAD: EXCHANGE_RATE * 0.72 };
@@ -138,118 +132,120 @@ export default function ShippingRatesPanel({ isDemo, shopUrl, accessToken, shopN
 
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div role="status" className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-success-border bg-success-bg px-4 py-2 text-sm font-medium text-success shadow-sm">{toast}</div>}
 
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Truck className="h-6 w-6 text-teal-400" />运费管理</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName}{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground"><Truck className="h-5 w-5 text-muted-foreground" />运费管理</h2>
+        <p className="mt-1 text-sm text-muted-foreground">{shopName}{isDemo && <span className="ml-2 rounded-sm bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">(演示)</span>}</p>
       </div>
 
       {/* Rate difference alert */}
       {rateAnalysis && (
-        <Card className="border-amber-500/20 bg-amber-500/5"><CardContent className="p-3 flex items-center gap-2 text-xs">
-          <AlertCircle className="h-4 w-4 text-amber-400 shrink-0"/>
-          <span className="text-amber-300">运费差异较大：{rateAnalysis.min.name} ¥{rateAnalysis.min.price.toFixed(2)} vs {rateAnalysis.max.name} ¥{rateAnalysis.max.price.toFixed(2)}，差异 {rateAnalysis.diff}%，建议优化仓储备货</span>
+        <Card className="border-warning-border bg-warning-bg shadow-none"><CardContent className="flex items-start gap-2.5 p-3 text-[13px] leading-5 sm:items-center">
+          <AlertCircle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-warning sm:mt-0"/>
+          <span className="text-warning">运费差异较大：{rateAnalysis.min.name} ¥{rateAnalysis.min.price.toFixed(2)} vs {rateAnalysis.max.name} ¥{rateAnalysis.max.price.toFixed(2)}，差异 {rateAnalysis.diff}%，建议优化仓储备货</span>
         </CardContent></Card>
       )}
 
-      {rates.length === 0 && <div className="text-center py-16"><Truck className="h-12 w-12 mx-auto mb-3 text-muted-foreground/25"/><p className="text-base text-muted-foreground">暂未获取到运费数据，请在 Shopify Settings → Shipping 中配置</p></div>}
+      {rates.length === 0 && <div className="rounded-lg border border-border bg-card px-4 py-12 text-center sm:py-16"><Truck aria-hidden="true" className="mx-auto mb-3 h-10 w-10 text-muted-foreground"/><p className="text-sm leading-5 text-muted-foreground">暂未获取到运费数据，请在 Shopify Settings → Shipping 中配置</p></div>}
 
       {rates.length > 0 && (
         <>
           {/* Market selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">市场:</span>
-            <select value={selectedMarket} onChange={(e) => setSelectedMarket(e.target.value)} className="h-7 rounded border border-border/40 bg-background text-xs text-foreground px-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <label htmlFor="shipping-market" className="text-[13px] text-muted-foreground">市场</label>
+            <select id="shipping-market" value={selectedMarket} onChange={(e) => setSelectedMarket(e.target.value)} className="h-9 min-w-36 rounded-md border border-input bg-background px-2 text-[13px] text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
               <option value="all">所有市场</option>
-              {countries.map((c) => <option key={c.code} value={c.code}>{countryCodeToFlag(c.code)} {c.name}</option>)}
+              {countries.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
             </select>
           </div>
 
           {/* Rate Comparison Table */}
-          <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg overflow-x-auto">
+          <Card className="overflow-hidden border-border bg-card shadow-none">
             <CardContent className="p-0">
-              <table className="w-full text-sm min-w-[500px]">
-                <thead><tr className="border-b border-border/20 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  <th className="py-2.5 pl-3 text-left sticky left-0 bg-card/90 backdrop-blur">运费规则</th>
-                  {visibleRates.map((r) => <th key={r.countryCode} className="py-2.5 px-3 text-center min-w-[90px]">{countryCodeToFlag(r.countryCode)} {r.countryName}</th>)}
-                </tr></thead>
-                <tbody>
-                  {([
-                    { key: "freeThreshold", label: "免运费门槛", get: (r: CountryRate) => r.freeThreshold ? `${r.currency} ${r.freeThreshold}` : "—" },
-                    { key: "standard", label: "标准运费", get: (r: CountryRate) => r.standard ? `${r.standard.currency} ${r.standard.price.toFixed(2)}` : <span className="text-red-400">未配置</span> },
-                    { key: "express", label: "快递运费", get: (r: CountryRate) => r.express ? `${r.express.currency} ${r.express.price.toFixed(2)}` : <span className="text-zinc-500">—</span> },
-                    { key: "localPickup", label: "本地自提", get: (r: CountryRate) => r.localPickup ? <span className="text-emerald-400">✓ 支持</span> : "—" },
-                  ] as const).map((row) => {
-                    const values = visibleRates.map((r) => row.get(r));
-                    return (
-                      <tr key={row.key} className="border-b border-border/10 hover:bg-muted/5">
-                        <td className="py-2 pl-3 text-foreground font-medium sticky left-0 bg-card/60">{row.label}</td>
-                        {values.map((v, i) => <td key={i} className="py-2 px-3 text-center tabular-nums">{v}</td>)}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[520px] text-[13px] leading-5">
+                  <thead><tr className="h-9 border-b border-border bg-muted text-xs font-medium text-muted-foreground">
+                    <th scope="col" className="sticky left-0 min-w-36 bg-muted py-2 pl-3 text-left">运费规则</th>
+                    {visibleRates.map((r) => <th scope="col" key={r.countryCode} className="min-w-[100px] px-3 py-2 text-right">{r.countryName}</th>)}
+                  </tr></thead>
+                  <tbody>
+                    {([
+                      { key: "freeThreshold", label: "免运费门槛", get: (r: CountryRate) => r.freeThreshold ? `${r.currency} ${r.freeThreshold}` : "—" },
+                      { key: "standard", label: "标准运费", get: (r: CountryRate) => r.standard ? `${r.standard.currency} ${r.standard.price.toFixed(2)}` : <span className="text-destructive-text">未配置</span> },
+                      { key: "express", label: "快递运费", get: (r: CountryRate) => r.express ? `${r.express.currency} ${r.express.price.toFixed(2)}` : <span className="text-muted-foreground">—</span> },
+                      { key: "localPickup", label: "本地自提", get: (r: CountryRate) => r.localPickup ? <span className="text-success">✓ 支持</span> : "—" },
+                    ] as const).map((row) => {
+                      const values = visibleRates.map((r) => row.get(r));
+                      return (
+                        <tr key={row.key} className="h-11 border-b border-border last:border-0 hover:bg-accent">
+                          <th scope="row" className="sticky left-0 bg-card py-2 pl-3 text-left font-medium text-foreground">{row.label}</th>
+                          {values.map((v, i) => <td key={i} className="px-3 py-2 text-right tabular-nums text-foreground">{v}</td>)}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </CardContent>
           </Card>
 
           {/* Carrier Delivery Times */}
-          <div onClick={() => setShowWarehouse(!showWarehouse)} className="flex items-center gap-1 text-xs text-muted-foreground cursor-pointer hover:text-foreground">
-            {showWarehouse ? <ChevronDown className="h-3 w-3"/> : <ChevronRight className="h-3 w-3"/>}物流商送达时效
-          </div>
+          <button type="button" aria-expanded={showWarehouse} onClick={() => setShowWarehouse(!showWarehouse)} className="flex min-h-9 items-center gap-2 rounded-md px-2 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+            {showWarehouse ? <ChevronDown aria-hidden="true" className="h-4 w-4"/> : <ChevronRight aria-hidden="true" className="h-4 w-4"/>}物流商送达时效
+          </button>
           {showWarehouse && (
-            <Card className="border-border/40 bg-card/60 overflow-x-auto">
+            <Card className="overflow-hidden border-border bg-card shadow-none">
               <CardContent className="p-0">
-                <table className="w-full text-sm min-w-[500px]">
-                  <thead><tr className="border-b border-border/20 text-xs text-muted-foreground">
-                    <th className="py-2 pl-3 text-left">物流商</th>
-                    {countries.map((c) => <th key={c.code} className="py-2 px-3 text-center">{countryCodeToFlag(c.code)} {c.name}</th>)}
-                  </tr></thead>
-                  <tbody>
-                    {carriers.map((ca) => (
-                      <tr key={ca.name} className="border-b border-border/10">
-                        <td className="py-2 pl-3"><Badge className="text-[9px] px-1.5 py-0 bg-teal-500/15 text-teal-400">{ca.name}</Badge></td>
-                        {countries.map((c) => <td key={c.code} className="py-2 px-3 text-center text-muted-foreground">{ca.countryTimes[c.code] || "—"}</td>)}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[520px] text-[13px] leading-5">
+                    <thead><tr className="h-9 border-b border-border bg-muted text-xs font-medium text-muted-foreground">
+                      <th scope="col" className="sticky left-0 min-w-36 bg-muted py-2 pl-3 text-left">物流商</th>
+                      {countries.map((c) => <th scope="col" key={c.code} className="min-w-[100px] px-3 py-2 text-right">{c.name}</th>)}
+                    </tr></thead>
+                    <tbody>
+                      {carriers.map((ca) => (
+                        <tr key={ca.name} className="h-11 border-b border-border last:border-0 hover:bg-accent">
+                          <th scope="row" className="sticky left-0 bg-card py-2 pl-3 text-left font-normal"><Badge className="rounded-sm border border-border bg-muted px-1.5 py-0 text-xs font-medium text-muted-foreground">{ca.name}</Badge></th>
+                          {countries.map((c) => <td key={c.code} className="px-3 py-2 text-right tabular-nums text-muted-foreground">{ca.countryTimes[c.code] || "—"}</td>)}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Warehouse Zones (collapsed by default) */}
-          <div onClick={() => {}} className="flex items-center gap-1 text-xs text-muted-foreground cursor-pointer hover:text-foreground invisible">{/* spacer */}</div>
         </>
       )}
 
       {/* Shipping Calculator */}
-      <button onClick={() => setShowCalculator(!showCalculator)} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-        <Calculator className="h-3 w-3"/>{showCalculator ? <ChevronDown className="h-3 w-3"/> : <ChevronRight className="h-3 w-3"/>}运费计算器
+      <button type="button" aria-expanded={showCalculator} onClick={() => setShowCalculator(!showCalculator)} className="flex min-h-9 items-center gap-2 rounded-md px-2 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+        <Calculator aria-hidden="true" className="h-4 w-4"/>{showCalculator ? <ChevronDown aria-hidden="true" className="h-4 w-4"/> : <ChevronRight aria-hidden="true" className="h-4 w-4"/>}运费计算器
       </button>
       {showCalculator && (
-        <Card className="border-border/40 bg-card/60"><CardContent className="p-4 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <div><label className="text-sm text-muted-foreground block mb-0.5">商品重量 (g)</label><Input type="number" value={calcWeight} onChange={(e)=>setCalcWeight(e.target.value)} className="h-9 text-sm"/></div>
-            <div><label className="text-sm text-muted-foreground block mb-0.5">商品价格</label><Input type="number" step="0.01" value={calcPrice} onChange={(e)=>setCalcPrice(e.target.value)} className="h-9 text-sm"/></div>
-            <div><label className="text-xs text-muted-foreground block mb-0.5">发往市场</label>
-              <select value={calcCountry} onChange={(e)=>setCalcCountry(e.target.value)} className="h-9 w-full rounded border border-border/40 bg-background px-2 text-sm text-foreground">{countries.map((c)=><option key={c.code} value={c.code}>{c.name}</option>)}</select>
+        <Card className="border-border bg-card shadow-none"><CardContent className="space-y-4 p-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div><label htmlFor="shipping-weight" className="mb-1 block text-xs font-medium text-muted-foreground">商品重量 (g)</label><Input id="shipping-weight" type="number" value={calcWeight} onChange={(e)=>setCalcWeight(e.target.value)} className="h-9 text-[13px]"/></div>
+            <div><label htmlFor="shipping-price" className="mb-1 block text-xs font-medium text-muted-foreground">商品价格</label><Input id="shipping-price" type="number" step="0.01" value={calcPrice} onChange={(e)=>setCalcPrice(e.target.value)} className="h-9 text-[13px]"/></div>
+            <div><label htmlFor="shipping-country" className="mb-1 block text-xs font-medium text-muted-foreground">发往市场</label>
+              <select id="shipping-country" value={calcCountry} onChange={(e)=>setCalcCountry(e.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-2 text-[13px] text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">{countries.map((c)=><option key={c.code} value={c.code}>{c.name}</option>)}</select>
             </div>
-            <div><label className="text-xs text-muted-foreground block mb-0.5">仓库</label>
-              <select value={calcWarehouse} onChange={(e)=>setCalcWarehouse(e.target.value)} className="h-9 w-full rounded border border-border/40 bg-background px-2 text-sm text-foreground">
+            <div><label htmlFor="shipping-warehouse" className="mb-1 block text-xs font-medium text-muted-foreground">仓库</label>
+              <select id="shipping-warehouse" value={calcWarehouse} onChange={(e)=>setCalcWarehouse(e.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-2 text-[13px] text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                 {[...new Set(DEMO_WAREHOUSE_ZONES.map((z)=>z.warehouseName))].map((w)=><option key={w} value={w}>{w}</option>)}
               </select>
             </div>
           </div>
           {calcResult && (
-            <div className="rounded-lg bg-muted/10 p-3 space-y-1 text-xs">
-              <p className="text-muted-foreground">匹配规则: <span className="text-foreground font-semibold">{calcResult.matchedRule?.label || "—"}</span>{calcResult.matchedRule ? ` → ${calcResult.matchedRule.currency} ${calcResult.matchedRule.price}` : ""}</p>
-              {calcResult.cnyPrice !== null && <p className="text-muted-foreground">预估运费: <span className="text-teal-400 font-semibold">{formatCny(calcResult.cnyPrice)}{calcResult.matchedRule && calcResult.matchedRule.currency !== "CNY" ? ` (约 ${calcResult.matchedRule.currency} ${calcResult.matchedRule.price})` : ""}</span></p>}
+            <div className="space-y-1 rounded-md border border-border bg-muted p-3 text-xs leading-5">
+              <p className="text-muted-foreground">匹配规则: <span className="font-semibold text-foreground">{calcResult.matchedRule?.label || "—"}</span>{calcResult.matchedRule ? ` → ${calcResult.matchedRule.currency} ${calcResult.matchedRule.price}` : ""}</p>
+              {calcResult.cnyPrice !== null && <p className="text-muted-foreground">预估运费: <span className="font-semibold text-foreground">{formatCny(calcResult.cnyPrice)}{calcResult.matchedRule && calcResult.matchedRule.currency !== "CNY" ? ` (约 ${calcResult.matchedRule.currency} ${calcResult.matchedRule.price})` : ""}</span></p>}
               {calcResult.triggersFree ? (
-                <p className="text-emerald-400">✓ 已触发免运费门槛（{calcResult.freeThreshold} {rates.find((r)=>r.countryCode===calcCountry)?.currency}）</p>
+                <p className="text-success">✓ 已触发免运费门槛（{calcResult.freeThreshold} {rates.find((r)=>r.countryCode===calcCountry)?.currency}）</p>
               ) : calcResult.diffToFree > 0 ? (
-                <p className="text-amber-400">还差 {calcResult.diffToFree} {rates.find((r)=>r.countryCode===calcCountry)?.currency} 触发免运费（门槛 {calcResult.freeThreshold}）</p>
+                <p className="text-warning">还差 {calcResult.diffToFree} {rates.find((r)=>r.countryCode===calcCountry)?.currency} 触发免运费（门槛 {calcResult.freeThreshold}）</p>
               ) : null}
             </div>
           )}

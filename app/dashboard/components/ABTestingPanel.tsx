@@ -454,9 +454,10 @@ export default function ABTestingPanel({
           <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
             <GitBranch className="h-5 w-5 text-emerald-400" />
             A/B 测试
+            <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">本地模拟实验</span>
           </h2>
           <p className="mt-1 text-sm text-zinc-500">
-            {shopName} · 标题 / 价格 A/B 实验：创建、实时监控与胜者应用
+            {shopName} · 实验方案设计 · 离线显著性检验 · 胜者可写回商品
           </p>
         </div>
         {isDemo && <Badge variant="outline" className="border-amber-500/30 text-amber-400">Demo 演示数据</Badge>}

@@ -78,8 +78,8 @@ interface CurrentStoreData {
 // ─── Color palette ────────────────────────────────────
 
 const STORE_COLORS = [
-  "#10b981", "#3b82f6", "#f59e0b", "#ef4444",
-  "#8b5cf6", "#ec4899", "#06b6d4", "#f97316",
+  "var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)",
+  "var(--chart-5)",
 ];
 
 // ─── PRNG ─────────────────────────────────────────────
@@ -232,29 +232,21 @@ function buildStackedChartData(stores: StoreAggData[]) {
 // ─── Summary Card ─────────────────────────────────────
 
 function SummaryCard({
-  title, value, subtitle, icon: Icon, accent,
+  title, value, subtitle, icon: Icon,
 }: {
   title: string; value: string; subtitle: string;
   icon: React.ComponentType<{ className?: string }>;
-  accent: "emerald" | "sky" | "amber";
 }) {
-  const colors = {
-    emerald: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
-    sky: "bg-sky-500/10 text-sky-400 ring-sky-500/20",
-    amber: "bg-amber-500/10 text-amber-400 ring-amber-500/20",
-  };
   return (
-    <Card className="group relative overflow-hidden border-border/40 bg-card/60 shadow-lg backdrop-blur-lg transition-all hover:border-border/60">
-      <CardContent className="relative p-6">
+    <Card className="border-border bg-card shadow-none">
+      <CardContent className="p-4 sm:p-5">
         <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <p className="text-base font-medium text-muted-foreground">{title}</p>
-            <p className="text-3xl font-bold tracking-tight text-foreground">{value}</p>
-            <p className="text-sm text-muted-foreground">{subtitle}</p>
+          <div className="min-w-0 space-y-1">
+            <p className="text-[13px] font-medium leading-[18px] text-muted-foreground">{title}</p>
+            <p className="break-words text-[1.75rem] font-semibold leading-[34px] tracking-[-0.025em] tabular-nums text-foreground">{value}</p>
+            <p className="text-xs leading-4 text-muted-foreground">{subtitle}</p>
           </div>
-          <div className={`flex h-11 w-11 items-center justify-center rounded-xl ring-1 ${colors[accent]}`}>
-            <Icon className="h-5 w-5" />
-          </div>
+          <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
         </div>
       </CardContent>
     </Card>
@@ -270,10 +262,10 @@ function StackedTooltip({
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-border/50 bg-card px-3 py-2 shadow-lg backdrop-blur-sm">
-      <p className="mb-1 text-sm font-medium text-muted-foreground">{label}</p>
+    <div className="rounded-md border border-border bg-card px-3 py-2 shadow-none">
+      <p className="mb-1 text-xs font-medium text-muted-foreground">{label}</p>
       {payload.filter((e) => e.value > 0).map((entry, i) => (
-        <p key={i} className="text-base font-semibold" style={{ color: entry.color }}>
+        <p key={i} className="text-sm font-medium tabular-nums" style={{ color: entry.color }}>
           {entry.name}: {formatCny(entry.value)}
         </p>
       ))}
@@ -419,10 +411,10 @@ export default function MultiStoreAggregator({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
+        <Card className="border-border bg-card shadow-none">
           <CardContent className="flex flex-col items-center gap-4 py-12 px-16">
-            <Loader2 className="h-9 w-8 animate-spin text-emerald-500" />
-            <p className="text-base font-medium text-muted-foreground">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm font-medium text-muted-foreground">
               {stores.length === 1 ? "正在读取当前店铺数据..." : `正在拉取 ${realCount} 家真实店铺数据...`}
             </p>
           </CardContent>
@@ -432,47 +424,52 @@ export default function MultiStoreAggregator({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
-          <Layers className="h-6 w-6 text-sky-400" />
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+          <Layers className="h-5 w-5 text-muted-foreground" />
           全店聚合大盘
         </h2>
-        <p className="mt-1 text-base text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           {stores.length > 1 ? `${DEMO_LOOKBACK_DAYS} 天` : "今日"}综合数据汇总
-          {demoCount > 0 && realCount > 0 && <span className="text-amber-400"> (含演示店铺)</span>}
-          {demoCount > 0 && realCount === 0 && <span className="text-amber-400"> (演示模式)</span>}
+          {demoCount > 0 && realCount > 0 && <span> (含演示店铺)</span>}
+          {demoCount > 0 && realCount === 0 && <span> (演示模式)</span>}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <SummaryCard title="聚合总营收" value={formatCny(totalGmv)} subtitle={`${stores.length} 家店铺合计 · 汇率 ¥${EXCHANGE_RATE}`} icon={DollarSign} accent="emerald" />
-        <SummaryCard title="聚合总单量" value={`${totalOrders} 单`} subtitle={`平均 ${avgOrdersPerStore} 单/店`} icon={ShoppingCart} accent="sky" />
-        <SummaryCard title="已连接站点" value={`${stores.length} 家`} subtitle={`${demoCount} 演示 · ${realCount} 真实`} icon={Store} accent="amber" />
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <SummaryCard title="聚合总营收" value={formatCny(totalGmv)} subtitle={`${stores.length} 家店铺合计 · 汇率 ¥${EXCHANGE_RATE}`} icon={DollarSign} />
+        <SummaryCard title="聚合总单量" value={`${totalOrders} 单`} subtitle={`平均 ${avgOrdersPerStore} 单/店`} icon={ShoppingCart} />
+        <SummaryCard title="已连接站点" value={`${stores.length} 家`} subtitle={`${demoCount} 演示 · ${realCount} 真实`} icon={Store} />
       </div>
 
-      <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
-        <CardHeader className="flex flex-row items-center justify-between">
+      <Card className="border-border bg-card shadow-none">
+        <CardHeader className="flex flex-row items-start justify-between gap-4">
           <div>
-            <CardTitle className="text-base">多店铺营收堆叠分布</CardTitle>
-            <CardDescription>北京时间每小时堆叠 · 每种颜色代表一家店铺 · 无未来数据泄漏</CardDescription>
+            <CardTitle className="text-sm font-medium">多店铺营收堆叠分布</CardTitle>
+            <CardDescription className="mt-1 text-xs">北京时间每小时堆叠 · 每个序列代表一家店铺 · 无未来数据泄漏</CardDescription>
           </div>
-          <button onClick={() => setShowChart(!showChart)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <button
+            type="button"
+            aria-expanded={showChart}
+            onClick={() => setShowChart(!showChart)}
+            className="inline-flex h-8 shrink-0 items-center rounded-md px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+          >
             {showChart ? "隐藏" : "显示"}
           </button>
         </CardHeader>
         {showChart && (
           <CardContent>
             {chartData.length > 0 ? (
-              <div className="h-[360px] w-full">
+              <div className="h-[300px] w-full sm:h-[360px]" aria-label="多店铺每小时营收堆叠图">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" vertical={false} />
-                    <XAxis dataKey="hour" tick={{ fontSize: 11, fill: "oklch(0.708 0 0)" }} tickLine={false} axisLine={false} interval={3} />
-                    <YAxis tick={{ fontSize: 11, fill: "oklch(0.708 0 0)" }} tickLine={false} axisLine={false} tickFormatter={(v: number) => `¥${v}`} width={60} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                    <XAxis dataKey="hour" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} interval={3} />
+                    <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} tickFormatter={(v: number) => `¥${v}`} width={60} />
                     <Tooltip content={<StackedTooltip />} />
-                    <Legend formatter={(value: string) => (<span style={{ color: "oklch(0.708 0 0)", fontSize: "11px" }}>{value}</span>)} />
+                    <Legend formatter={(value: string) => (<span style={{ color: "var(--muted-foreground)", fontSize: "11px" }}>{value}</span>)} />
                     {storeData.map((store) => (
                       <Bar key={store.id} dataKey={`bar_${store.id}`} name={store.name} stackId="a" fill={store.color} radius={[0, 0, 0, 0]} maxBarSize={32} />
                     ))}
@@ -480,70 +477,68 @@ export default function MultiStoreAggregator({
                 </ResponsiveContainer>
               </div>
             ) : (
-              <div className="flex flex-col items-center gap-3 py-12 text-base text-muted-foreground">暂无数据，请添加店铺后重试</div>
+              <div className="flex flex-col items-center gap-3 py-12 text-sm text-muted-foreground">暂无数据，请添加店铺后重试</div>
             )}
           </CardContent>
         )}
       </Card>
 
-      <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
+      <Card className="border-border bg-card shadow-none">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <TrendingUp className="h-4 w-4 text-amber-400" />
-            店铺战力排行榜
+          <CardTitle className="flex items-center gap-2 text-sm font-medium">
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            店铺营收排行
           </CardTitle>
-          <CardDescription>按营收降序 · 贡献率含进度条</CardDescription>
+          <CardDescription className="mt-1 text-xs">按营收降序 · 贡献率含进度条</CardDescription>
         </CardHeader>
         <CardContent>
           {storeData.length > 0 ? (
-            <Table>
+            <div className="w-full overflow-x-auto">
+            <Table className="min-w-[640px]">
               <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-12 text-center">#</TableHead>
-                  <TableHead>店铺</TableHead>
-                  <TableHead className="text-right">订单</TableHead>
-                  <TableHead className="text-right">营收 (CNY)</TableHead>
-                  <TableHead className="text-right w-64">贡献率</TableHead>
+                <TableRow className="h-9 border-border bg-muted hover:bg-muted">
+                  <TableHead className="w-12 text-center text-xs font-medium text-muted-foreground">排名</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground">店铺</TableHead>
+                  <TableHead className="text-right text-xs font-medium text-muted-foreground">订单</TableHead>
+                  <TableHead className="text-right text-xs font-medium text-muted-foreground">营收 (CNY)</TableHead>
+                  <TableHead className="w-64 text-right text-xs font-medium text-muted-foreground">贡献率</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {storeData.map((store, index) => (
-                  <TableRow key={store.id} className="group transition-colors hover:bg-muted/30">
-                    <TableCell className="text-center">
-                      {index === 0 ? (<Badge className="bg-amber-500/20 text-amber-400 px-1.5 py-0 text-sm">🥇</Badge>)
-                      : index === 1 ? (<Badge className="bg-sky-500/20 text-sky-400 px-1.5 py-0 text-sm">🥈</Badge>)
-                      : index === 2 ? (<Badge className="bg-orange-500/20 text-orange-400 px-1.5 py-0 text-sm">🥉</Badge>)
-                      : <span className="text-sm font-medium text-muted-foreground">{index + 1}</span>}
+                  <TableRow key={store.id} className="h-11 border-border transition-colors hover:bg-accent">
+                    <TableCell className="text-center text-sm font-medium tabular-nums text-muted-foreground">
+                      {index + 1}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: store.color }} />
-                        <span className="font-medium text-foreground">{store.name}</span>
-                        <span className="text-sm text-muted-foreground">({store.domain})</span>
+                      <div className="flex min-w-0 items-center gap-2">
+                        <span className="truncate text-sm font-medium text-foreground">{store.name}</span>
+                        <span className="hidden truncate text-xs text-muted-foreground sm:inline">({store.domain})</span>
                         {store.isDemo
-                          ? <Badge variant="outline" className="text-xs px-1 py-0 border-amber-500/30 text-amber-400">演示</Badge>
-                          : <Badge variant="outline" className="text-xs px-1 py-0 border-emerald-500/30 text-emerald-400">真实</Badge>}
+                          ? <Badge variant="outline" className="shrink-0 rounded-sm border-border px-1.5 py-0 text-[11px] font-medium text-muted-foreground">演示</Badge>
+                          : <Badge variant="outline" className="shrink-0 rounded-sm border-border px-1.5 py-0 text-[11px] font-medium text-muted-foreground">真实</Badge>}
                       </div>
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">{store.orderCount} 单</TableCell>
-                    <TableCell className="text-right tabular-nums font-medium text-emerald-400">{formatCny(store.gmv)}</TableCell>
+                    <TableCell className="text-right text-sm tabular-nums">{store.orderCount} 单</TableCell>
+                    <TableCell className="text-right text-sm font-medium tabular-nums text-foreground">{formatCny(store.gmv)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
                         <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
-                          <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, store.contribution)}%`, backgroundColor: store.color }} />
+                          <div className="h-full rounded-full" style={{ width: `${Math.min(100, store.contribution)}%`, backgroundColor: store.color }} />
                         </div>
-                        <span className="w-14 text-right text-sm font-semibold tabular-nums text-muted-foreground">{store.contribution.toFixed(1)}%</span>
+                        <span className="w-14 text-right text-sm tabular-nums text-muted-foreground">{store.contribution.toFixed(1)}%</span>
                       </div>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            </div>
           ) : (
             <div className="flex flex-col items-center gap-3 py-12 text-center">
-              <Store className="h-10 w-10 text-muted-foreground/40" />
-              <p className="text-base text-muted-foreground">暂无已绑定店铺数据</p>
-              <p className="text-sm text-muted-foreground/60">请前往配置页添加店铺以启用聚合面板</p>
+              <Store className="h-8 w-8 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">暂无已绑定店铺数据</p>
+              <p className="text-xs text-muted-foreground">请前往配置页添加店铺以启用聚合面板</p>
             </div>
           )}
         </CardContent>

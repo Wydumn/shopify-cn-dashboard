@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import {
   Users,
   UserPlus,
@@ -15,20 +15,15 @@ import {
   Phone,
   MapPin,
   ShoppingBag,
-  Clock,
   Tag,
-  Star,
-  Filter,
-  ArrowUpDown,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatCny, formatTimeAgo } from "../helpers";
 import { exportCustomers } from "@/lib/export-utils";
 import OrderTags from "./OrderTags";
-import { useToast } from "../hooks/useToast";
 
 // ─── Types ────────────────────────────────────────────
 
@@ -98,26 +93,26 @@ function avgOrderValue(c: Customer): number {
 
 function KPICard({ title, value, subtitle, icon: Icon, accent }: {
   title: string; value: string; subtitle: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   accent: "emerald" | "sky" | "amber" | "purple";
 }) {
   const colors = {
-    emerald: "bg-emerald-500/10 text-emerald-400",
-    sky: "bg-sky-500/10 text-sky-400",
-    amber: "bg-amber-500/10 text-amber-400",
-    purple: "bg-purple-500/10 text-purple-400",
+    emerald: "bg-success-bg text-success",
+    sky: "bg-muted text-muted-foreground",
+    amber: "bg-muted text-muted-foreground",
+    purple: "bg-muted text-muted-foreground",
   };
   return (
-    <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
-      <CardContent className="p-5">
+    <Card>
+      <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold mt-1 text-foreground tabular-nums">{value}</p>
+            <p className="text-[13px] leading-[18px] text-muted-foreground">{title}</p>
+            <p className="mt-1 text-[28px] font-semibold leading-[34px] tracking-[-0.025em] text-foreground tabular-nums">{value}</p>
             <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
           </div>
-          <div className={"flex h-9 w-9 items-center justify-center rounded-lg " + colors[accent]}>
-            <Icon className="h-4 w-4" />
+          <div className={"flex h-8 w-8 items-center justify-center rounded-md " + colors[accent]}>
+            <Icon className="h-4 w-4" strokeWidth={1.5} />
           </div>
         </div>
       </CardContent>
@@ -143,7 +138,7 @@ export default function CustomerCenterPanel({
   const [filterCountry, setFilterCountry] = useState("all");
   const [filterTag, setFilterTag] = useState("");
 
-  const { toast, showToast } = useToast();
+  const [referenceTime] = useState(() => Date.now());
 
   // Sort
   const [sortKey, setSortKey] = useState<SortKey>("total_spent");
@@ -181,40 +176,42 @@ export default function CustomerCenterPanel({
       if (filterOrders === "5plus" && c.orders_count <= 5) return false;
       if (filterRecency === "7d") {
         const d = new Date(c.updated_at);
-        if ((Date.now() - d.getTime()) > 7 * 86400000) return false;
+        if ((referenceTime - d.getTime()) > 7 * 86400000) return false;
       }
       if (filterRecency === "30d") {
         const d = new Date(c.updated_at);
-        if ((Date.now() - d.getTime()) > 30 * 86400000) return false;
+        if ((referenceTime - d.getTime()) > 30 * 86400000) return false;
       }
       if (filterRecency === "90d") {
         const d = new Date(c.updated_at);
-        if ((Date.now() - d.getTime()) > 90 * 86400000) return false;
+        if ((referenceTime - d.getTime()) > 90 * 86400000) return false;
       }
       if (filterRecency === "dormant") {
         const d = new Date(c.updated_at);
-        if ((Date.now() - d.getTime()) <= 90 * 86400000) return false;
+        if ((referenceTime - d.getTime()) <= 90 * 86400000) return false;
       }
       if (filterCountry !== "all" && c.default_address?.country !== filterCountry) return false;
       if (filterTag && !c.tags.toLowerCase().includes(filterTag.toLowerCase())) return false;
       return true;
     }).sort((a, b) => {
-      let va: number, vb: number;
-      if (sortKey === "name") { va = customerName(a).localeCompare(customerName(b)); vb = 0; }
-      else if (sortKey === "total_spent") { va = a.total_spent; vb = b.total_spent; }
-      else if (sortKey === "orders_count") { va = a.orders_count; vb = b.orders_count; }
-      else if (sortKey === "avg_order") { va = avgOrderValue(a); vb = avgOrderValue(b); }
-      else { va = new Date(a.updated_at).getTime(); vb = new Date(b.updated_at).getTime(); }
-      const cmp = typeof va === "number" ? va - vb : (va as number);
-      return sortDir === "desc" ? ((vb as number) - (va as number)) : ((va as number) - (vb as number));
+      const comparison = sortKey === "name"
+        ? customerName(a).localeCompare(customerName(b))
+        : sortKey === "total_spent"
+          ? a.total_spent - b.total_spent
+          : sortKey === "orders_count"
+            ? a.orders_count - b.orders_count
+            : sortKey === "avg_order"
+              ? avgOrderValue(a) - avgOrderValue(b)
+              : new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
+      return sortDir === "asc" ? comparison : -comparison;
     });
-  }, [customers, filterName, filterSpend, filterOrders, filterRecency, filterCountry, filterTag, sortKey, sortDir]);
+  }, [customers, filterName, filterSpend, filterOrders, filterRecency, filterCountry, filterTag, sortKey, sortDir, referenceTime]);
 
   // KPI calculations
   const newCustomers30d = useMemo(() => {
-    const cutoff = Date.now() - 30 * 86400000;
+    const cutoff = referenceTime - 30 * 86400000;
     return customers.filter((c) => new Date(c.created_at).getTime() > cutoff).length;
-  }, [customers]);
+  }, [customers, referenceTime]);
   const avgLtv = useMemo(() => {
     return customers.length > 0 ? customers.reduce((s, c) => s + c.total_spent, 0) / customers.length : 0;
   }, [customers]);
@@ -235,25 +232,27 @@ export default function CustomerCenterPanel({
   };
 
   const FINANCIAL_MAP: Record<string, string> = {
-    paid: "bg-emerald-500/15 text-emerald-400", pending: "bg-amber-500/15 text-amber-400",
-    refunded: "bg-red-500/15 text-red-400", cancelled: "bg-zinc-500/15 text-zinc-400",
+    paid: "border-success-border bg-success-bg text-success",
+    pending: "border-warning-border bg-warning-bg text-warning",
+    refunded: "border-destructive-border bg-destructive-bg text-destructive-text",
+    cancelled: "border-border bg-muted text-muted-foreground",
   };
 
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
-            <Users className="h-6 w-6 text-purple-400" />
+            <Users className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
             客户管理中心
           </h2>
           <p className="mt-1 text-base text-muted-foreground">
             {shopName} · {customers.length} 位客户
-            {isDemo && <span className="ml-2 text-sm text-amber-400">(演示数据)</span>}
+            {isDemo && <span className="ml-2 text-xs text-muted-foreground">(演示数据)</span>}
           </p>
         </div>
-        <Button size="sm" variant="outline" onClick={handleExport} className="h-9 gap-1.5">
+        <Button size="sm" variant="outline" onClick={handleExport} className="h-9 w-fit gap-1.5">
           <Download className="h-3.5 w-3.5" />导出 {filtered.length} 位客户
         </Button>
       </div>
@@ -267,51 +266,68 @@ export default function CustomerCenterPanel({
       </div>
 
       {/* Filters */}
-      <Card className="border-border/40 bg-card/50 shadow-sm backdrop-blur-sm">
-        <CardContent className="flex flex-wrap items-center gap-2 px-4 py-2.5">
-          <div className="relative flex-1 min-w-[150px]">
+      <Card>
+        <CardContent className="grid grid-cols-2 gap-2 px-3 py-3 sm:flex sm:flex-wrap sm:items-center sm:px-4">
+          <div className="relative col-span-2 min-w-0 sm:flex-1">
             <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
             <Input value={filterName} onChange={(e) => setFilterName(e.target.value)} placeholder="搜索姓名或邮箱..." className="h-9 pl-7 text-sm" />
           </div>
-          <select value={filterSpend} onChange={(e) => setFilterSpend(e.target.value)} className="h-9 rounded border border-border/40 bg-background px-2 text-sm text-foreground">
+          <select value={filterSpend} onChange={(e) => setFilterSpend(e.target.value)} className="h-9 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground">
             <option value="all">全部消费</option>
             <option value="low">&lt; ¥500</option>
             <option value="mid">¥500 - 2,000</option>
             <option value="high">¥2,000 - 10,000</option>
             <option value="top">&gt; ¥10,000</option>
           </select>
-          <select value={filterOrders} onChange={(e) => setFilterOrders(e.target.value)} className="h-9 rounded border border-border/40 bg-background px-2 text-sm text-foreground">
+          <select value={filterOrders} onChange={(e) => setFilterOrders(e.target.value)} className="h-9 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground">
             <option value="all">全部订单数</option>
             <option value="once">单次客户</option>
             <option value="2to5">2-5 次</option>
             <option value="5plus">5 次以上</option>
           </select>
-          <select value={filterRecency} onChange={(e) => setFilterRecency(e.target.value)} className="h-9 rounded border border-border/40 bg-background px-2 text-sm text-foreground">
+          <select value={filterRecency} onChange={(e) => setFilterRecency(e.target.value)} className="h-9 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground">
             <option value="all">全部活跃度</option>
             <option value="7d">近 7 天购买</option>
             <option value="30d">近 30 天</option>
             <option value="90d">近 90 天</option>
             <option value="dormant">90 天以上未回购</option>
           </select>
-          <select value={filterCountry} onChange={(e) => setFilterCountry(e.target.value)} className="h-9 rounded border border-border/40 bg-background px-2 text-sm text-foreground">
+          <select value={filterCountry} onChange={(e) => setFilterCountry(e.target.value)} className="h-9 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground">
             <option value="all">全部国家</option>
             {countries.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
-          <Input value={filterTag} onChange={(e) => setFilterTag(e.target.value)} placeholder="标签关键词..." className="h-9 w-28 text-sm" />
+          <Input value={filterTag} onChange={(e) => setFilterTag(e.target.value)} placeholder="标签关键词..." className="h-9 min-w-0 text-sm sm:w-28" />
+          <label className="col-span-2 flex items-center gap-2 text-sm text-muted-foreground sm:hidden">
+            排序
+            <select
+              aria-label="客户排序"
+              value={sortKey}
+              onChange={(e) => { setSortKey(e.target.value as SortKey); setSortDir("desc"); }}
+              className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-foreground"
+            >
+              <option value="total_spent">总消费</option>
+              <option value="name">客户姓名</option>
+              <option value="orders_count">订单数</option>
+              <option value="avg_order">客单价</option>
+              <option value="last_order">最近购买</option>
+            </select>
+          </label>
           {(filterName || filterSpend !== "all" || filterOrders !== "all" || filterRecency !== "all" || filterCountry !== "all" || filterTag) && (
             <Button size="sm" variant="ghost" className="h-9 text-sm text-muted-foreground"
               onClick={() => { setFilterName(""); setFilterSpend("all"); setFilterOrders("all"); setFilterRecency("all"); setFilterCountry("all"); setFilterTag(""); }}>
               <X className="h-3 w-3" />清除
             </Button>
           )}
-          <span className="ml-auto text-sm text-muted-foreground">筛选出 {filtered.length} 位客户</span>
+          <span className="col-span-2 text-sm text-muted-foreground sm:ml-auto">筛选出 {filtered.length} 位客户</span>
         </CardContent>
       </Card>
 
       {/* Customer Table */}
-      <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
+      <Card>
         <CardContent className="p-0">
           {filtered.length > 0 ? (
+            <>
+            <div className="hidden overflow-x-auto md:block">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border/20">
@@ -337,12 +353,12 @@ export default function CustomerCenterPanel({
               </thead>
               <tbody>
                 {filtered.map((c) => (
-                  <tr key={c.id} className="border-b border-border/10 transition-colors hover:bg-muted/10 cursor-pointer" onClick={() => setDetailCustomer(c)}>
+                  <tr key={c.id} className="border-b border-border/10 transition-colors hover:bg-muted/10">
                     <td className="py-2.5 pl-4 pr-2">
                       <div>
-                        <p className="text-base font-medium text-sky-400 hover:underline">{customerName(c)}</p>
+                        <button type="button" onClick={() => setDetailCustomer(c)} className="text-left text-sm font-medium text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">{customerName(c) || c.email}</button>
                         {c.state !== "enabled" && (
-                          <Badge className="text-[9px] px-1 py-0 bg-red-500/15 text-red-400 mt-0.5">已禁用</Badge>
+                          <Badge variant="outline" className="border-destructive-border bg-destructive-bg text-destructive-text mt-0.5">已禁用</Badge>
                         )}
                       </div>
                     </td>
@@ -353,7 +369,7 @@ export default function CustomerCenterPanel({
                     <td className="py-2.5 px-2 text-center">
                       <Badge variant="outline" className="text-xs px-1.5 py-0 border-border/40">{c.default_address?.country ?? "-"}</Badge>
                     </td>
-                    <td className="py-2.5 px-2 text-right tabular-nums text-base font-semibold text-emerald-400">{formatCny(c.total_spent * 7.25)}</td>
+                    <td className="py-2.5 px-2 text-right tabular-nums text-sm font-medium text-foreground">{formatCny(c.total_spent * 7.25)}</td>
                     <td className="py-2.5 px-2 text-center text-base text-foreground">{c.orders_count}</td>
                     <td className="py-2.5 px-2 text-right tabular-nums text-base text-muted-foreground">{formatCny(avgOrderValue(c) * 7.25)}</td>
                     <td className="py-2.5 px-2 text-sm text-muted-foreground">{formatTimeAgo(c.updated_at)}</td>
@@ -369,6 +385,36 @@ export default function CustomerCenterPanel({
                 ))}
               </tbody>
             </table>
+            </div>
+            <div className="divide-y divide-border md:hidden">
+              {filtered.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setDetailCustomer(c)}
+                  className="w-full p-4 text-left transition-colors hover:bg-muted/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-foreground">{customerName(c) || c.email}</p>
+                      {customerName(c) && <p className="mt-0.5 truncate text-xs text-muted-foreground">{c.email}</p>}
+                    </div>
+                    <p className="shrink-0 text-sm font-semibold tabular-nums text-foreground">{formatCny(c.total_spent * 7.25)}</p>
+                  </div>
+                  <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border pt-3 text-xs">
+                    <div><p className="text-muted-foreground">订单数</p><p className="mt-1 font-medium tabular-nums text-foreground">{c.orders_count}</p></div>
+                    <div><p className="text-muted-foreground">客单价</p><p className="mt-1 font-medium tabular-nums text-foreground">{formatCny(avgOrderValue(c) * 7.25)}</p></div>
+                    <div><p className="text-muted-foreground">最近购买</p><p className="mt-1 font-medium text-foreground">{formatTimeAgo(c.updated_at)}</p></div>
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                    <span className="text-xs text-muted-foreground">{c.default_address?.country ?? "国家未知"}</span>
+                    {c.state !== "enabled" && <Badge variant="outline" className="border-destructive-border bg-destructive-bg text-destructive-text">已禁用</Badge>}
+                    {parseTags(c.tags).slice(0, 2).map((tag) => <Badge key={tag} variant="outline">{tag}</Badge>)}
+                  </div>
+                </button>
+              ))}
+            </div>
+            </>
           ) : (
             <div className="flex flex-col items-center gap-3 py-16">
               <Users className="h-12 w-12 text-muted-foreground/25" />
@@ -382,28 +428,28 @@ export default function CustomerCenterPanel({
       {/* Customer Detail Sheet */}
       {detailCustomer && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" onClick={() => setDetailCustomer(null)} />
-          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-card border-l border-border/40 shadow-2xl overflow-y-auto">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/20 bg-card/95 px-5 py-3 backdrop-blur-md">
+          <div className="fixed inset-0 z-40 bg-black/40" onClick={() => setDetailCustomer(null)} />
+          <div role="dialog" aria-modal="true" aria-label="客户详情" className="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto border-l border-border bg-card shadow-popover">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card px-5 py-3">
               <div>
                 <p className="text-base font-semibold text-foreground">{customerName(detailCustomer)}</p>
                 <p className="text-xs text-muted-foreground">注册于 {new Date(detailCustomer.created_at).toLocaleDateString("zh-CN")}</p>
               </div>
-              <Button size="sm" variant="ghost" onClick={() => setDetailCustomer(null)} className="h-9 w-8 p-0"><X className="h-4 w-4" /></Button>
+              <Button size="sm" variant="ghost" aria-label="关闭客户详情" onClick={() => setDetailCustomer(null)} className="h-9 w-8 p-0"><X className="h-4 w-4" /></Button>
             </div>
 
             <div className="p-5 space-y-4">
               {/* Contact */}
-              <Card className="border-border/40 bg-card/50">
+              <Card>
                 <CardContent className="p-4 space-y-2">
                   <div className="flex items-center gap-2 text-base"><Mail className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-foreground">{detailCustomer.email}</span></div>
                   {detailCustomer.phone && (
                     <div className="flex items-center gap-2 text-base"><Phone className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-foreground">{detailCustomer.phone}</span></div>
                   )}
                   <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-border/10">
-                    <div className="text-center"><p className="text-lg font-bold text-emerald-400 tabular-nums">{formatCny(detailCustomer.total_spent * 7.25)}</p><p className="text-xs text-muted-foreground">总消费</p></div>
+                    <div className="text-center"><p className="text-base font-semibold text-foreground tabular-nums">{formatCny(detailCustomer.total_spent * 7.25)}</p><p className="text-xs text-muted-foreground">总消费</p></div>
                     <div className="text-center"><p className="text-lg font-bold text-foreground tabular-nums">{detailCustomer.orders_count}</p><p className="text-xs text-muted-foreground">订单数</p></div>
-                    <div className="text-center"><p className="text-lg font-bold text-amber-400 tabular-nums">{formatCny(avgOrderValue(detailCustomer) * 7.25)}</p><p className="text-xs text-muted-foreground">客单价</p></div>
+                    <div className="text-center"><p className="text-base font-semibold text-foreground tabular-nums">{formatCny(avgOrderValue(detailCustomer) * 7.25)}</p><p className="text-xs text-muted-foreground">客单价</p></div>
                   </div>
                 </CardContent>
               </Card>
@@ -418,7 +464,7 @@ export default function CustomerCenterPanel({
                   {(detailCustomer.addresses ?? (detailCustomer.default_address ? [detailCustomer.default_address] : [])).map((addr, i) => (
                     <div key={i} className="rounded-lg border border-border/20 bg-muted/10 px-3 py-2 text-sm">
                       {addr.default !== false && (
-                        <Badge className="text-[9px] px-1 py-0 bg-emerald-500/15 text-emerald-400 mb-1">默认地址</Badge>
+                        <Badge variant="outline" className="border-info-border bg-info-bg text-info mb-1">默认地址</Badge>
                       )}
                       <p className="text-foreground">{addr.address1}</p>
                       {addr.address2 && <p className="text-muted-foreground">{addr.address2}</p>}
@@ -447,12 +493,12 @@ export default function CustomerCenterPanel({
                         className="flex items-center justify-between w-full rounded-lg border border-border/20 bg-muted/10 px-3 py-2 hover:bg-muted/20 transition-colors text-left"
                       >
                         <div>
-                          <p className="text-sm font-mono text-emerald-400">{o.order_number}</p>
+                          <p className="text-sm font-mono text-foreground">{o.order_number}</p>
                           <p className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleDateString("zh-CN")}</p>
                         </div>
                         <div className="text-right">
                           <p className="text-sm font-semibold text-foreground">{detailCustomer.currency} {o.total_price.toFixed(2)}</p>
-                          <Badge className={"text-[9px] px-1 py-0 " + (FINANCIAL_MAP[o.financial_status] ?? "bg-zinc-500/15 text-zinc-400")}>
+                          <Badge className={FINANCIAL_MAP[o.financial_status] ?? "border-border bg-muted text-muted-foreground"}>
                             {o.financial_status === "paid" ? "已付款" : o.financial_status === "pending" ? "待付款" : o.financial_status === "refunded" ? "已退款" : o.financial_status}
                           </Badge>
                         </div>

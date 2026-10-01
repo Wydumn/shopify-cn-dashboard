@@ -15,29 +15,29 @@ export default function DashboardError({ error, reset }: DashboardErrorProps) {
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-950">
-      <div className="text-center max-w-md px-6">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 ring-1 ring-red-500/20">
-          <AlertTriangle className="h-9 w-8 text-red-400" />
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="max-w-md px-6 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive-bg ring-1 ring-destructive-border">
+          <AlertTriangle className="h-9 w-8 text-destructive" />
         </div>
-        <h2 className="text-lg font-semibold text-zinc-100 mb-2">面板出了点问题</h2>
-        <p className="text-base text-zinc-400 mb-2">{error.message || "未知运行时错误"}</p>
+        <h2 className="mb-2 text-lg font-semibold text-foreground">面板出了点问题</h2>
+        <p className="mb-2 text-base text-muted-foreground">{error.message || "未知运行时错误"}</p>
         {error.digest && (
-          <p className="text-sm text-zinc-600 font-mono mb-4">Error ID: {error.digest}</p>
+          <p className="mb-4 font-mono text-sm text-muted-foreground">Error ID: {error.digest}</p>
         )}
-        <div className="flex gap-3 justify-center">
+        <div className="flex justify-center gap-3">
           <Button
             onClick={reset}
-            className="h-9 bg-emerald-600 text-white text-base hover:bg-emerald-500"
+            className="h-9 bg-primary text-primary-foreground text-base hover:bg-primary/90"
           >
             重试
           </Button>
           <Button
-            onClick={function () { window.location.href = "/config"; }}
+            onClick={function () { window.location.href = "/dashboard"; }}
             variant="outline"
             className="h-9 text-base"
           >
-            返回配置页
+            返回看板
           </Button>
         </div>
       </div>

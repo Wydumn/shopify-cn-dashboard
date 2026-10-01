@@ -2,12 +2,11 @@
 
 import { useState, useMemo, useEffect, useCallback, type ReactNode } from "react";
 import {
-  SearchCheck, Bot, FileSearch, RefreshCw, Download, ClipboardCopy, AlertTriangle,
-  CheckCircle2, ChevronDown, ChevronRight, ExternalLink, Wrench, ListTodo,
+  SearchCheck, Bot, FileSearch, RefreshCw, Download, ClipboardCopy,
+  Wrench, ListTodo,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "../hooks/useToast";
 import { useDashboardMenu } from "../layout";
 import {
@@ -119,16 +118,16 @@ Disallow: /cart
 
 /* ─── 严重度元数据 ─────────────────────────────────────── */
 
-const SEV: Record<Severity, { emoji: string; cls: string; label: string }> = {
-  critical: { emoji: "🔴", cls: "text-red-400", label: "阻塞" },
-  warning: { emoji: "🟡", cls: "text-amber-400", label: "待优化" },
-  pass: { emoji: "🟢", cls: "text-emerald-400", label: "通过" },
+const SEV: Record<Severity, { cls: string; label: string }> = {
+  critical: { cls: "text-destructive-text", label: "阻塞" },
+  warning: { cls: "text-warning", label: "待优化" },
+  pass: { cls: "text-success", label: "通过" },
 };
 
 function scoreColor(s: number): string {
-  if (s >= 80) return "text-emerald-400";
-  if (s >= 60) return "text-amber-400";
-  return "text-red-400";
+  if (s >= 80) return "text-success";
+  if (s >= 60) return "text-warning";
+  return "text-destructive-text";
 }
 
 /* ─── 主组件 ──────────────────────────────────────────── */
@@ -287,8 +286,8 @@ export default function AIIndexabilityPanel(props: AIIndexabilityPanelProps) {
       {/* Header */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-2 text-lg font-semibold text-foreground">
-          <SearchCheck className="h-6 w-6 text-emerald-400" />AI 可索引性检查
-          {isDemo && <span className="ml-1 text-sm text-amber-400">(演示)</span>}
+          <SearchCheck className="h-6 w-6 text-muted-foreground" />AI 可索引性检查
+          {isDemo && <span className="ml-1 text-sm text-warning">(演示)</span>}
         </div>
         <div className="ml-auto flex items-center gap-2">
           <Button size="sm" variant="outline" className="h-9" onClick={runScan} disabled={scanning}>
@@ -302,8 +301,8 @@ export default function AIIndexabilityPanel(props: AIIndexabilityPanelProps) {
 
       {/* Progress */}
       {scanning && (
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
-          <div className="h-full bg-emerald-500 transition-all" style={{ width: `${progress}%` }} />
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+          <div className="h-full bg-primary transition-all" style={{ width: `${progress}%` }} />
         </div>
       )}
 
@@ -330,13 +329,13 @@ export default function AIIndexabilityPanel(props: AIIndexabilityPanelProps) {
             <Card className="border-border/40 bg-card/60">
               <CardContent className="p-3.5">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">阻塞性问题</p>
-                <p className="mt-1 text-2xl font-bold text-red-400">{kpi.critical}</p>
+                <p className="mt-1 text-2xl font-bold text-destructive-text">{kpi.critical}</p>
               </CardContent>
             </Card>
             <Card className="border-border/40 bg-card/60">
               <CardContent className="p-3.5">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">可优化问题</p>
-                <p className="mt-1 text-2xl font-bold text-amber-400">{kpi.warning}</p>
+                <p className="mt-1 text-2xl font-bold text-warning">{kpi.warning}</p>
               </CardContent>
             </Card>
           </div>
@@ -346,7 +345,7 @@ export default function AIIndexabilityPanel(props: AIIndexabilityPanelProps) {
             <CardContent className="p-3">
               <p className="mb-2 text-base font-semibold text-foreground">全局问题列表（{issues.length}）</p>
               {issues.length === 0 ? (
-                <p className="py-6 text-center text-sm text-emerald-400">🎉 未发现阻塞或待优化问题，全站 AI 可索引性良好。</p>
+                <p className="py-6 text-center text-sm text-success">未发现阻塞或待优化问题，全站 AI 可索引性良好。</p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-[11px]">
@@ -362,7 +361,7 @@ export default function AIIndexabilityPanel(props: AIIndexabilityPanelProps) {
                     <tbody>
                       {issues.map((it, idx) => (
                         <tr key={idx} className="border-t border-border/10 hover:bg-muted/10">
-                          <td className={`py-1.5 px-2 ${SEV[it.severity].cls}`}>{SEV[it.severity].emoji} {SEV[it.severity].label}</td>
+                          <td className={`py-1.5 px-2 ${SEV[it.severity].cls}`}>{SEV[it.severity].label}</td>
                           <td className="py-1.5 px-2 text-muted-foreground">{it.dimensionName}</td>
                           <td className="py-1.5 px-2 text-foreground">{it.checkName}{it.affectedCount > 0 ? `（${it.affectedCount} 项）` : ""}</td>
                           <td className="py-1.5 px-2 text-center tabular-nums text-muted-foreground">{it.affectedCount}</td>
@@ -388,7 +387,7 @@ export default function AIIndexabilityPanel(props: AIIndexabilityPanelProps) {
                 <button
                   key={t.key}
                   onClick={() => setActiveTab(t.key)}
-                  className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-colors ${activeTab === t.key ? "border-emerald-500/50 bg-emerald-500/10 text-foreground" : "border-border/40 bg-card/40 text-muted-foreground hover:text-foreground"}`}
+                  className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-colors ${activeTab === t.key ? "border-primary/40 bg-accent text-foreground" : "border-border bg-card text-muted-foreground hover:text-foreground"}`}
                 >
                   {t.icon}
                   <span>{t.label}</span>
@@ -408,20 +407,22 @@ export default function AIIndexabilityPanel(props: AIIndexabilityPanelProps) {
                 <div className="grid gap-3 md:grid-cols-2">
                   <div>
                     <p className="mb-1 text-[11px] font-medium text-muted-foreground">当前 robots.txt 内容</p>
-                    <div className="rounded-lg border border-border/30 bg-zinc-950/60 p-2">
+                    <div className="rounded-lg border border-border bg-muted p-2">
                       <RobotsPreview content={robotsRaw} />
                     </div>
                   </div>
                   <div>
                     <p className="mb-1 text-[11px] font-medium text-muted-foreground">建议的 AI 友好白名单</p>
-                    <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-2">
-                      <pre className="whitespace-pre-wrap text-[11px] font-mono text-emerald-300/90">{SUGGESTED_ROBOTS}</pre>
+                    <div className="rounded-lg border border-info-border bg-info-bg p-2">
+                      <pre className="whitespace-pre-wrap text-[11px] font-mono text-info">{SUGGESTED_ROBOTS}</pre>
                     </div>
                     <Button size="sm" variant="outline" className="mt-2 h-7 text-xs" onClick={() => copyText(SUGGESTED_ROBOTS, "白名单配置")}>
                       <ClipboardCopy className="h-3 w-3" />复制建议配置
                     </Button>
                     {sitemapStatus !== undefined && (
-                      <p className="mt-2 text-xs text-muted-foreground">sitemap.xml 检测：HTTP {sitemapStatus}{sitemapStatus === 200 ? " ✅" : " ⚠️"}</p>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        sitemap.xml 检测：HTTP {sitemapStatus} · <span className={sitemapStatus === 200 ? "text-success" : "text-warning"}>{sitemapStatus === 200 ? "可访问" : "需检查"}</span>
+                      </p>
                     )}
                   </div>
                 </div>
@@ -432,18 +433,18 @@ export default function AIIndexabilityPanel(props: AIIndexabilityPanelProps) {
                 {activeResult?.checks.map((c, i) => (
                   <div key={i} className="rounded-lg border border-border/20 bg-card/40 p-2.5">
                     <div className="flex items-center gap-2">
-                      <span className={SEV[c.severity].cls}>{SEV[c.severity].emoji}</span>
+                      <span aria-label={SEV[c.severity].label} className={`h-2 w-2 shrink-0 rounded-full bg-current ${SEV[c.severity].cls}`} />
                       <span className="text-sm font-medium text-foreground">{c.checkName}</span>
                       <span className="ml-auto text-xs text-muted-foreground">影响 {c.affectedCount} 项</span>
                     </div>
                     {c.affectedItems.length > 0 && (
-                      <div className="mt-1.5 max-h-28 overflow-y-auto rounded bg-zinc-950/40 p-1.5 text-xs text-muted-foreground">
+                      <div className="mt-1.5 max-h-28 overflow-y-auto rounded bg-muted p-1.5 text-xs text-muted-foreground">
                         {c.affectedItems.slice(0, 12).map((it, j) => (
                           <div key={j} className="flex items-center gap-1.5">
                             <span className="text-foreground">{it.title}</span>
                             <span>— {it.detail}</span>
                             {it.id !== 0 && activeResult.dimensionKey !== "crawler" && c.severity !== "pass" && (
-                              <button className="ml-1 text-emerald-400 hover:underline" onClick={() => setActiveMenu("product-control")}>编辑</button>
+                              <button className="ml-1 text-primary hover:underline" onClick={() => setActiveMenu("product-control")}>编辑</button>
                             )}
                           </div>
                         ))}
@@ -476,7 +477,7 @@ export default function AIIndexabilityPanel(props: AIIndexabilityPanelProps) {
 
 /* robots.txt 语法高亮预览 */
 function RobotsPreview({ content }: { content: string }) {
-  if (!content) return <p className="text-[11px] text-amber-400">（robots.txt 不存在或无法获取 — 默认所有爬虫可访问）</p>;
+  if (!content) return <p className="text-[11px] text-warning">（robots.txt 不存在或无法获取 — 默认所有爬虫可访问）</p>;
   const lines = content.split("\n");
   return (
     <pre className="whitespace-pre-wrap text-[11px] font-mono leading-relaxed">
@@ -486,7 +487,7 @@ function RobotsPreview({ content }: { content: string }) {
         const isDisallow = /^disallow:/i.test(t);
         const isAllow = /^allow:/i.test(t);
         const isAgent = /^user-agent:/i.test(t);
-        const color = isComment ? "text-zinc-500" : isDisallow ? "text-red-400" : isAllow ? "text-emerald-400" : isAgent ? "text-sky-400" : "text-zinc-300";
+        const color = isComment ? "text-muted-foreground" : isDisallow ? "text-destructive-text" : isAllow ? "text-success" : isAgent ? "text-info" : "text-foreground";
         return <div key={i} className={color}>{ln || " "}</div>;
       })}
     </pre>

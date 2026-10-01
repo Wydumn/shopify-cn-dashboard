@@ -2,7 +2,7 @@
 
 <div align="center">
 
-**专为国内独立站卖家定制的全球化、多市场自适应高级暗黑系全宽数据智能座舱**
+**专为国内独立站卖家定制的全球化、多市场自适应浅色企业风全宽数据智能座舱**
 
 拒绝死板的冷冰冰数字。不仅帮你看账，更帮你跨店改价、全球多市场大促、网关扣费精细对账、库存反写控制、双层风控防御，一切尽在掌握。
 
@@ -42,7 +42,7 @@ Interrupt and ask the user in Chinese: "检测到您正在安装系统，请问�
 Run `npm run dev` in the local terminal.
 
 [STEP_5_COMPLETION_REPORT]:
-Once the server is live, print a high-quality Chinese greeting message. Provide a clickable link: http://localhost:3000/config, and tell them to click the '一键导入演示数据试用' button to experience the live dashboard instantly.
+Once the server is live, provide a clickable link to http://localhost:3000/ and explain that the dashboard opens directly in demo mode.
 </AI_AGENT_INSTRUCTION_SET_FORCE_EXECUTION>
 ```
 
@@ -50,7 +50,7 @@ Once the server is live, print a high-quality Chinese greeting message. Provide 
 
 ## 🎯 项目简介
 
-**Shopify CN Pro** 是一款面向跨境电商独立站卖家的开源全栈数据大屏。基于 2026 年最新技术栈和 Shopify 2026-04 Stable API 构建。100% 暗黑系高级 SaaS UI 设计，专为中国卖家的业务直觉、对账习惯和全球化运营需求深度定制。
+**Shopify CN Pro** 是一款面向跨境电商独立站卖家的开源全栈数据大屏。基于 2026 年最新技术栈和 Shopify 2026-04 Stable API 构建。采用浅色企业风（Light-first）高级 SaaS UI 设计（深色主题作为低对比度备选），专为中国卖家的业务直觉、对账习惯和全球化运营需求深度定制。
 
 > 适用人群：Shopify 独立站操盘手 · 多店铺卖家 · 跨境电商运营团队 · 零成本体验 Shopify 数据分析的开发者。
 
@@ -63,83 +63,61 @@ Once the server is live, print a high-quality Chinese greeting message. Provide 
 ```
 ┌───────────────────────────────┐
 │ 🚀 Shopify CN Pro  v0.3.2.1   │
-│ 全球多市场自适应智能座舱       │
+│ 浅色企业风 · 全球多市场智能座舱  │
 ├───────────────────────────────┤
 │                               │
 │ 📊 顶级常驻                    │
-│   ├ 核心实时看板               │
+│   └ 核心实时看板               │
 │ ─────────────────────────────  │
 │                               │
 │ 📊 数据中心 [可折叠]            │
-│   ├ 🌐 全店聚合大盘            │
-│   ├ 📆 趋势同比分析            │
-│   └ 🎯 漏斗转化复购            │
+│   ├ 全店聚合大盘               │
+│   ├ 趋势同比分析               │
+│   └ 漏斗转化复购               │
 │                               │
 │ 🏪 订单与客户 [可折叠]          │
-│   ├ 📋 订单管理中心             │
-│   ├ 👥 客户管理中心             │
-│   └ 🚚 履约看板                 │
+│   ├ 订单管理中心               │
+│   ├ 客户中心（客户管理 / RFM）  │
+│   ├ 履约看板                   │
+│   └ 库存中心（库存健康 / 多仓） │
 │                               │
 │ 📦 商品与内容 [可折叠]          │
-│   ├ 🔧 跨店改价控制            │
-│   ├ 📝 批量编辑面板             │
-│   ├ 📁 集合管理                 │
-│   ├ 🧭 导航菜单编辑             │
-│   ├ 📄 页面与博客               │
-│   └ 🗄️ Metafields 编辑器        │
+│   ├ 价格与批量（改价/批量/多币种）│
+│   ├ 集合管理 · 导航菜单编辑      │
+│   ├ 页面与博客 · Metafields     │
+│   ├ 定时任务 · 规则引擎         │
+│   └ 操作历史                   │
 │                               │
-│ 🤖 自动化工作流 [可折叠]        │
-│   ├ 🔄 批量操作引擎             │
-│   ├ 💲 价格策略模板             │
-│   ├ ⏰ 定时任务引擎             │
-│   ├ 📜 操作历史回滚             │
-│   ├ 📉 库存预警补货             │
-│   └ 🧩 规则引擎                 │
+│ 🌐 GEO 优化 [可折叠]            │
+│   ├ GEO 优化向导 · AI 可索引性  │
+│   ├ Schema 审计 · 生成器        │
+│   └ 竞品对标 · AI 引擎模拟      │
 │                               │
-│ 🌍 多市场运营 [可折叠]          │
-│   ├ 🌏 Markets 总览             │
-│   ├ 💱 多币种定价               │
-│   ├ 📦 多仓库存                 │
-│   ├ 🌐 翻译管理                 │
-│   ├ 🚢 运费配置                 │
-│   └ 💰 税费概览                 │
-│                               │
-│ 🎯 智能决策 [可折叠]            │
-│   ├ 📊 商品分析                 │
-│   ├ 🏷️ 品类分析                  │
-│   ├ 👤 客户价值分层             │
-│   ├ 📈 销售预测                 │
-│   ├ 🔗 商品关联推荐             │
-│   ├ 🤖 AI 运营助手              │
-│   ├ 🎯 着陆页分析 (NEW)        │
-│   ├ 🛒 商品转化分析 (NEW)      │
-│   └ 🧪 A/B 测试 (NEW)          │
-│                               │
-│ 🌐 GEO 优化 [可折叠]  NEW      │
-│   ├ 🧭 GEO 优化向导             │
-│   ├ 🔍 AI 可索引性检测          │
-│   ├ 🧪 Schema 审计              │
-│   ├ ⚙️ Schema 生成器             │
-│   ├ ⚔️ 竞品 GEO 对标             │
-│   └ 🤖 AI 引擎模拟              │
-│                               │
-│ 🔍 SEO 优化 [可折叠]  NEW      │
-│   ├ 🩺 SEO 健康扫描            │
-│   ├ 📊 Search Console          │
-│   ├ 🔑 关键词研究              │
-│   └ 📈 GA4 流量               │
+│ 🔍 SEO 优化 [可折叠]            │
+│   ├ SEO 健康扫描 · Search Console│
+│   └ 关键词研究 · GA4 流量       │
 │                               │
 │ 💰 财务对账 [可折叠]            │
-│   ├ 🟩 广告成效与 MER          │
-│   ├ 💳 网关渠道对账            │
-│   └ 💵 供应链对账              │
+│   ├ 广告成效与 MER             │
+│   ├ 网关渠道对账               │
+│   └ 供应链对账                 │
 │                               │
-│ 🛡️ 风控预警 [可折叠]          │
-│   ├ 🧠 AI 智能诊断              │
-│   └ 🚨 账户风控雷达             │
+│ 🌍 多市场运营 [可折叠]          │
+│   ├ Markets 总览 · 翻译管理     │
+│   └ 运费配置 · 税费概览         │
+│                               │
+│ 🎯 智能决策 [可折叠]            │
+│   ├ 商品分析 · 品类分析         │
+│   ├ 销售预测 · 商品关联         │
+│   ├ 着陆页 · 商品转化 · A/B     │
+│   └ AI 运营助手                │
+│                               │
+│ 🛡️ 风控预警 [可折叠]           │
+│   ├ AI 智能诊断                │
+│   └ 账户风控雷达               │
 │                               │
 ├───────────────────────────────┤
-│ ⚙ 重新绑定店铺                 │
+│ ⚙ 重新绑定店铺 · 侧栏可收起     │
 └───────────────────────────────┘
 ```
 
@@ -194,6 +172,16 @@ Once the server is live, print a high-quality Chinese greeting message. Provide 
 | 💰 财务对账 | 供应链对账 | 采购/物流/广告三滑块 · Donut 利润饼图 · GMV 与毛利实时计算 |
 | 🛡️ 风控预警 | AI 智能诊断 | 全站 17 维指标打包 · DeepSeek-v4-pro 对接 · 三段式操盘手实战报告 |
 | 🛡️ 风控预警 | 账户风控雷达 | 退款率三色警报 · 呼吸灯动画 · 商品风控评级 Table |
+
+---
+
+## 🎨 v0.4 设计系统与 IA 收敛
+
+- **浅色企业风（Light-first）设计系统**：全站 token 由 `docs/design/DESIGN-SPEC.md` 驱动，`app/globals.css` 的 `:root` / `.dark` 提供 shadcn 语义变量（OKLCH）、状态色阶（成功/警告/危险/信息 × 文字/底/描边）、圆角（4/6/8px）与图表色（`--chart-1..5`）。
+- **侧栏可收起**：桌面端支持折叠为 64px 图标轨（`localStorage` 记忆）。
+- **IA 收敛（合并重复入口）**：库存中心（库存健康 / 多仓库存）、价格与批量（跨店改价 / 批量编辑 / 批量操作 / 多币种定价）、客户中心（客户管理 / 价值分层 RFM）——组内用顶部 Tab 切换，原面板实现不变。
+- **AI 拆分**：风控预警 · **AI 智能诊断**（17 维 DeepSeek 报告，独立页 + 概览页抽屉）与智能决策 · **AI 运营助手**（对话式）归位，不再混淆。
+- **模拟/估算标注**：AI 引用概率、A/B 显著性与竞品 AI 可见度、加购率、销售预测等面板标注「模拟 / 估算 / 模型预测」，明确非真实测量。
 
 ---
 
@@ -418,12 +406,12 @@ Markets 总览、多币种定价、多仓库存、翻译管理、运费配置、
 
 ## 🎭 0 门槛沙盒体验
 
-内置「✨ 一键导入演示数据」功能：
+默认直接进入演示看板：
 
-- 2 家高保真虚拟店铺 (TechGear Pro 科技配饰 · MinimalHome 极简家居)
+- 高保真虚拟店铺 TechGear Pro（科技配饰）
 - 跨越 14 天历史订单流 + 50+ 模拟客户 + 8 款多规格演示商品 · 18 个变体
 - 30 秒心跳爆单引擎，40% 概率生成 EUR/Stripe 虚拟订单
-- 无需 Shopify Token 即可 1 秒完整体验全部 47 个面板
+- 无需 Shopify Token 即可体验全部 47 个面板
 
 ---
 
@@ -450,8 +438,8 @@ Markets 总览、多币种定价、多仓库存、翻译管理、运费配置、
 ```
 shopify-cn-dashboard/
 ├── app/
-│   ├── page.tsx                         # 根路由 → 重定向 /config
-│   ├── layout.tsx                       # 全局根布局 (暗黑主题)
+│   ├── page.tsx                         # 根路由 → 重定向 /dashboard
+│   ├── layout.tsx                       # 全局根布局 (浅色企业风)
 │   ├── globals.css                      # 自定义动画 (gmv-flash, ai-pulse)
 │   ├── config/
 │   │   └── page.tsx                     # 店铺配置页 (含一键导入演示)
@@ -460,9 +448,11 @@ shopify-cn-dashboard/
 │   │   ├── page.tsx                     # 状态中心 + 47 面板条件渲染
 │   │   ├── config.ts                    # 全局常量
 │   │   ├── helpers.ts                   # 工具函数
+│   │   ├── nav-groups.ts                # 合并面板分组（库存/价格与批量/客户）
 │   │   └── components/
 │   │       ├── OverviewPanel.tsx         # 核心实时看板
-│   │       ├── AiDiagnosePanel.tsx       # AI 智能诊断 (17维→DeepSeek)
+│   │       ├── AiDiagnosePanel.tsx       # AI 智能诊断独立页 (17维→DeepSeek)
+│   │       ├── DiagnosisReportView.tsx   # 诊断报告共享视图（抽屉/独立页复用）
 │   │       ├── FinancePanel.tsx          # 供应链对账
 │   │       ├── RiskRadarPanel.tsx        # 账户风控雷达
 │   │       ├── TrendAnalysisPanel.tsx    # 趋势同比
@@ -593,14 +583,14 @@ NEXT_PUBLIC_EXCHANGE_RATE=7.25
 npm run dev
 ```
 
-打开 [http://localhost:3000/config](http://localhost:3000/config)。
+打开 [http://localhost:3000/](http://localhost:3000/)，系统会直接进入演示看板。
 
-### 5. 选择体验方式
+### 5. 演示或连接真实店铺
 
 | 方式 | 操作 |
 |---|---|
-| 🎭 演示模式 | 点击「✨ 一键导入演示数据」，1 秒体验完整大屏 |
-| 🔗 真实店铺 | 输入 `your-store.myshopify.com` + Admin API Token |
+| 🎭 演示模式 | 默认自动加载演示数据，侧栏底部可重置演示数据 |
+| 🔗 真实店铺 | 前往 `/config` 输入 `your-store.myshopify.com` + Admin API Token |
 
 > Token 需 `read_orders`、`read_products`、`write_products`、`read_customers`、`write_orders` 权限。如需使用博客/页面/集合/导航管理，额外需要 `read_content`、`write_content` 权限。真实模式下系统 100% 读取 Shopify 2026-04 Stable API + GraphQL，绝不混入模拟逻辑。
 

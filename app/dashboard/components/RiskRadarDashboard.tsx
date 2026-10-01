@@ -92,9 +92,9 @@ interface RiskRadarDashboardProps {
 // ─── Constants ────────────────────────────────────────
 
 type RiskThresholdEntry = { max?: number; color: string; bg: string; text: string; ring: string; label: string };  const RISK_THRESHOLDS: Record<string, RiskThresholdEntry> = {
-  safe: { max: 1.0, color: "#10b981", bg: "bg-emerald-500/10", text: "text-emerald-400", ring: "ring-emerald-500/20", label: "安全" },
-  warning: { max: 1.5, color: "#f59e0b", bg: "bg-amber-500/10", text: "text-amber-400", ring: "ring-amber-500/20", label: "预警" },
-  critical: { color: "#ef4444", bg: "bg-red-500/10", text: "text-red-400", ring: "ring-red-500/20", label: "危机" },
+  safe: { max: 1.0, color: "var(--success-text)", bg: "bg-success-bg", text: "text-success", ring: "ring-success-border/70", label: "安全" },
+  warning: { max: 1.5, color: "var(--warning-text)", bg: "bg-warning-bg", text: "text-warning", ring: "ring-warning-border/70", label: "预警" },
+  critical: { color: "var(--destructive-text)", bg: "bg-destructive-bg", text: "text-destructive-text", ring: "ring-destructive-border/70", label: "危机" },
 };
 
 function getRiskLevel(rate: number, hasReview: boolean): RiskLevel {
@@ -121,7 +121,7 @@ function HealthGauge({ score, size = 160 }: { score: number; size?: number }) {
   const normalized = Math.max(0, Math.min(100, score));
   const dashoffset = circumference * (1 - normalized / 100);
 
-  const color = normalized >= 80 ? "#10b981" : normalized >= 50 ? "#f59e0b" : "#ef4444";
+  const color = normalized >= 80 ? "var(--success-text)" : normalized >= 50 ? "var(--warning-text)" : "var(--destructive-text)";
 
   return (
     <div className="relative inline-flex items-center justify-center">
@@ -180,7 +180,7 @@ function StoreHealthCard({ profile }: { profile: StoreRiskProfile }) {
 }
 
 function MetricRow({ label, value, accent }: { label: string; value: string; accent: "emerald" | "amber" | "red" }) {
-  const colors = { emerald: "text-emerald-400", amber: "text-amber-400", red: "text-red-400" };
+  const colors = { emerald: "text-success", amber: "text-warning", red: "text-destructive-text" };
   return (
     <div className="flex items-center justify-between text-base">
       <span className="text-muted-foreground">{label}</span>
@@ -193,10 +193,10 @@ function MetricRow({ label, value, accent }: { label: string; value: string; acc
 
 function DisputesTable({ disputes }: { disputes: DisputeEntry[] }) {
   const statusMap: Record<string, { label: string; cls: string }> = {
-    open: { label: "进行中", cls: "border-amber-500/30 text-amber-400" },
-    won: { label: "胜诉", cls: "border-emerald-500/30 text-emerald-400" },
-    lost: { label: "败诉", cls: "border-red-500/30 text-red-400" },
-    under_review: { label: "审核中", cls: "border-sky-500/30 text-sky-400" },
+    open: { label: "进行中", cls: "border-warning-border bg-warning-bg text-warning" },
+    won: { label: "胜诉", cls: "border-success-border bg-success-bg text-success" },
+    lost: { label: "败诉", cls: "border-destructive-border bg-destructive-bg text-destructive-text" },
+    under_review: { label: "审核中", cls: "border-info-border bg-info-bg text-info" },
   };
 
   return (
@@ -269,23 +269,23 @@ function ReviewAlerts({ reviews }: { reviews: MerchantReview[] }) {
   return (
     <div className="space-y-2">
       {reviews.map((r) => (
-        <div key={r.id} className={`flex items-start gap-3 rounded-lg px-4 py-3 backdrop-blur-sm ${
+        <div key={r.id} className={`flex items-start gap-3 rounded-lg border px-4 py-3 backdrop-blur-sm ${
           r.severity === "high"
-            ? "border border-red-500/30 bg-red-500/10"
+            ? "border-destructive-border bg-destructive-bg"
             : r.severity === "medium"
-              ? "border border-amber-500/30 bg-amber-500/10"
-              : "border border-sky-500/30 bg-sky-500/10"
+              ? "border-warning-border bg-warning-bg"
+              : "border-info-border bg-info-bg"
         }`}>
           <AlertTriangle className={`mt-0.5 h-4 w-4 shrink-0 ${
-            r.severity === "high" ? "text-red-400" : r.severity === "medium" ? "text-amber-400" : "text-sky-400"
+            r.severity === "high" ? "text-destructive-text" : r.severity === "medium" ? "text-warning" : "text-info"
           }`} />
           <div className="flex-1">
             <p className={`text-base font-semibold ${
-              r.severity === "high" ? "text-red-300" : r.severity === "medium" ? "text-amber-300" : "text-sky-300"
+              r.severity === "high" ? "text-destructive-text" : r.severity === "medium" ? "text-warning" : "text-info"
             }`}>{r.title}</p>
             <p className="text-sm text-muted-foreground mt-0.5">{r.description}</p>
             <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className={`text-xs px-1.5 py-0 ${r.status === "pending" ? "border-red-500/30 text-red-400" : "border-emerald-500/30 text-emerald-400"}`}>
+              <Badge variant="outline" className={`text-xs px-1.5 py-0 ${r.status === "pending" ? "border-destructive-border bg-destructive-bg text-destructive-text" : "border-success-border bg-success-bg text-success"}`}>
                 {r.status === "pending" ? "未处理" : "已解决"}
               </Badge>
               <span className="text-xs text-muted-foreground">开启于 {r.openedAt}</span>
@@ -311,10 +311,10 @@ function RiskTimelineBar({ disputeRate }: { disputeRate: number }) {
         <span className="text-amber-400">1.5%</span>
         <span className="text-red-400">3.0%+</span>
       </div>
-      <div className="relative h-3 w-full rounded-full bg-gradient-to-r from-emerald-500/20 via-amber-500/20 to-red-500/20">
+      <div className="relative h-3 w-full rounded-full bg-gradient-to-r from-success-bg via-warning-bg to-destructive-bg">
         <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-3 rounded-full overflow-hidden">
           <div
-            className="absolute top-0 bottom-0 bg-gradient-to-r from-emerald-500 via-amber-500 to-red-500"
+            className="absolute top-0 bottom-0 bg-gradient-to-r from-success via-warning to-destructive"
             style={{ width: leftPct + "%", opacity: 0.3 }}
           />
         </div>
@@ -323,7 +323,7 @@ function RiskTimelineBar({ disputeRate }: { disputeRate: number }) {
           style={{ left: leftPct + "%" }}
         >
           <div className="h-4 w-1 rounded-full bg-foreground/80" />
-          <span className="text-xs font-bold tabular-nums mt-0.5" style={{ color: disputeRate >= 1.5 ? "#ef4444" : disputeRate >= 1.0 ? "#f59e0b" : "#10b981" }}>
+          <span className="text-xs font-bold tabular-nums mt-0.5" style={{ color: disputeRate >= 1.5 ? "var(--destructive-text)" : disputeRate >= 1.0 ? "var(--warning-text)" : "var(--success-text)" }}>
             {disputeRate.toFixed(2)}%
           </span>
         </div>
@@ -492,13 +492,13 @@ export default function RiskRadarDashboard({
 
       {/* Global risk banner */}
       {worstRisk !== "safe" && (
-        <div className={`flex items-start gap-3 rounded-lg px-5 py-4 backdrop-blur-sm ${worstStyle.bg} border`} style={{ borderColor: worstStyle.color + "33" }}>
+        <div className={`flex items-start gap-3 rounded-lg border px-5 py-4 backdrop-blur-sm ${worstStyle.bg}`} style={{ borderColor: worstStyle.color + "33" }}>
           {worstRisk === "critical"
-            ? <Ban className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
-            : <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-400" />}
+          ? <Ban className="mt-0.5 h-5 w-5 shrink-0 text-destructive-text" />
+          : <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-warning" />}
           <div>
             <p className="text-base font-semibold" style={{ color: worstStyle.color }}>
-              {worstRisk === "critical" ? "🔴 全局风控危机" : "🟡 部分店铺风控预警"}
+            {worstRisk === "critical" ? "全局风控危机" : "部分店铺风控预警"}
             </p>
             <p className="text-sm mt-1" style={{ color: worstStyle.color, opacity: 0.7 }}>
               {worstRisk === "critical"
@@ -529,7 +529,7 @@ export default function RiskRadarDashboard({
         <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Activity className="h-4 w-4 text-amber-400" />
+              <Activity className="h-4 w-4 text-warning" />
               滚动纠纷率水位计 (Dispute Rate)
             </CardTitle>
             <CardDescription>基于近 30 天订单 · 公式: Dispute Rate = (未决争议 / 30天总订单) × 100%</CardDescription>

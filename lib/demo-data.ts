@@ -33,12 +33,6 @@ interface DemoStore {
   products: DemoProduct[];
 }
 
-// ─── Product image URL helpers (Unsplash direct links) ────────────
-
-function img(id: string) {
-  return `https://images.unsplash.com/${id}?w=200&h=200&fit=crop&auto=format`;
-}
-
 // ─── Store Definitions ─────────────────────────────────────────────
 
 export const DEMO_DOMAINS = [
@@ -55,35 +49,35 @@ export const DEMO_STORES: DemoStore[] = [
       {
         id: 1001,
         title: "无线降噪耳机 Pro",
-        image: img("photo-1590658268037-6bf12f032f55"),
+        image: "",
         totalSold: 18,
         inventory: 45,
       },
       {
         id: 1002,
         title: "智能运动手表 S3",
-        image: img("photo-1523275335684-37898b6baf30"),
+        image: "",
         totalSold: 12,
         inventory: 8,
       },
       {
         id: 1003,
         title: "MagSafe 磁吸手机壳",
-        image: img("photo-1601784551446-20c9e07cdbdb"),
+        image: "",
         totalSold: 9,
         inventory: 120,
       },
       {
         id: 1004,
         title: "10000mAh 迷你充电宝",
-        image: img("photo-1609091839311-d5365f9ff1c5"),
+        image: "",
         totalSold: 7,
         inventory: 3,
       },
       {
         id: 1005,
         title: "铝合金笔记本支架",
-        image: img("photo-1611186871348-b1ce696e52c9"),
+        image: "",
         totalSold: 5,
         inventory: 67,
       },
@@ -97,35 +91,35 @@ export const DEMO_STORES: DemoStore[] = [
       {
         id: 2001,
         title: "手工陶瓷花瓶",
-        image: img("photo-1612196808214-b8e1d6145a8c"),
+        image: "",
         totalSold: 8,
         inventory: 15,
       },
       {
         id: 2002,
         title: "亚麻抱枕套 两件装",
-        image: img("photo-1616627561950-9f746e330187"),
+        image: "",
         totalSold: 6,
         inventory: 32,
       },
       {
         id: 2003,
         title: "天然大豆香薰蜡烛",
-        image: img("photo-1603006905003-be475563bc59"),
+        image: "",
         totalSold: 5,
         inventory: 5,
       },
       {
         id: 2004,
         title: "胡桃木收纳托盘",
-        image: img("photo-1611486212557-88be5ff6f941"),
+        image: "",
         totalSold: 4,
         inventory: 2,
       },
       {
         id: 2005,
         title: "极简静音挂钟",
-        image: img("photo-1507646227500-4d389b0012be"),
+        image: "",
         totalSold: 3,
         inventory: 28,
       },

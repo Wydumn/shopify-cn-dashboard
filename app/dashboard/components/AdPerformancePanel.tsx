@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useCallback, type ReactNode } from "react
 import {
   TrendingUp, Activity, Settings2, RefreshCw, Download, CheckCircle2, XCircle,
   Calendar, ChevronDown, KeyRound, BarChart3,
-  Megaphone, Filter, Layers,
+  Filter, Layers,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,6 @@ import { Input } from "@/components/ui/input";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  Tabs, TabsList, TabsTrigger, TabsContent,
-} from "@/components/ui/tabs";
 import {
   Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
 } from "@/components/ui/select";
@@ -97,17 +94,17 @@ const TIKTOK_CRED_KEY = "tiktok_ads_credentials";
 const AD_CACHE_KEY = "ad_perf_last_result";
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 小时
 
-const PLATFORM_META: Record<PlatformKey, { label: string; icon: ReactNode; color: string; ring: string }> = {
-  meta: { label: "Meta Ads", icon: <Megaphone className="h-4 w-4" />, color: "text-sky-400", ring: "ring-sky-500/20" },
-  google: { label: "Google Ads", icon: <Activity className="h-4 w-4" />, color: "text-emerald-400", ring: "ring-emerald-500/20" },
-  tiktok: { label: "TikTok Ads", icon: <TrendingUp className="h-4 w-4" />, color: "text-rose-400", ring: "ring-rose-500/20" },
+const PLATFORM_META: Record<PlatformKey, { label: string; color: string; chartColor: string }> = {
+  meta: { label: "Meta Ads", color: "text-muted-foreground", chartColor: "var(--chart-3)" },
+  google: { label: "Google Ads", color: "text-muted-foreground", chartColor: "var(--chart-2)" },
+  tiktok: { label: "TikTok Ads", color: "text-muted-foreground", chartColor: "var(--chart-4)" },
 };
 
 const tooltipStyle = {
-  background: "#18181b",
-  border: "1px solid #27272a",
-  borderRadius: 8,
-  color: "#e4e4e7",
+  background: "var(--card)",
+  border: "1px solid var(--border)",
+  borderRadius: 6,
+  color: "var(--foreground)",
   fontSize: 12,
 } as const;
 
@@ -140,15 +137,9 @@ function fmtPct(v: number): string {
 }
 
 function roasColor(roas: number): string {
-  if (roas >= 3) return "text-emerald-400";
-  if (roas >= 1) return "text-amber-400";
-  return "text-red-400";
-}
-
-function roasBg(roas: number): string {
-  if (roas >= 3) return "bg-emerald-500/10 text-emerald-400";
-  if (roas >= 1) return "bg-amber-500/10 text-amber-400";
-  return "bg-red-500/10 text-red-400";
+  if (roas >= 3) return "text-success";
+  if (roas >= 1) return "text-warning";
+  return "text-destructive-text";
 }
 
 function downloadText(filename: string, content: string, mime: string): void {
@@ -300,11 +291,11 @@ function Modal({
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
-      <div className="w-full max-w-lg rounded-xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/30 p-4" onClick={onClose}>
+      <div className="w-full max-w-lg rounded-lg border border-border bg-card p-5 shadow-popover" onClick={(e) => e.stopPropagation()}>
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-base font-semibold text-zinc-100">{title}</h3>
-          <button onClick={onClose} className="text-zinc-500 transition-colors hover:text-zinc-300">
+          <h3 className="text-base font-semibold text-foreground">{title}</h3>
+          <button onClick={onClose} aria-label="关闭配置窗口" className="text-muted-foreground transition-colors hover:text-foreground">
             <XCircle className="h-5 w-5" />
           </button>
         </div>
@@ -634,12 +625,12 @@ export default function AdPerformancePanel({
   const renderStatusBadge = (status: ConfigStatus, label: string) => (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1",
-        status === "ok" ? "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20" : status === "fail" ? "bg-red-500/10 text-red-400 ring-red-500/20" : "bg-zinc-500/10 text-zinc-500 ring-zinc-500/20",
+        "inline-flex h-5 items-center gap-1.5 rounded-sm border px-1.5 text-[11px] font-medium",
+        status === "ok" ? "border-success-border bg-success-bg text-success" : status === "fail" ? "border-destructive-border bg-destructive-bg text-destructive-text" : "border-border bg-muted text-muted-foreground",
       )}
     >
-      {status === "ok" ? <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> : status === "fail" ? <span className="h-1.5 w-1.5 rounded-full bg-red-400" /> : <span className="h-1.5 w-1.5 rounded-full bg-zinc-500" />}
-      {label} {status === "ok" ? "●" : status === "fail" ? "○" : "—"}
+      {status === "ok" ? <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /> : status === "fail" ? <XCircle className="h-3.5 w-3.5" aria-hidden="true" /> : <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />}
+      {label} · {status === "ok" ? "已连接" : status === "fail" ? "连接失败" : "未配置"}
     </span>
   );
 
@@ -649,11 +640,11 @@ export default function AdPerformancePanel({
       {/* 顶部标题 */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
-            <BarChart3 className="h-5 w-5 text-amber-400" />
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+            <BarChart3 className="h-5 w-5 text-muted-foreground" />
             三平台广告成效聚合
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-[13px] text-muted-foreground">
             Meta / Google / TikTok 多渠道 ROAS 实时对比 · 凭证仅存本地浏览器
           </p>
         </div>
@@ -666,15 +657,15 @@ export default function AdPerformancePanel({
       </div>
 
       {/* 配置栏（可折叠）*/}
-      <Card className="border-zinc-800 bg-zinc-900/50">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="flex items-center gap-2 text-sm">
-            <Settings2 className="h-4 w-4 text-zinc-400" />
+            <Settings2 className="h-4 w-4 text-muted-foreground" />
             平台连接状态
           </CardTitle>
           <button
             onClick={() => setConfigCollapsed((v) => !v)}
-            className="flex items-center gap-1 text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+            className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
           >
             {configCollapsed ? "展开" : "收起"}
             <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", configCollapsed && "-rotate-90")} />
@@ -699,7 +690,7 @@ export default function AdPerformancePanel({
               </Button>
             </div>
             {isDemo && (
-              <p className="text-xs text-amber-400">当前为 Demo 模式，展示 3 平台模拟数据，不调用真实 API。</p>
+              <p className="rounded-md border border-info-border bg-info-bg px-3 py-2 text-xs text-info">演示环境 · 展示三平台模拟数据，不调用真实广告 API。</p>
             )}
           </CardContent>
         )}
@@ -707,14 +698,14 @@ export default function AdPerformancePanel({
 
       {/* 缓存提示 */}
       {!loading && bundle && (
-        <div className="flex items-center justify-end gap-2 text-xs text-zinc-500">
+        <div className="flex flex-wrap items-center justify-end gap-2 text-xs text-muted-foreground">
           {fromCache && cachedAt && (
             <span className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5 text-emerald-400" />
+              <Calendar className="h-3.5 w-3.5" />
               缓存于 {new Date(cachedAt).toLocaleTimeString("zh-CN")}
             </span>
           )}
-          {isDemo && <Badge variant="outline" className="border-amber-500/30 text-amber-400">Demo 演示数据</Badge>}
+          {isDemo && <Badge variant="outline" className="border-info-border bg-info-bg text-info">演示数据</Badge>}
         </div>
       )}
 
@@ -722,10 +713,10 @@ export default function AdPerformancePanel({
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="h-24 animate-pulse rounded-xl bg-zinc-800" />
+              <div key={i} className="h-24 animate-pulse rounded-lg bg-muted" />
             ))}
           </div>
-          <div className="h-72 animate-pulse rounded-xl bg-zinc-800" />
+          <div className="h-72 animate-pulse rounded-lg bg-muted" />
         </div>
       )}
 
@@ -742,7 +733,6 @@ export default function AdPerformancePanel({
                 </span>
               }
               icon={<Activity className="h-5 w-5" />}
-              accent="amber"
             />
             <KpiCard
               title="总转化价值"
@@ -753,7 +743,6 @@ export default function AdPerformancePanel({
                 </span>
               }
               icon={<TrendingUp className="h-5 w-5" />}
-              accent="emerald"
             />
             <KpiCard
               title="综合 ROAS"
@@ -764,8 +753,6 @@ export default function AdPerformancePanel({
                 </span>
               }
               icon={<BarChart3 className="h-5 w-5" />}
-              accent={totals.roas >= 3 ? "emerald" : totals.roas >= 1 ? "amber" : "red"}
-              highlight={totals.roas >= 3}
             />
             <KpiCard
               title="综合 CPA"
@@ -776,12 +763,11 @@ export default function AdPerformancePanel({
                 </span>
               }
               icon={<Layers className="h-5 w-5" />}
-              accent="sky"
             />
           </div>
 
           {/* 各平台指标对比表 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-base">各平台指标对比</CardTitle>
               <CardDescription>消耗 / 展示 / 点击 / CTR / CPC / 加购 / 结账 / 购买 / ROAS（金额已按汇率 ¥{rate} 折算）</CardDescription>
@@ -789,12 +775,12 @@ export default function AdPerformancePanel({
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-zinc-800 hover:bg-transparent">
-                    <TableHead className="text-zinc-400">指标</TableHead>
-                    <TableHead className="text-right text-zinc-400">Meta Ads</TableHead>
-                    <TableHead className="text-right text-zinc-400">Google Ads</TableHead>
-                    <TableHead className="text-right text-zinc-400">TikTok Ads</TableHead>
-                    <TableHead className="text-right text-zinc-400">合计 / 平均</TableHead>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>指标</TableHead>
+                    <TableHead className="text-right">Meta Ads</TableHead>
+                    <TableHead className="text-right">Google Ads</TableHead>
+                    <TableHead className="text-right">TikTok Ads</TableHead>
+                    <TableHead className="text-right">合计 / 平均</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -813,7 +799,7 @@ export default function AdPerformancePanel({
           </Card>
 
           {/* ROAS 趋势图 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-base">ROAS 趋势（近 30 天）</CardTitle>
               <CardDescription>堆叠柱状 = 各平台日消耗（左轴 ¥） · 折线 = 综合 ROAS（右轴 倍数） · 红色虚线为 ROAS=1 盈亏线</CardDescription>
@@ -822,17 +808,17 @@ export default function AdPerformancePanel({
               <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={bundle.trend} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-                    <XAxis dataKey="date" tick={{ fill: "#a1a1aa", fontSize: 11 }} interval={4} stroke="#3f3f46" />
-                    <YAxis yAxisId="spend" tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" tickFormatter={(v: number) => "¥" + (v >= 1000 ? (v / 1000).toFixed(1) + "k" : v)} />
-                    <YAxis yAxisId="roas" orientation="right" tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" domain={[0, "auto"]} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                    <XAxis dataKey="date" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} interval={4} tickLine={false} axisLine={false} />
+                    <YAxis yAxisId="spend" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(v: number) => "¥" + (v >= 1000 ? (v / 1000).toFixed(1) + "k" : v)} />
+                    <YAxis yAxisId="roas" orientation="right" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} tickLine={false} axisLine={false} domain={[0, "auto"]} />
                     <Tooltip contentStyle={tooltipStyle} />
-                    <Legend wrapperStyle={{ fontSize: 12, color: "#a1a1aa" }} />
-                    <ReferenceLine yAxisId="roas" y={1} stroke="#f87171" strokeDasharray="4 4" label={{ value: "盈亏线 1.0", fill: "#f87171", fontSize: 11, position: "insideTopRight" }} />
-                    <Bar yAxisId="spend" dataKey="meta" name="Meta 消耗" stackId="spend" fill="#38bdf8" radius={[0, 0, 0, 0]} maxBarSize={22} />
-                    <Bar yAxisId="spend" dataKey="google" name="Google 消耗" stackId="spend" fill="#34d399" radius={[0, 0, 0, 0]} maxBarSize={22} />
-                    <Bar yAxisId="spend" dataKey="tiktok" name="TikTok 消耗" stackId="spend" fill="#fb7185" radius={[4, 4, 0, 0]} maxBarSize={22} />
-                    <Line yAxisId="roas" type="monotone" dataKey="roas" name="综合 ROAS" stroke="#f59e0b" strokeWidth={2.5} dot={false} />
+                    <Legend wrapperStyle={{ fontSize: 12, color: "var(--muted-foreground)" }} />
+                    <ReferenceLine yAxisId="roas" y={1} stroke="var(--destructive)" strokeDasharray="4 4" label={{ value: "盈亏线 1.0", fill: "var(--destructive-text)", fontSize: 11, position: "insideTopRight" }} />
+                    <Bar yAxisId="spend" dataKey="meta" name="Meta 消耗" stackId="spend" fill={PLATFORM_META.meta.chartColor} maxBarSize={22} />
+                    <Bar yAxisId="spend" dataKey="google" name="Google 消耗" stackId="spend" fill={PLATFORM_META.google.chartColor} maxBarSize={22} />
+                    <Bar yAxisId="spend" dataKey="tiktok" name="TikTok 消耗" stackId="spend" fill={PLATFORM_META.tiktok.chartColor} maxBarSize={22} />
+                    <Line yAxisId="roas" type="monotone" dataKey="roas" name="综合 ROAS" stroke="var(--chart-1)" strokeWidth={2} dot={false} />
                   </ComposedChart>
                 </ResponsiveContainer>
               </div>
@@ -840,11 +826,11 @@ export default function AdPerformancePanel({
           </Card>
 
           {/* 广告系列排行 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card>
             <CardHeader className="pb-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Filter className="h-4 w-4 text-zinc-400" />
+                  <Filter className="h-4 w-4 text-muted-foreground" />
                   广告系列 / 广告组排行
                 </CardTitle>
                 <div className="flex flex-wrap items-center gap-2">
@@ -879,39 +865,39 @@ export default function AdPerformancePanel({
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-zinc-800 hover:bg-transparent">
-                    <TableHead className="text-zinc-400">广告系列</TableHead>
-                    <TableHead className="text-zinc-400">平台</TableHead>
-                    <TableHead className="cursor-pointer text-right text-zinc-400 hover:text-zinc-200" onClick={() => toggleSort("spendCny")}>消耗 ¥{sortIndicator("spendCny")}</TableHead>
-                    <TableHead className="text-right text-zinc-400">展示</TableHead>
-                    <TableHead className="cursor-pointer text-right text-zinc-400 hover:text-zinc-200" onClick={() => toggleSort("clicks")}>点击{sortIndicator("clicks")}</TableHead>
-                    <TableHead className="text-right text-zinc-400">加购</TableHead>
-                    <TableHead className="cursor-pointer text-right text-zinc-400 hover:text-zinc-200" onClick={() => toggleSort("purchases")}>购买{sortIndicator("purchases")}</TableHead>
-                    <TableHead className="cursor-pointer text-right text-zinc-400 hover:text-zinc-200" onClick={() => toggleSort("roas")}>ROAS{sortIndicator("roas")}</TableHead>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>广告系列</TableHead>
+                    <TableHead>平台</TableHead>
+                    <TableHead className="cursor-pointer text-right hover:text-foreground" onClick={() => toggleSort("spendCny")}>消耗 ¥{sortIndicator("spendCny")}</TableHead>
+                    <TableHead className="text-right">展示</TableHead>
+                    <TableHead className="cursor-pointer text-right hover:text-foreground" onClick={() => toggleSort("clicks")}>点击{sortIndicator("clicks")}</TableHead>
+                    <TableHead className="text-right">加购</TableHead>
+                    <TableHead className="cursor-pointer text-right hover:text-foreground" onClick={() => toggleSort("purchases")}>购买{sortIndicator("purchases")}</TableHead>
+                    <TableHead className="cursor-pointer text-right hover:text-foreground" onClick={() => toggleSort("roas")}>ROAS{sortIndicator("roas")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rankRows.map((r, i) => (
-                    <TableRow key={i} className="border-zinc-800">
+                    <TableRow key={i}>
                       <TableCell>
-                        <div className="max-w-[260px] truncate font-medium text-zinc-200" title={r.name}>{r.name}</div>
+                        <div className="max-w-[260px] truncate font-medium text-foreground" title={r.name}>{r.name}</div>
                       </TableCell>
                       <TableCell>
-                        <span className={cn("inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ring-1", PLATFORM_META[r.platform].ring, PLATFORM_META[r.platform].color)}>
+                        <span className={cn("inline-flex items-center gap-1 text-xs font-medium", PLATFORM_META[r.platform].color)}>
                           {PLATFORM_META[r.platform].label}
                         </span>
                       </TableCell>
-                      <TableCell className="text-right text-zinc-300">{formatCny(r.spendCny)}</TableCell>
-                      <TableCell className="text-right text-zinc-300">{fmtInt(r.impressions)}</TableCell>
-                      <TableCell className="text-right text-zinc-300">{fmtInt(r.clicks)}</TableCell>
-                      <TableCell className="text-right text-zinc-300">{fmtInt(r.addToCart)}</TableCell>
-                      <TableCell className="text-right text-zinc-300">{fmtInt(r.purchases)}</TableCell>
+                      <TableCell className="text-right tabular-nums">{formatCny(r.spendCny)}</TableCell>
+                      <TableCell className="text-right tabular-nums">{fmtInt(r.impressions)}</TableCell>
+                      <TableCell className="text-right tabular-nums">{fmtInt(r.clicks)}</TableCell>
+                      <TableCell className="text-right tabular-nums">{fmtInt(r.addToCart)}</TableCell>
+                      <TableCell className="text-right tabular-nums">{fmtInt(r.purchases)}</TableCell>
                       <TableCell className={cn("text-right font-semibold", roasColor(r.roas))}>{r.roas.toFixed(2)}x</TableCell>
                     </TableRow>
                   ))}
                   {rankRows.length === 0 && (
-                    <TableRow className="border-zinc-800">
-                      <TableCell colSpan={8} className="py-8 text-center text-zinc-500">暂无广告系列数据</TableCell>
+                    <TableRow>
+                      <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">暂无广告系列数据</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -923,11 +909,11 @@ export default function AdPerformancePanel({
       {/* 配置弹窗 */}
       <Modal open={configOpen} onClose={() => setConfigOpen(false)} title={`配置 ${PLATFORM_META[configPlatform].label}`}>
         <div className="space-y-4">
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950/60 p-3 text-xs leading-relaxed text-zinc-400">
-            <p className="mb-1 flex items-center gap-1.5 font-medium text-zinc-300">
+          <div className="rounded-md border border-border bg-muted p-3 text-xs leading-relaxed text-muted-foreground">
+            <p className="mb-1 flex items-center gap-1.5 font-medium text-foreground">
               <KeyRound className="h-3.5 w-3.5" />安全说明
             </p>
-            <p>1. Token 仅经 base64 混淆后保存在<strong className="text-zinc-200">本地浏览器 localStorage</strong>，经 Next.js API Route 代理转发，服务端不持久化。</p>
+            <p>1. Token 仅经 base64 混淆后保存在<strong className="text-foreground">本地浏览器 localStorage</strong>，经 Next.js API Route 代理转发，服务端不持久化。</p>
             <p>2. 三家平台分别独立存储与调用，互不影响。</p>
           </div>
 
@@ -975,34 +961,22 @@ function KpiCard({
   value,
   subtitle,
   icon,
-  accent,
-  highlight,
 }: {
   title: string;
   value: string;
   subtitle: ReactNode;
   icon: ReactNode;
-  accent: "emerald" | "amber" | "sky" | "red";
-  highlight?: boolean;
 }) {
-  const colors = {
-    emerald: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
-    amber: "bg-amber-500/10 text-amber-400 ring-amber-500/20",
-    sky: "bg-sky-500/10 text-sky-400 ring-sky-500/20",
-    red: "bg-red-500/10 text-red-400 ring-red-500/20",
-  };
   return (
-    <Card className={cn("border-border/40 bg-card/60 shadow-lg backdrop-blur-lg", highlight && "ring-1 ring-amber-500/20")}>
-      <CardContent className="relative p-5">
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold tracking-tight text-foreground">{value}</p>
-            <div className="text-xs text-muted-foreground">{subtitle}</div>
+    <Card>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 space-y-1">
+            <p className="text-[13px] font-medium leading-[18px] text-muted-foreground">{title}</p>
+            <p className="break-words text-[28px] font-semibold leading-[34px] tracking-[-0.025em] tabular-nums text-foreground">{value}</p>
+            <div className="text-xs leading-4 text-muted-foreground">{subtitle}</div>
           </div>
-          <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl ring-1", colors[accent])}>
-            {icon}
-          </div>
+          <span className="mt-0.5 shrink-0 text-muted-foreground [&>svg]:h-4 [&>svg]:w-4">{icon}</span>
         </div>
       </CardContent>
     </Card>
@@ -1056,12 +1030,12 @@ function CompareRow({
     return String(v);
   };
   return (
-    <TableRow className="border-zinc-800">
-      <TableCell className="font-medium text-zinc-300">{label}</TableCell>
-      <TableCell className="text-right text-zinc-300">{fmtVal(meta)}</TableCell>
-      <TableCell className="text-right text-zinc-300">{fmtVal(google)}</TableCell>
-      <TableCell className="text-right text-zinc-300">{fmtVal(tiktok)}</TableCell>
-      <TableCell className={cn("text-right font-semibold", fmt === "roas" ? roasColor(total) : "text-zinc-100")}>
+    <TableRow>
+      <TableCell className="font-medium text-foreground">{label}</TableCell>
+      <TableCell className="text-right tabular-nums">{fmtVal(meta)}</TableCell>
+      <TableCell className="text-right tabular-nums">{fmtVal(google)}</TableCell>
+      <TableCell className="text-right tabular-nums">{fmtVal(tiktok)}</TableCell>
+      <TableCell className={cn("text-right font-semibold tabular-nums", fmt === "roas" ? roasColor(total) : "text-foreground")}>
         {fmtVal(total)}
       </TableCell>
     </TableRow>
@@ -1071,13 +1045,12 @@ function CompareRow({
 function Field({ label, value, onChange, placeholder, secret }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; secret?: boolean }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-sm font-medium text-zinc-300">{label}</label>
+      <label className="text-sm font-medium text-foreground">{label}</label>
       <Input
         type={secret ? "password" : "text"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="border-zinc-700 bg-zinc-800 text-zinc-100"
       />
     </div>
   );

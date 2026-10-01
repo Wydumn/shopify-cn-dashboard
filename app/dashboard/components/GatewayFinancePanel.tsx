@@ -3,20 +3,16 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import {
   CreditCard,
-  DollarSign,
   TrendingDown,
   Wallet,
   Landmark,
   Settings,
-  Sparkles,
-  Zap,
 } from "lucide-react";
 import {
   PieChart,
   Pie,
   Cell,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -32,7 +28,6 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCny } from "../helpers";
-import { EXCHANGE_RATE } from "../config";
 
 // ─── Types ────────────────────────────────────────────
 
@@ -49,7 +44,6 @@ interface GatewayStat {
   gateway: string;
   label: string;
   color: string;
-  iconColor: string;
   currency: string;
   currencyLabel: string;
   rate: number;
@@ -86,44 +80,31 @@ function getCurrencyRate(code?: string): { rate: number; label: string } {
   return c ?? { rate: 7.25, label: code.toUpperCase() };
 }
 
-function getCurrencyFlag(code: string): string {
-  const f: Record<string, string> = { USD: "🇺🇸", EUR: "🇪🇺", CAD: "🇨🇦", GBP: "🇬🇧" };
-  return f[code.toUpperCase()] ?? code.toUpperCase();
-}
-
-const GATEWAY_CONFIG: Record<string, { label: string; color: string; iconColor: string }> = {
-  stripe: { label: "Stripe", color: "#635bff", iconColor: "text-indigo-400" },
-  paypal: { label: "PayPal", color: "#009cde", iconColor: "text-sky-400" },
+const GATEWAY_CONFIG: Record<string, { label: string; color: string }> = {
+  stripe: { label: "Stripe", color: "var(--chart-1)" },
+  paypal: { label: "PayPal", color: "var(--chart-2)" },
 };
 
 function getGatewayConfig(gw: string) {
-  return GATEWAY_CONFIG[gw] ?? { label: gw, color: "#6b7280", iconColor: "text-zinc-400" };
+  return GATEWAY_CONFIG[gw] ?? { label: gw, color: "var(--chart-5)" };
 }
 
 // ─── Sub-components ───────────────────────────────────
 
-function KpiCard({ title, value, subtitle, icon: Icon, accent, highlight }: {
+function KpiCard({ title, value, subtitle, icon: Icon }: {
   title: string; value: string; subtitle: string;
   icon: React.ComponentType<{ className?: string }>;
-  accent: "emerald" | "red" | "sky" | "amber";
-  highlight?: boolean;
 }) {
-  const colors: Record<string, string> = {
-    emerald: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
-    red: "bg-red-500/10 text-red-400 ring-red-500/20",
-    sky: "bg-sky-500/10 text-sky-400 ring-sky-500/20",
-    amber: "bg-amber-500/10 text-amber-400 ring-amber-500/20",
-  };
   return (
-    <Card className={`group relative overflow-hidden border-border/40 bg-card/60 shadow-lg backdrop-blur-lg transition-all hover:border-border/60 ${highlight ? "ring-1 ring-red-500/20" : ""}`}>
-      <CardContent className="relative p-6">
+    <Card>
+      <CardContent className="relative p-4">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <p className="text-base font-medium text-muted-foreground">{title}</p>
-            <p className={`text-3xl font-bold tracking-tight ${highlight ? "text-red-400" : "text-foreground"}`}>{value}</p>
-            <p className="text-sm text-muted-foreground">{subtitle}</p>
+            <p className="text-[13px] font-medium text-muted-foreground">{title}</p>
+            <p className="text-[28px] font-semibold leading-[34px] tracking-[-0.025em] tabular-nums text-foreground">{value}</p>
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
           </div>
-          <div className={`flex h-11 w-11 items-center justify-center rounded-xl ring-1 ${colors[accent]}`}><Icon className="h-5 w-5" /></div>
+          <Icon className="h-4 w-4 text-muted-foreground" />
         </div>
       </CardContent>
     </Card>
@@ -153,8 +134,6 @@ function resolveGateway(order: Order, index: number, isDemo: boolean): string {
 
 export default function GatewayFinancePanel({
   orders: initialOrders,
-  exchangeRate: usdRate = EXCHANGE_RATE,
-  currency,
   isDemo,
   shopName,
 }: GatewayFinancePanelProps) {
@@ -170,8 +149,7 @@ export default function GatewayFinancePanel({
   // ── Demo: local orders state for live heartbeat ──
   const [localOrders, setLocalOrders] = useState<Order[]>(initialOrders);
   const orderIdRef = useRef(Math.max(...initialOrders.map((o) => o.id), 0) + 1);
-  const flashRef = useRef<Set<string>>(new Set());
-  const [, setFlashKey] = useState(0); // dummy trigger for UI flash
+  const [flashingKeys, setFlashingKeys] = useState<Set<string>>(new Set());
 
   // Sync from parent on store switch
   const dataRef = useRef(initialOrders);
@@ -200,9 +178,9 @@ export default function GatewayFinancePanel({
         currency: isEur ? "EUR" : "USD",
       };
       setLocalOrders((prev) => [...prev, newOrder]);
-      flashRef.current.add(isEur ? "stripe-EUR" : (newOrder.gateway === "stripe" ? "stripe-USD" : "paypal-USD"));
-      setFlashKey(Date.now());
-      setTimeout(() => { flashRef.current.clear(); setFlashKey(Date.now()); }, 1200);
+      const flashKey = isEur ? "stripe-EUR" : (newOrder.gateway === "stripe" ? "stripe-USD" : "paypal-USD");
+      setFlashingKeys(new Set([flashKey]));
+      setTimeout(() => setFlashingKeys(new Set()), 1200);
     };
     const timer = setInterval(tick, 30_000);
     return () => clearInterval(timer);
@@ -243,7 +221,6 @@ export default function GatewayFinancePanel({
         gateway: gw,
         label: gwCfg.label,
         color: gwCfg.color,
-        iconColor: gwCfg.iconColor,
         currency: curr,
         currencyLabel: curCfg.label,
         rate: curCfg.rate,
@@ -275,7 +252,7 @@ export default function GatewayFinancePanel({
     return Array.from(gwMap.entries()).map(([gw, val]) => ({
       name: GATEWAY_CONFIG[gw]?.label ?? gw,
       value: Math.round(val * 100) / 100,
-      color: GATEWAY_CONFIG[gw]?.color ?? "#6b7280",
+      color: GATEWAY_CONFIG[gw]?.color ?? "var(--chart-5)",
     }));
   }, [gatewayStats]);
 
@@ -284,25 +261,25 @@ export default function GatewayFinancePanel({
       {/* Header */}
       <div>
         <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
-          <Landmark className="h-6 w-6 text-amber-400" />
+          <Landmark className="h-5 w-5 text-muted-foreground" />
           多币种网关智能对账
         </h2>
         <p className="mt-1 text-base text-muted-foreground">
           {shopName} · Stripe / PayPal 多币种手续费对比与净结汇分析
-          {isDemo && <span className="ml-2 text-sm text-amber-400">(Demo: 30s 心跳 · 40% 概率 EUR/Stripe 爆单)</span>}
+          {isDemo && <span className="ml-2 text-sm text-muted-foreground">(演示数据：每 30 秒随机生成一笔测试订单)</span>}
         </p>
       </div>
 
       {/* Rate Config Bar */}
-      <Card className="border-border/40 bg-card/50 shadow-sm backdrop-blur-sm">
+      <Card>
         <CardContent className="flex flex-wrap items-end gap-4 px-5 py-4">
           <p className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
             <Settings className="h-3.5 w-3.5" />费率配置
           </p>
 
           {/* Stripe */}
-          <div className="flex items-end gap-3 rounded-lg border border-indigo-500/20 bg-indigo-500/5 px-3 py-2">
-            <span className="text-sm font-semibold text-indigo-400">Stripe</span>
+          <div className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-muted/40 px-3 py-2">
+            <span className="text-sm font-semibold text-foreground">Stripe</span>
             <div className="flex items-center gap-1.5">
               <label className="text-sm text-muted-foreground">费率%</label>
               <Input type="number" step={0.1} min={0} max={10} value={stripeRate} onChange={(e) => setStripeRate(Number(e.target.value) || 0)} className="h-9 w-16 text-center text-sm" />
@@ -311,14 +288,14 @@ export default function GatewayFinancePanel({
               <label className="text-sm text-muted-foreground">固定 $</label>
               <Input type="number" step={0.01} min={0} max={2} value={stripeFixed} onChange={(e) => setStripeFixed(Number(e.target.value) || 0)} className="h-9 w-16 text-center text-sm" />
             </div>
-            <Button size="sm" variant="outline" onClick={presetStripe} className="h-7 gap-1 border-indigo-500/30 bg-indigo-500/10 px-2 text-xs text-indigo-300 hover:bg-indigo-500/20">
-              <Sparkles className="h-3 w-3" />官方标准
+            <Button size="sm" variant="outline" onClick={presetStripe} className="h-7 gap-1 px-2 text-xs">
+              官方标准
             </Button>
           </div>
 
           {/* PayPal */}
-          <div className="flex items-end gap-3 rounded-lg border border-sky-500/20 bg-sky-500/5 px-3 py-2">
-            <span className="text-sm font-semibold text-sky-400">PayPal</span>
+          <div className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-muted/40 px-3 py-2">
+            <span className="text-sm font-semibold text-foreground">PayPal</span>
             <div className="flex items-center gap-1.5">
               <label className="text-sm text-muted-foreground">费率%</label>
               <Input type="number" step={0.1} min={0} max={10} value={paypalRate} onChange={(e) => setPaypalRate(Number(e.target.value) || 0)} className="h-9 w-16 text-center text-sm" />
@@ -327,13 +304,13 @@ export default function GatewayFinancePanel({
               <label className="text-sm text-muted-foreground">固定 $</label>
               <Input type="number" step={0.01} min={0} max={2} value={paypalFixed} onChange={(e) => setPaypalFixed(Number(e.target.value) || 0)} className="h-9 w-16 text-center text-sm" />
             </div>
-            <Button size="sm" variant="outline" onClick={presetPaypal} className="h-7 gap-1 border-sky-500/30 bg-sky-500/10 px-2 text-xs text-sky-300 hover:bg-sky-500/20">
-              <Sparkles className="h-3 w-3" />官方标准
+            <Button size="sm" variant="outline" onClick={presetPaypal} className="h-7 gap-1 px-2 text-xs">
+              官方标准
             </Button>
           </div>
 
-          <div className="ml-auto text-sm text-muted-foreground">
-            多币种汇率: 🇺🇸7.25 · 🇪🇺7.85 · 🇨🇦5.30 · 🇬🇧9.15
+          <div className="ml-auto text-xs text-muted-foreground">
+            汇率折算 RMB：USD 7.25 · EUR 7.85 · CAD 5.30 · GBP 9.15
           </div>
         </CardContent>
       </Card>
@@ -345,50 +322,58 @@ export default function GatewayFinancePanel({
           value={formatCny(totalFeeCny)}
           subtitle={`${totalOrders} 笔订单归集`}
           icon={TrendingDown}
-          accent="red"
-          highlight
         />
         <KpiCard
           title="预计净结汇 (RMB)"
           value={formatCny(netRevenueCny)}
           subtitle={`GMV ¥${formatCny(totalRevenueCny)} − 手续费 ¥${formatCny(totalFeeCny)}`}
           icon={Wallet}
-          accent="emerald"
         />
         <KpiCard
           title="涵盖货币"
           value={`${new Set(gatewayStats.map((s) => s.currency)).size} 种`}
           subtitle="基于真实订单多币种对账"
           icon={CreditCard}
-          accent="sky"
         />
       </div>
 
       {/* Chart + Table */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* Donut */}
-        <Card className="lg:col-span-2 border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-base">网关占比</CardTitle>
             <CardDescription>各网关净结汇 (到手 RMB) 占比</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px] w-full">
+            <div className="relative h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={donutData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={3} dataKey="value" nameKey="name">
+                  <Pie data={donutData} cx="50%" cy="50%" innerRadius={68} outerRadius={100} paddingAngle={3} dataKey="value" nameKey="name">
                     {donutData.map((entry, i) => (<Cell key={`cell-${i}`} fill={entry.color} />))}
                   </Pie>
-                  <Tooltip formatter={(value: unknown) => formatCny(Number(value) || 0)} />
-                  <Legend formatter={(v: string) => (<span style={{ color: "oklch(0.708 0 0)", fontSize: "12px" }}>{v}</span>)} />
+                  <Tooltip
+                    formatter={(value: unknown) => formatCny(Number(value) || 0)}
+                    contentStyle={{
+                      backgroundColor: "var(--card)",
+                      borderColor: "var(--border)",
+                      borderRadius: 6,
+                      color: "var(--foreground)",
+                      fontSize: 12,
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-[11px] text-muted-foreground">净结汇总额</span>
+                <span className="text-lg font-semibold tabular-nums text-foreground">{formatCny(netRevenueCny)}</span>
+              </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Detail Table */}
-        <Card className="lg:col-span-3 border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
+        <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle className="text-base">多币种明细对账</CardTitle>
             <CardDescription>按网关 × 币种双重聚合并扣除手续费</CardDescription>
@@ -408,14 +393,13 @@ export default function GatewayFinancePanel({
               <TableBody>
                 {gatewayStats.map((g) => {
                   const key = `${g.gateway}-${g.currency}`;
-                  const flashing = flashRef.current.has(key);
+                  const flashing = flashingKeys.has(key);
                   return (
-                    <TableRow key={key} className={`group transition-all ${flashing ? "bg-amber-500/10 animate-pulse" : "hover:bg-muted/30"}`}>
+                    <TableRow key={key} className={flashing ? "bg-info-bg" : undefined}>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <div className="h-3 w-3 rounded-full" style={{ backgroundColor: g.color }} />
                           <span className="font-medium text-foreground">{g.label}</span>
-                          <span className="text-sm text-muted-foreground">{getCurrencyFlag(g.currency)}</span>
                           <Badge variant="outline" className="text-xs px-1 py-0 border-current/30 text-muted-foreground">
                             {g.currency}
                           </Badge>
@@ -431,8 +415,8 @@ export default function GatewayFinancePanel({
                           {g.totalRevenue.toFixed(2)} × {g.feeRate.toFixed(1)}% + {g.feeFixed} × {g.orderCount}
                         </span>
                       </TableCell>
-                      <TableCell className="text-right tabular-nums font-medium text-red-400">{formatCny(g.feeCny)}</TableCell>
-                      <TableCell className="text-right tabular-nums font-semibold text-emerald-400">{formatCny(g.netCny)}</TableCell>
+                      <TableCell className="text-right tabular-nums font-medium">{formatCny(g.feeCny)}</TableCell>
+                      <TableCell className="text-right tabular-nums font-semibold">{formatCny(g.netCny)}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -442,8 +426,8 @@ export default function GatewayFinancePanel({
                     <TableCell className="text-right tabular-nums font-semibold">{totalOrders} 单</TableCell>
                     <TableCell className="text-right tabular-nums font-semibold">—</TableCell>
                     <TableCell className="text-right" />
-                    <TableCell className="text-right tabular-nums font-semibold text-red-400">{formatCny(totalFeeCny)}</TableCell>
-                    <TableCell className="text-right tabular-nums font-semibold text-emerald-400">{formatCny(netRevenueCny)}</TableCell>
+                    <TableCell className="text-right tabular-nums font-semibold">{formatCny(totalFeeCny)}</TableCell>
+                    <TableCell className="text-right tabular-nums font-semibold">{formatCny(netRevenueCny)}</TableCell>
                   </TableRow>
                 )}
                 {gatewayStats.length === 0 && (

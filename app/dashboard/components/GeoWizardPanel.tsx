@@ -300,9 +300,10 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
   );
 
   const statuses = [1, 2, 3, 4, 5].map(stepStatus);
-  const completedCount = statuses.filter((s) => s === "done").length;
   const health = computeGeoHealthScore(cache);
   const healthTone = geoHealthTone(health);
+  const healthToneClass =
+    health >= 80 ? "text-success" : health >= 60 ? "text-warning" : "text-destructive-text";
   const lastScan = Math.max(
     0,
     ...[1, 2, 3, 4, 5].map((i) => (cache as any)[`step${i}`]?.timestamp || 0)
@@ -327,24 +328,24 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
   };
 
   // ─── 渲染辅助 ──────────────────────────────────────────────────────────────
-  const StatusBadge = ({ s, score }: { s: StepStatus; score?: number }) => {
-    if (s === "done") return <Badge className="bg-green-600/20 text-green-400 border-green-700">✅ 已完成</Badge>;
-    if (s === "fix") return <Badge className="bg-red-600/20 text-red-400 border-red-700">🔴 需修复</Badge>;
-    if (s === "progress") return <Badge className="bg-yellow-600/20 text-yellow-400 border-yellow-700">🟡 进行中</Badge>;
-    return <Badge className="bg-zinc-700/40 text-zinc-400 border-zinc-600">⚪ 待操作</Badge>;
+  const StatusBadge = ({ s }: { s: StepStatus }) => {
+    if (s === "done") return <Badge className="border-success-border bg-success-bg text-success"><CheckCircle2 />已完成</Badge>;
+    if (s === "fix") return <Badge className="border-destructive-border bg-destructive-bg text-destructive-text"><XCircle />需修复</Badge>;
+    if (s === "progress") return <Badge className="border-border bg-accent text-accent-foreground"><RefreshCw />进行中</Badge>;
+    return <Badge variant="outline" className="border-border bg-muted text-muted-foreground"><Circle />待操作</Badge>;
   };
 
   const CircleIcon = ({ s, n }: { s: StepStatus; n: number }) => {
-    const base = "h-10 w-10 rounded-full flex items-center justify-center border-2 text-base font-bold";
-    if (s === "done") return <div className={`${base} bg-green-600 border-green-400 text-white`}><CheckCircle2 size={20} /></div>;
-    if (s === "fix") return <div className={`${base} bg-red-600 border-red-400 text-white`}><XCircle size={20} /></div>;
-    if (s === "progress") return <div className={`${base} bg-blue-600 border-blue-400 text-white`}>{n}</div>;
-    return <div className={`${base} bg-zinc-700 border-zinc-500 text-zinc-300`}>{n}</div>;
+    const base = "flex h-10 w-10 items-center justify-center rounded-full border text-base font-semibold";
+    if (s === "done") return <div className={`${base} border-success-border bg-success-bg text-success`}><CheckCircle2 size={20} /></div>;
+    if (s === "fix") return <div className={`${base} border-destructive-border bg-destructive-bg text-destructive-text`}><XCircle size={20} /></div>;
+    if (s === "progress") return <div className={`${base} border-border bg-accent text-accent-foreground`}>{n}</div>;
+    return <div className={`${base} border-border bg-muted text-muted-foreground`}>{n}</div>;
   };
 
   const Bar = ({ rate }: { rate: number }) => (
-    <div className="h-2 w-full rounded-full bg-zinc-700 overflow-hidden">
-      <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-green-500" style={{ width: `${Math.round(rate * 100)}%` }} />
+    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+      <div className="h-full rounded-full bg-primary" style={{ width: `${Math.round(rate * 100)}%` }} />
     </div>
   );
 
@@ -361,25 +362,26 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
   const step5 = cache.step5?.result as any;
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       {/* 顶部快速操作栏（始终可见） */}
-      <Card className="sticky top-0 z-30 bg-zinc-900/95 backdrop-blur border-zinc-800">
-        <CardContent className="py-3 px-4 flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Compass size={18} className="text-sky-400" />
-            <span className="text-base text-zinc-400">GEO 健康分</span>
-            <span className="text-xl font-bold text-white">{health}/100</span>
-            <span className="text-base">{healthTone.color} {healthTone.label}</span>
+      <Card className="sticky top-0 z-30 border-border bg-card">
+        <CardContent className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <Compass size={18} className="shrink-0 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">GEO 健康分</span>
+            <span className="text-xl font-semibold tabular-nums text-foreground">{health}/100</span>
+            <span className={`text-sm font-medium ${healthToneClass}`}>{healthTone.label}</span>
           </div>
-          <div className="text-sm text-zinc-500">
+          <div className="text-xs text-muted-foreground">
             上次扫描：{lastScan ? new Date(lastScan).toLocaleString("zh-CN") : "未执行"}
           </div>
-          <div className="ml-auto flex gap-2">
-            <Button size="sm" variant="outline" onClick={runFullScan}>
+          <div className="flex flex-wrap gap-2 sm:ml-auto">
+            <Button size="sm" variant="outline" className="max-sm:flex-1" onClick={runFullScan}>
               <RefreshCw size={14} className="mr-1" /> 全站重新扫描
             </Button>
             <Button
               size="sm"
+              className="max-sm:flex-1"
               onClick={() => downloadGeoReport(cache, shopName || "shop")}
             >
               <Download size={14} className="mr-1" /> 导出 GEO 报告
@@ -388,26 +390,24 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
         </CardContent>
       </Card>
 
-      {globalMsg && <div className="text-sm text-sky-400">{globalMsg}</div>}
+      {globalMsg && <div className="text-sm text-muted-foreground" role="status">{globalMsg}</div>}
 
       {/* 向导进度条 */}
-      <Card className="bg-zinc-900 border-zinc-800">
-        <CardContent className="py-4 px-4">
-          <div className="flex items-center justify-between">
+      <Card className="border-border bg-card">
+        <CardContent className="overflow-x-auto px-4 py-4">
+          <div className="flex min-w-[36rem] items-start">
             {STEP_META.map((m, idx) => {
               const i = idx + 1;
               const s = statuses[idx];
               return (
-                <div key={m.key} className="flex-1 flex flex-col items-center">
-                  <button onClick={() => scrollToStep(i)} title={m.label} className="flex flex-col items-center gap-1 group">
+                <div key={m.key} className="relative flex min-w-0 flex-1 flex-col items-center">
+                  <button onClick={() => scrollToStep(i)} title={m.label} className="group relative z-10 flex flex-col items-center gap-1 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     <CircleIcon s={s} n={i} />
-                    <span className={`text-sm mt-1 ${s === "todo" ? "text-zinc-500" : "text-zinc-200"}`}>{m.short}</span>
+                    <span className={`mt-1 text-xs sm:text-sm ${s === "todo" ? "text-muted-foreground" : "text-foreground"}`}>{m.short}</span>
                     <StatusBadge s={s} />
                   </button>
                   {i < 5 && (
-                    <div className="h-0.5 w-full mt-5 bg-zinc-700">
-                      <div className="h-full bg-green-500" style={{ width: s === "done" ? "100%" : "0%" }} />
-                    </div>
+                    <div className={`absolute left-[calc(50%+1.25rem)] right-[-50%] top-5 h-px ${s === "done" ? "bg-primary" : "bg-border"}`} />
                   )}
                 </div>
               );
@@ -427,32 +427,36 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
         scoreText={cache.step1?.result?.score != null ? `${cache.step1.result.score}/100` : undefined}
       >
         {!cache.step1 ? (
-          <div className="text-base text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             尚未扫描。点击「开始扫描」检测 AI 爬虫能否访问你的站点。
             <div className="mt-2"><Button size="sm" onClick={scanStep1} disabled={scanning[1]}><Play size={14} className="mr-1" />开始扫描</Button></div>
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-2 text-base">
+            <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
               {(["gptBotBlocked", "perplexityBotBlocked", "googleExtendedBlocked", "ccBotBlocked"] as const).map((k, idx) => {
                 const blocked = (cache.step1!.result.bots as any)?.[k];
                 const name = ["GPTBot", "PerplexityBot", "Google-Extended", "CCBot"][idx];
                 return (
-                  <div key={k} className="flex items-center gap-2 rounded-lg bg-zinc-800/60 px-3 py-2">
-                    <span className={blocked ? "text-red-400" : "text-green-400"}>{blocked ? "❌ 被屏蔽" : "✅ 未被屏蔽"}</span>
-                    <span className="text-zinc-300">{name}</span>
+                  <div key={k} className="flex items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 py-2">
+                    {blocked
+                      ? <XCircle size={16} className="shrink-0 text-destructive-text" />
+                      : <CheckCircle2 size={16} className="shrink-0 text-success" />}
+                    <span className={blocked ? "text-destructive-text" : "text-success"}>{blocked ? "被屏蔽" : "未被屏蔽"}</span>
+                    <span className="text-foreground">{name}</span>
                   </div>
                 );
               })}
             </div>
             {(["gptBotBlocked", "perplexityBotBlocked", "googleExtendedBlocked", "ccBotBlocked"] as const).some((k) => (cache.step1!.result.bots as any)?.[k]) && (
-              <div className="rounded-lg border border-red-700 bg-red-900/20 px-3 py-2 text-base text-red-300">
-                ⚠️ 有 AI 爬虫被 robots.txt 屏蔽，AI 无法抓取你的站点！请立即修复。
+              <div className="flex items-start gap-2 rounded-lg border border-destructive-border bg-destructive-bg px-3 py-2 text-sm text-destructive-text">
+                <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+                <span>有 AI 爬虫被 robots.txt 屏蔽，AI 无法抓取你的站点。请修复相关设置。</span>
               </div>
             )}
             <div>
-              <div className="text-sm text-zinc-400 mb-1">robots.txt 预览：</div>
-              <pre className="text-sm bg-zinc-950 rounded-lg p-3 overflow-x-auto text-zinc-300 whitespace-pre-wrap">{cache.step1.result.robotsContent || "（空）"}</pre>
+              <div className="mb-1 text-xs text-muted-foreground">robots.txt 预览：</div>
+              <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg border border-border bg-muted p-3 text-sm text-foreground">{cache.step1.result.robotsContent || "（空）"}</pre>
             </div>
             <Button size="sm" variant="outline" onClick={() => goMenu("ai-indexability")}>查看详细报告 →</Button>
           </div>
@@ -470,29 +474,30 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
         scoreText={cache.step2 ? `${step2Health}/100` : undefined}
       >
         {!cache.step2 ? (
-          <div className="text-base text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             尚未扫描。点击「开始扫描」检测全站结构化数据覆盖。
             <div className="mt-2"><Button size="sm" onClick={scanStep2} disabled={scanning[2]}><Play size={14} className="mr-1" />开始扫描</Button></div>
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="text-base text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               全站扫描结果：{step2Results?.reduce((s, r) => s + (r.totalPages || 0), 0) || 0} 项页面
             </div>
             <div className="space-y-2">
               {(step2Results || []).map((r) => (
-                <div key={r.schemaType} className="text-base">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-zinc-300">{r.title}</span>
-                    <span className="text-zinc-400">{Math.round((r.coverageRate || 0) * 100)}%{((r.totalPages || 0) - (r.coveredPages || 0)) > 0 ? ` · ${(r.totalPages || 0) - (r.coveredPages || 0)} 件缺失` : " · 全覆盖"}</span>
+                <div key={r.schemaType} className="text-sm">
+                  <div className="mb-1 flex justify-between gap-3">
+                    <span className="text-foreground">{r.title}</span>
+                    <span className="text-muted-foreground tabular-nums">{Math.round((r.coverageRate || 0) * 100)}%{((r.totalPages || 0) - (r.coveredPages || 0)) > 0 ? ` · ${(r.totalPages || 0) - (r.coveredPages || 0)} 件缺失` : " · 全覆盖"}</span>
                   </div>
                   <Bar rate={r.coverageRate || 0} />
                 </div>
               ))}
             </div>
             {injectCounts["Product"] ? (
-              <div className="rounded-lg border border-orange-700 bg-orange-900/20 px-3 py-2 text-base text-orange-300">
-                🆘 最紧迫：{injectCounts["Product"]} 件商品缺少 Product Schema 的 brand 字段
+              <div className="flex items-start gap-2 rounded-lg border border-warning-border bg-warning-bg px-3 py-2 text-sm text-warning">
+                <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+                <span>优先处理：{injectCounts["Product"]} 件商品缺少 Product Schema 的 brand 字段</span>
               </div>
             ) : null}
             <Button size="sm" variant="outline" onClick={() => goMenu("schema-audit")}>查看完整报告 →</Button>
@@ -510,29 +515,29 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
         innerRef={(el) => (stepRefs.current[2] = el)}
       >
         {!cache.step2 && !cache.step3 ? (
-          <div className="text-base text-zinc-400">请先完成 Step 2 检测，系统会自动列出可注入的 Schema 清单。</div>
+          <div className="text-sm text-muted-foreground">请先完成 Step 2 检测，系统会自动列出可注入的 Schema 清单。</div>
         ) : cache.step3?.result?.done ? (
-          <div className="space-y-2 text-base">
-            <div className="text-green-400">✅ 已注入完成（{new Date(cache.step3.result.injectedAt).toLocaleString("zh-CN")}）</div>
-            <div className="text-zinc-300">注入清单：{Object.keys(cache.step3.result.counts).map((k) => `${k}(${cache.step3!.result.counts[k]}件)`).join(" + ") || "无"}</div>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center gap-2 text-success"><CheckCircle2 size={16} />已注入完成（{new Date(cache.step3.result.injectedAt).toLocaleString("zh-CN")}）</div>
+            <div className="text-foreground">注入清单：{Object.keys(cache.step3.result.counts).map((k) => `${k}(${cache.step3!.result.counts[k]}件)`).join(" + ") || "无"}</div>
             <Button size="sm" variant="outline" onClick={() => goMenu("schema-generator")}>打开生成器 →</Button>
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="text-base text-zinc-400">待注入清单（基于 Step 2 检测结果）：</div>
-            <div className="space-y-1 text-base">
+            <div className="text-sm text-muted-foreground">待注入清单（基于 Step 2 检测结果）：</div>
+            <div className="space-y-1 text-sm">
               {Object.keys(injectCounts).length ? (
                 Object.entries(injectCounts).map(([k, v]) => (
-                  <div key={k} className="rounded-lg bg-zinc-800/60 px-3 py-2 text-zinc-300">{k} Schema：{v} 件可注入</div>
+                  <div key={k} className="rounded-lg border border-border bg-muted/50 px-3 py-2 text-foreground">{k} Schema：{v} 件可注入</div>
                 ))
               ) : (
-                <div className="text-zinc-500">暂无可注入项（全站 Schema 已完整）。</div>
+                <div className="text-muted-foreground">暂无可注入项（全站 Schema 已完整）。</div>
               )}
             </div>
-            <div className="text-sm text-zinc-500">
+            <div className="text-xs text-muted-foreground">
               预计新增字段总数：约 {Object.values(injectCounts).reduce((s, v) => s + v, 0) * 3} 个
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 size="sm"
                 disabled={injecting || Object.keys(injectCounts).length === 0}
@@ -544,9 +549,9 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
             </div>
             {injecting && (
               <div className="space-y-1">
-                <div className="text-sm text-sky-400">注入中… {injectProgress}%</div>
-                <div className="h-2 w-full rounded-full bg-zinc-700 overflow-hidden">
-                  <div className="h-full bg-sky-500" style={{ width: `${injectProgress}%` }} />
+                <div className="text-sm text-muted-foreground">注入中… {injectProgress}%</div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="h-full bg-primary" style={{ width: `${injectProgress}%` }} />
                 </div>
               </div>
             )}
@@ -564,23 +569,23 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
         innerRef={(el) => (stepRefs.current[3] = el)}
       >
         <div className="space-y-3">
-          <div className="text-base text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             已添加竞品：{competitorCount > 0 ? `${competitorCount} 个` : "无"} · 上次对比：{cache.step4 ? new Date(cache.step4.timestamp).toLocaleString("zh-CN") : "未执行"}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="outline" onClick={() => goMenu("competitor-geo")}><GitCompare size={14} className="mr-1" />+ 添加竞品</Button>
             <Button size="sm" variant="outline" onClick={() => goMenu("competitor-geo")}>开始对比</Button>
           </div>
           {step4?.comparisons?.length ? (
-            <div className="space-y-1 text-base">
+            <div className="space-y-1 text-sm">
               {step4.comparisons.slice(0, 2).map((c: any, i: number) => (
-                <div key={i} className="rounded-lg bg-zinc-800/60 px-3 py-2 text-zinc-300">
+                <div key={i} className="rounded-lg border border-border bg-muted/50 px-3 py-2 text-foreground">
                   与 {c.competitor?.storeName || c.competitor?.domain} 对比：{c.todos?.length || 0} 项待改进
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-sm text-zinc-500">如果竞品 Schema 覆盖率和内容质量都高于你 → 需要追赶。</div>
+            <div className="text-sm text-muted-foreground">如果竞品 Schema 覆盖率和内容质量都高于你 → 需要追赶。</div>
           )}
           <Button size="sm" variant="outline" onClick={() => goMenu("competitor-geo")}>查看竞品对比面板 →</Button>
         </div>
@@ -596,7 +601,7 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
         innerRef={(el) => (stepRefs.current[4] = el)}
       >
         <div className="space-y-3">
-          <div className="text-base text-zinc-400">预设查询（点击即测）：</div>
+          <div className="text-sm text-muted-foreground">预设查询（点击即测）：</div>
           <div className="flex flex-wrap gap-2">
             {PRESET_QUERIES.map((q) => (
               <Button key={q} size="sm" variant="outline" onClick={() => runStep5(q)}>
@@ -606,18 +611,18 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
           </div>
           {step5?.top3?.length ? (
             <div className="space-y-1">
-              <div className="text-sm text-zinc-500">测试查询：{step5.query}</div>
+              <div className="text-xs text-muted-foreground">测试查询：{step5.query}</div>
               {step5.top3.map((r: any, i: number) => (
-                <div key={i} className="flex items-center justify-between rounded-lg bg-zinc-800/60 px-3 py-2 text-base">
-                  <span className="text-zinc-200">{i + 1}. {r.title}</span>
-                  <span className={r.status === "high" ? "text-green-400" : r.status === "medium" ? "text-yellow-400" : "text-red-400"}>{r.score}%</span>
+                <div key={i} className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm">
+                  <span className="min-w-0 text-foreground">{i + 1}. {r.title}</span>
+                  <span className={`shrink-0 font-medium tabular-nums ${r.status === "high" ? "text-success" : r.status === "medium" ? "text-warning" : "text-destructive-text"}`}>{r.score}%</span>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-sm text-zinc-500">上次测试：未执行</div>
+            <div className="text-sm text-muted-foreground">上次测试：未执行</div>
           )}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="outline" onClick={() => goMenu("ai-simulation")}>输入自定义查询</Button>
             <Button size="sm" variant="outline" onClick={() => goMenu("ai-simulation")}>打开完整模拟器 →</Button>
           </div>
@@ -626,10 +631,10 @@ export default function GeoWizardPanel(props: GeoWizardPanelProps) {
 
       {/* 注入确认弹窗 */}
       {showInjectModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={() => setShowInjectModal(false)}>
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 w-full max-w-md p-5" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-base font-semibold text-white mb-2">确认注入 Schema</h3>
-            <p className="text-base text-zinc-400 mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" onClick={() => setShowInjectModal(false)}>
+          <div className="w-full max-w-md rounded-lg border border-border bg-card p-5" onClick={(e) => e.stopPropagation()}>
+            <h3 className="mb-2 text-base font-semibold text-foreground">确认注入 Schema</h3>
+            <p className="mb-4 text-sm leading-6 text-muted-foreground">
               将向 {Object.keys(injectCounts).length} 类 Schema、约 {Object.values(injectCounts).reduce((s, v) => s + v, 0)} 个页面注入共计约 {Object.values(injectCounts).reduce((s, v) => s + v, 0) * 3} 个 Schema 字段。此操作会修改商品描述内容并调用 Shopify API。确定继续？
             </p>
             <div className="flex justify-end gap-2">
@@ -665,26 +670,26 @@ function StepSection({
 }) {
   const Icon = meta.icon;
   return (
-    <Card className="bg-zinc-900 border-zinc-800" ref={innerRef}>
-      <button onClick={onToggle} className="w-full text-left">
-        <CardContent className="py-3 px-4 flex items-center gap-3">
-          <Icon size={18} className="text-sky-400" />
-          <div className="flex-1">
-            <div className="text-base font-medium text-white">Step {index}: {meta.label}</div>
+    <Card className="border-border bg-card" ref={innerRef}>
+      <button onClick={onToggle} aria-expanded={open} className="w-full rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <CardContent className="flex items-center gap-3 px-4 py-3">
+          <Icon size={18} className="shrink-0 text-muted-foreground" />
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-medium text-foreground">Step {index}: {meta.label}</div>
           </div>
-          {scoreText && <span className="text-base font-bold text-zinc-200">{scoreText}</span>}
+          {scoreText && <span className="shrink-0 text-sm font-semibold tabular-nums text-foreground">{scoreText}</span>}
           <StatusBadgeInline status={status} />
-          <ChevronDown size={16} className={`text-zinc-400 transition-transform ${open ? "rotate-180" : ""}`} />
+          <ChevronDown size={16} className={`shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
         </CardContent>
       </button>
-      {open && <CardContent className="pt-0 px-4 pb-4 border-t border-zinc-800">{children}</CardContent>}
+      {open && <CardContent className="border-t border-border px-4 pb-4 pt-3">{children}</CardContent>}
     </Card>
   );
 }
 
 function StatusBadgeInline({ status }: { status: StepStatus }) {
-  if (status === "done") return <span className="text-sm text-green-400">✅ 已完成</span>;
-  if (status === "fix") return <span className="text-sm text-red-400">🔴 需修复</span>;
-  if (status === "progress") return <span className="text-sm text-yellow-400">🟡 进行中</span>;
-  return <span className="text-sm text-zinc-500">⚪ 待操作</span>;
+  if (status === "done") return <span className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-success"><CheckCircle2 size={14} />已完成</span>;
+  if (status === "fix") return <span className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-destructive-text"><XCircle size={14} />需修复</span>;
+  if (status === "progress") return <span className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-accent-foreground"><RefreshCw size={14} />进行中</span>;
+  return <span className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground"><Circle size={14} />待操作</span>;
 }
