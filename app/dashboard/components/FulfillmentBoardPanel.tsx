@@ -67,18 +67,18 @@ interface FulfillmentBoardPanelProps {
 // ─── Constants ────────────────────────────────────────
 
 const COLUMN_META: Record<FulfillmentColumn, { title: string; color: string; bg: string; icon: React.ComponentType<{ className?: string }> }> = {
-  unfulfilled: { title: "待履约", color: "text-amber-400", bg: "bg-amber-500/10", icon: Clock },
-  partial: { title: "部分履约", color: "text-sky-400", bg: "bg-sky-500/10", icon: Package },
-  fulfilled: { title: "已履约", color: "text-emerald-400", bg: "bg-emerald-500/10", icon: CheckCircle2 },
+  unfulfilled: { title: "待履约", color: "text-warning", bg: "bg-warning-bg", icon: Clock },
+  partial: { title: "部分履约", color: "text-info", bg: "bg-info-bg", icon: Package },
+  fulfilled: { title: "已履约", color: "text-success", bg: "bg-success-bg", icon: CheckCircle2 },
 };
 
 const TRACKING_COMPANIES = ["USPS", "UPS", "FedEx", "DHL", "顺丰国际", "云途物流", "燕文物流", "递四方", "4PX", "万邑通"];
 
 const FINANCIAL_MAP: Record<string, string> = {
-  paid: "bg-emerald-500/15 text-emerald-400",
-  pending: "bg-amber-500/15 text-amber-400",
-  refunded: "bg-red-500/15 text-red-400",
-  cancelled: "bg-zinc-500/15 text-zinc-400",
+  paid: "bg-success-bg text-success",
+  pending: "bg-warning-bg text-warning",
+  refunded: "bg-destructive-bg text-destructive-text",
+  cancelled: "bg-muted text-muted-foreground",
 };
 
 function countryFlag(code: string): string {
@@ -166,12 +166,12 @@ function FulfillmentModal({
               </select>
             </div>
             <label className="flex items-center gap-2 text-base text-muted-foreground cursor-pointer">
-              <input type="checkbox" checked={notify} onChange={() => setNotify(!notify)} className="accent-emerald-500" />
+              <input type="checkbox" checked={notify} onChange={() => setNotify(!notify)} className="accent-success" />
               通知客户发货信息
             </label>
             {order.line_items.length > 1 && (
               <label className="flex items-center gap-2 text-base text-muted-foreground cursor-pointer">
-                <input type="checkbox" checked={showLineItems} onChange={() => setShowLineItems(!showLineItems)} className="accent-sky-500" />
+                <input type="checkbox" checked={showLineItems} onChange={() => setShowLineItems(!showLineItems)} className="accent-info" />
                 部分履约（仅发货选中的商品）
               </label>
             )}
@@ -179,7 +179,7 @@ function FulfillmentModal({
               <div className="space-y-1 rounded-lg border border-border/20 bg-muted/10 p-2 max-h-36 overflow-y-auto">
                 {order.line_items.map((item) => (
                   <label key={item.id} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-muted/20 rounded px-1 py-0.5">
-                    <input type="checkbox" checked={selectedItems.has(item.id)} onChange={() => toggleItem(item.id)} className="accent-sky-500" />
+                    <input type="checkbox" checked={selectedItems.has(item.id)} onChange={() => toggleItem(item.id)} className="accent-info" />
                     <span className="text-foreground">{item.name}</span>
                     <span className="text-muted-foreground ml-auto">×{item.quantity}</span>
                   </label>
@@ -191,11 +191,11 @@ function FulfillmentModal({
               <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="发货备注（可选）..." rows={2} className="mt-1 w-full rounded-md border border-border/40 bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 resize-none" />
             </div>
             {isDemo && (
-              <p className="text-xs text-amber-400">演示模式：履约操作将模拟本地状态更新</p>
+              <p className="text-xs text-warning">演示模式：履约操作将模拟本地状态更新</p>
             )}
           </div>
           <div className="flex items-center gap-2 border-t border-border/20 px-5 py-3">
-            <Button onClick={handleSubmit} disabled={!trackingNumber.trim() || saving} className="flex-1 h-9 gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white">
+            <Button onClick={handleSubmit} disabled={!trackingNumber.trim() || saving} className="flex-1 h-9 gap-1.5 bg-success text-white">
               {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
               {saving ? "提交中..." : "确认发货"}
             </Button>
@@ -226,12 +226,12 @@ function OrderCard({
       draggable
       onDragStart={onDragStart}
       onClick={() => onContextAction("detail", order)}
-      className={`relative rounded-lg border px-3 py-2.5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg bg-card/80 border-border/30 hover:border-border/50 ${overdue && order.fulfillment_status !== "fulfilled" ? "border-l-2 border-l-red-500" : "border-l-2 border-l-transparent"}`}
+      className={`relative rounded-lg border px-3 py-2.5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg bg-card/80 border-border/30 hover:border-border/50 ${overdue && order.fulfillment_status !== "fulfilled" ? "border-l-2 border-l-destructive" : "border-l-2 border-l-transparent"}`}
     >
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-mono font-medium text-emerald-400 truncate">{order.order_number}</p>
+          <p className="text-sm font-mono font-medium text-success truncate">{order.order_number}</p>
           <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{order.customer_name}</p>
         </div>
         {/* Three-dot menu */}
@@ -263,7 +263,7 @@ function OrderCard({
       {/* Bottom row */}
       <div className="flex items-center justify-between mt-2">
         <div className="flex items-center gap-1.5">
-          <Badge className={"text-[9px] px-1 py-0 " + (FINANCIAL_MAP[order.financial_status] ?? "bg-zinc-500/15 text-zinc-400")}>
+          <Badge className={"text-[9px] px-1 py-0 " + (FINANCIAL_MAP[order.financial_status] ?? "bg-muted text-muted-foreground")}>
             {order.financial_status === "paid" ? "已付" : order.financial_status}
           </Badge>
           <span className="text-[9px] text-muted-foreground">{order.item_count} 件</span>
@@ -556,7 +556,7 @@ export default function FulfillmentBoardPanel({
     <div className="space-y-3 animate-in fade-in duration-300">
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-2 duration-200">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-2 duration-200">
           {toast}
         </div>
       )}
@@ -565,19 +565,19 @@ export default function FulfillmentBoardPanel({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
-            <ClipboardList className="h-6 w-6 text-sky-400" />
+            <ClipboardList className="h-6 w-6 text-info" />
             履约看板
           </h2>
-          <p className="mt-1 text-base text-muted-foreground">{shopName} · Trello 式拖拽管理履约进度{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+          <p className="mt-1 text-base text-muted-foreground">{shopName} · Trello 式拖拽管理履约进度{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
         </div>
       </div>
 
       {/* KPI bar */}
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-        {[{ label: "待履约", value: kpi.unfulfilled, icon: Clock, color: "text-amber-400 bg-amber-500/10" },
-          { label: "今日已履约", value: kpi.todayFulfilled, icon: CheckCircle2, color: "text-emerald-400 bg-emerald-500/10" },
-          { label: "超时未履约 (>24h)", value: kpi.overdue, icon: AlertTriangle, color: "text-red-400 bg-red-500/10" },
-          { label: "平均履约时长", value: kpi.avgFulfillHours + "h", icon: Truck, color: "text-sky-400 bg-sky-500/10" },
+        {[{ label: "待履约", value: kpi.unfulfilled, icon: Clock, color: "text-warning bg-warning-bg" },
+          { label: "今日已履约", value: kpi.todayFulfilled, icon: CheckCircle2, color: "text-success bg-success-bg" },
+          { label: "超时未履约 (>24h)", value: kpi.overdue, icon: AlertTriangle, color: "text-destructive-text bg-destructive-bg" },
+          { label: "平均履约时长", value: kpi.avgFulfillHours + "h", icon: Truck, color: "text-info bg-info-bg" },
         ].map((k) => (
           <Card key={k.label} className="border-border/40 bg-card/60 backdrop-blur-lg">
             <CardContent className="p-3 flex items-center gap-3">
@@ -595,7 +595,7 @@ export default function FulfillmentBoardPanel({
           {Object.entries(timeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
         <label className="flex items-center gap-1 text-xs text-muted-foreground cursor-pointer">
-          <input type="checkbox" checked={paidOnly} onChange={() => setPaidOnly(!paidOnly)} className="accent-emerald-500" />仅已付款
+          <input type="checkbox" checked={paidOnly} onChange={() => setPaidOnly(!paidOnly)} className="accent-success" />仅已付款
         </label>
       </div>
 
