@@ -140,8 +140,8 @@ function RuleEditor({
     <div className="rounded-lg border border-border/20 bg-muted/10 p-3 space-y-2">
       <div className="flex items-center gap-2">
         <span className="text-xs text-muted-foreground">条件逻辑：</span>
-        <button onClick={() => onChangeDisjunctive(false)} className={`px-2 py-0.5 text-xs rounded ${!disjunctive ? "bg-emerald-500/20 text-emerald-400" : "text-muted-foreground"}`}>所有条件 (AND)</button>
-        <button onClick={() => onChangeDisjunctive(true)} className={`px-2 py-0.5 text-xs rounded ${disjunctive ? "bg-sky-500/20 text-sky-400" : "text-muted-foreground"}`}>任一条件 (OR)</button>
+        <button onClick={() => onChangeDisjunctive(false)} className={`px-2 py-0.5 text-xs rounded ${!disjunctive ? "bg-success-bg text-success" : "text-muted-foreground"}`}>所有条件 (AND)</button>
+        <button onClick={() => onChangeDisjunctive(true)} className={`px-2 py-0.5 text-xs rounded ${disjunctive ? "bg-info-bg text-info" : "text-muted-foreground"}`}>任一条件 (OR)</button>
       </div>
       {rules.map((r) => (
         <div key={r.id} className="flex items-center gap-1.5">
@@ -152,7 +152,7 @@ function RuleEditor({
             {(RELATIONS_BY_COLUMN[r.column] || [{ value: "equals", label: "等于" }]).map((rel) => <option key={rel.value} value={rel.value}>{rel.label}</option>)}
           </select>
           <Input value={r.condition} onChange={(e) => updateRule(r.id, "condition", e.target.value)} placeholder="值" className="h-7 text-sm w-24" />
-          <button onClick={() => removeRule(r.id)} className="text-muted-foreground hover:text-red-400"><X className="h-3 w-3" /></button>
+          <button onClick={() => removeRule(r.id)} className="text-muted-foreground hover:text-destructive-text"><X className="h-3 w-3" /></button>
         </div>
       ))}
       <Button size="sm" variant="ghost" onClick={addRule} className="h-7 gap-1 text-xs"><Plus className="h-3 w-3" />添加条件</Button>
@@ -169,8 +169,8 @@ function SeoPreview({ title, handle, description, shopDomain }: { title: string;
 
   return (
     <div className="rounded-lg border border-border/20 bg-card p-3 max-w-md">
-      <p className="text-sm font-medium text-sky-400 truncate">{displayTitle.slice(0, 70)}</p>
-      <p className="text-xs text-emerald-400/70 truncate">{url}</p>
+      <p className="text-sm font-medium text-info truncate">{displayTitle.slice(0, 70)}</p>
+      <p className="text-xs text-success/70 truncate">{url}</p>
       <p className="text-xs text-muted-foreground/80 mt-0.5 line-clamp-2">{displayDesc.slice(0, 320)}</p>
     </div>
   );
@@ -184,11 +184,11 @@ function DeleteDialog({ title, onConfirm, onCancel }: { title: string; onConfirm
       <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="w-full max-w-sm rounded-xl border border-border/40 bg-card shadow-2xl p-5 space-y-3">
-          <AlertCircle className="h-9 w-8 text-red-400" />
+          <AlertCircle className="h-9 w-8 text-destructive-text" />
           <p className="text-base text-foreground font-semibold">确定删除集合 &ldquo;{title}&rdquo;？</p>
           <p className="text-sm text-muted-foreground">此操作不可恢复。集合中的商品不会被删除。</p>
           <div className="flex gap-2 pt-2">
-            <Button onClick={onConfirm} className="flex-1 h-9 bg-red-600 hover:bg-red-500 text-white text-sm">确认删除</Button>
+            <Button onClick={onConfirm} className="flex-1 h-9 bg-destructive text-white text-sm">确认删除</Button>
             <Button variant="outline" onClick={onCancel} className="flex-1 h-9 text-sm">取消</Button>
           </div>
         </div>
@@ -315,12 +315,12 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
 
   return (
     <div className="space-y-4 animate-in fade-in duration-300">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
 
       {/* Header */}
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><FolderTree className="h-6 w-6 text-purple-400" />集合管理</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName} · {collections.length} 个集合{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><FolderTree className="h-6 w-6 text-info" />集合管理</h2>
+        <p className="mt-1 text-base text-muted-foreground">{shopName} · {collections.length} 个集合{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       {/* Toolbar */}
@@ -328,7 +328,7 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
         <CardContent className="flex flex-wrap items-center gap-2 px-4 py-2.5">
           <div className="flex gap-1">
             {(["smart", "custom"] as const).map((t) => (
-              <button key={t} onClick={() => { setActiveTab(t); setExpandedId(null); setEditForm(null); }} className={`px-3 py-1.5 rounded text-sm font-medium ${activeTab === t ? "bg-purple-500/15 text-purple-400" : "text-muted-foreground hover:text-foreground"}`}>
+              <button key={t} onClick={() => { setActiveTab(t); setExpandedId(null); setEditForm(null); }} className={`px-3 py-1.5 rounded text-sm font-medium ${activeTab === t ? "bg-info-bg text-info" : "text-muted-foreground hover:text-foreground"}`}>
                 {t === "smart" ? "智能集合" : "手动集合"}
               </button>
             ))}
@@ -342,7 +342,7 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
             <option value="published">已发布</option>
             <option value="hidden">隐藏</option>
           </select>
-          <Button size="sm" onClick={() => createNew(activeTab)} className="h-9 gap-1 bg-purple-600 hover:bg-purple-500 text-white text-sm"><Plus className="h-3 w-3" />创建{activeTab === "smart" ? "智能" : "手动"}集合</Button>
+          <Button size="sm" onClick={() => createNew(activeTab)} className="h-9 gap-1 bg-info text-white text-sm"><Plus className="h-3 w-3" />创建{activeTab === "smart" ? "智能" : "手动"}集合</Button>
         </CardContent>
       </Card>
 
@@ -352,16 +352,16 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
           <Card key={c.id} className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg overflow-hidden">
             {/* Row */}
             <div className="flex items-center gap-3 px-5 py-3 cursor-pointer hover:bg-muted/20" onClick={() => toggleExpand(c.id)}>
-              {expandedId === c.id ? <ChevronDown className="h-4 w-4 shrink-0 text-purple-400" /> : <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />}
+              {expandedId === c.id ? <ChevronDown className="h-4 w-4 shrink-0 text-info" /> : <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />}
               <div className="flex-1 min-w-0">
                 <p className="text-base font-semibold text-foreground truncate">{c.title}</p>
                 <p className="text-xs text-muted-foreground">{new Date(c.updated_at).toLocaleDateString("zh-CN")} 更新</p>
               </div>
-              <Badge className="text-xs px-2 py-0 bg-purple-500/15 text-purple-400">{c.product_count} 件</Badge>
-              <Badge className={`text-xs px-2 py-0 ${c.published ? "bg-emerald-500/15 text-emerald-400" : "bg-zinc-500/15 text-zinc-400"}`}>
+              <Badge className="text-xs px-2 py-0 bg-info-bg text-info">{c.product_count} 件</Badge>
+              <Badge className={`text-xs px-2 py-0 ${c.published ? "bg-success-bg text-success" : "bg-muted text-muted-foreground"}`}>
                 {c.published ? <><Eye className="h-2.5 w-2.5 mr-0.5 inline" />已发布</> : <><EyeOff className="h-2.5 w-2.5 mr-0.5 inline" />隐藏</>}
               </Badge>
-              <button onClick={(e) => { e.stopPropagation(); setDeleteTarget(c); }} className="h-7 w-7 flex items-center justify-center rounded hover:bg-red-500/20 text-muted-foreground hover:text-red-400 shrink-0"><Trash2 className="h-3.5 w-3.5" /></button>
+              <button onClick={(e) => { e.stopPropagation(); setDeleteTarget(c); }} className="h-7 w-7 flex items-center justify-center rounded hover:bg-destructive-bg text-muted-foreground hover:text-destructive-text shrink-0"><Trash2 className="h-3.5 w-3.5" /></button>
             </div>
 
             {/* Expanded edit area */}
@@ -379,7 +379,7 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
                   </div>
                 </div>
                 <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
-                  <input type="checkbox" checked={!!editForm.published} onChange={() => setEditForm({ ...editForm, published: !editForm.published })} className="accent-emerald-500" />已发布到店铺前台
+                  <input type="checkbox" checked={!!editForm.published} onChange={() => setEditForm({ ...editForm, published: !editForm.published })} className="accent-success" />已发布到店铺前台
                 </label>
 
                 {/* Smart: Rules editor */}
@@ -392,7 +392,7 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
                       onChangeRules={(r) => setEditForm({ ...editForm, rules: r })}
                       onChangeDisjunctive={(v) => setEditForm({ ...editForm, disjunctive: v })}
                     />
-                    <p className="text-xs text-emerald-400">当前规则匹配 ≈ {estimateMatchCount(editForm.rules || [])} 件商品</p>
+                    <p className="text-xs text-success">当前规则匹配 ≈ {estimateMatchCount(editForm.rules || [])} 件商品</p>
                     <div>
                       <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-0.5 block">排序方式</label>
                       <select value={editForm.sortOrder || "manual"} onChange={(e) => setEditForm({ ...editForm, sortOrder: e.target.value })} className="h-9 rounded border border-border/40 bg-background px-2 text-sm text-foreground w-full">
@@ -414,7 +414,7 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
                           <div key={p.id} className="flex items-center justify-between px-2 py-1.5 rounded hover:bg-muted/20 text-sm cursor-pointer"
                             onClick={() => setEditForm({ ...editForm, productIds: [...(editForm.productIds || []), p.id] })}>
                             <span className="text-foreground truncate">{p.title}</span>
-                            <span className="text-xs text-emerald-400">${p.price.toFixed(2)}</span>
+                            <span className="text-xs text-success">${p.price.toFixed(2)}</span>
                             <Plus className="h-3 w-3 text-muted-foreground ml-1" />
                           </div>
                         ))}
@@ -431,8 +431,8 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
                               onClick={() => setEditForm({ ...editForm, productIds: (editForm.productIds || []).filter((x) => x !== pid) })}>
                               <GripVertical className="h-3 w-3 text-muted-foreground/50" />
                               <span className="flex-1 text-foreground truncate ml-1">{p.title}</span>
-                              <span className="text-xs text-emerald-400">${p.price.toFixed(2)}</span>
-                              <X className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 ml-1 hover:text-red-400" />
+                              <span className="text-xs text-success">${p.price.toFixed(2)}</span>
+                              <X className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 ml-1 hover:text-destructive-text" />
                             </div>
                           );
                         })}
@@ -464,7 +464,7 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
 
                 {/* Save / Cancel */}
                 <div className="flex gap-2 pt-1">
-                  <Button onClick={saveEdit} disabled={!editForm.title} className="h-9 gap-1 bg-purple-600 hover:bg-purple-500 text-white text-sm flex-1"><CheckCircle2 className="h-3 w-3" />保存</Button>
+                  <Button onClick={saveEdit} disabled={!editForm.title} className="h-9 gap-1 bg-info text-white text-sm flex-1"><CheckCircle2 className="h-3 w-3" />保存</Button>
                   <Button variant="outline" onClick={() => { setExpandedId(null); setEditForm(null); }} className="h-9 text-sm">取消</Button>
                 </div>
               </CardContent>
@@ -475,7 +475,7 @@ export default function CollectionManagerPanel({ isDemo, shopUrl, accessToken, s
           <div className="flex flex-col items-center gap-2 py-16">
             <FolderTree className="h-12 w-12 text-muted-foreground/25" />
             <p className="text-base text-muted-foreground">暂无集合</p>
-            <Button size="sm" onClick={() => createNew(activeTab)} className="h-9 text-sm bg-purple-600 hover:bg-purple-500 text-white"><Plus className="h-3 w-3 mr-1" />创建集合</Button>
+            <Button size="sm" onClick={() => createNew(activeTab)} className="h-9 text-sm bg-info text-white"><Plus className="h-3 w-3 mr-1" />创建集合</Button>
           </div>
         )}
       </div>
