@@ -162,7 +162,7 @@ export default function ConfigPage() {
         <CardFooter>
           <Button
             size="lg"
-            className="w-full gap-2 bg-emerald-600 text-white hover:bg-emerald-500 active:bg-emerald-700"
+            className="w-full gap-2 bg-success text-white hover:bg-success/90 active:bg-success/80"
             disabled={!isValid || loading}
             onClick={handleConnect}
           >
