@@ -92,15 +92,15 @@ const IGNORED_KEY = "seo_ignored_issues";
 /* ─── 评分色调 ───────────────────────────────────────── */
 
 function scoreColor(s: number): string {
-  if (s >= 80) return "text-emerald-400";
-  if (s >= 60) return "text-amber-400";
-  return "text-red-400";
+  if (s >= 80) return "text-success";
+  if (s >= 60) return "text-warning";
+  return "text-destructive-text";
 }
 
 function priorityMeta(cat: SEOCheckCategory): { emoji: string; cls: string } {
-  if (cat === "critical") return { emoji: "🔴", cls: "text-red-400" };
-  if (cat === "warning") return { emoji: "🟡", cls: "text-amber-400" };
-  return { emoji: "🔵", cls: "text-sky-400" };
+  if (cat === "critical") return { emoji: "", cls: "text-destructive-text" };
+  if (cat === "warning") return { emoji: "", cls: "text-warning" };
+  return { emoji: "", cls: "text-info" };
 }
 
 /* ─── 主面板 ──────────────────────────────────────────── */
@@ -221,7 +221,7 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
     setScanTime(new Date().toLocaleString("zh-CN"));
     setProgress(100);
 
-    // 修复追踪对账：仍存在的问题从 fixedMap 移除（状态回退为 🔴）
+    // 修复追踪对账：仍存在的问题从 fixedMap 移除（状态回退为未修复）
     const currentKeys = new Set(all.flatMap((r) => r.issues.map((i) => i.key)));
     setFixedMap((prev) => {
       const next: Record<string, number> = {};
@@ -368,12 +368,12 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
       );
     }
     actions.push(
-      <Button key="fix" size="sm" variant="ghost" className="h-7 text-xs text-emerald-400 hover:text-emerald-300" onClick={(e) => { e.stopPropagation(); markFixed(issue.key); }}>
+      <Button key="fix" size="sm" variant="ghost" className="h-7 text-xs text-success hover:text-success" onClick={(e) => { e.stopPropagation(); markFixed(issue.key); }}>
         <CheckCheck className="h-3 w-3" />修复
       </Button>,
     );
     actions.push(
-      <Button key="ignore" size="sm" variant="ghost" className="h-7 text-xs text-zinc-500 hover:text-rose-400" onClick={(e) => { e.stopPropagation(); ignoreIssue(issue.key); }}>
+      <Button key="ignore" size="sm" variant="ghost" className="h-7 text-xs text-muted-foreground hover:text-destructive-text" onClick={(e) => { e.stopPropagation(); ignoreIssue(issue.key); }}>
         <XCircle className="h-3 w-3" />忽略
       </Button>,
     );
@@ -388,12 +388,12 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
       {/* Header */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-2 text-lg font-semibold text-foreground">
-          <Search className="h-6 w-6 text-emerald-400" />SEO 健康扫描
-          {isDemo && <span className="ml-1 text-sm text-amber-400">(演示)</span>}
+          <Search className="h-6 w-6 text-success" />SEO 健康扫描
+          {isDemo && <span className="ml-1 text-sm text-warning">(演示)</span>}
         </div>
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <select
-            className="h-9 rounded-md border border-zinc-700 bg-zinc-900 px-2 text-sm text-zinc-300 outline-none"
+            className="h-9 rounded-md border border-input bg-card px-2 text-sm text-foreground outline-none"
             value={scanRange}
             onChange={(e) => setScanRange(e.target.value as any)}
             disabled={scanning}
@@ -404,7 +404,7 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
             <option value="blogs">仅博客</option>
             <option value="collections">仅集合</option>
           </select>
-          <Button size="sm" className="h-9 bg-emerald-600 text-white hover:bg-emerald-500" onClick={runScan} disabled={scanning}>
+          <Button size="sm" className="h-9" onClick={runScan} disabled={scanning}>
             <RefreshCw className={cn("h-3.5 w-3.5", scanning && "animate-spin")} />{scanning ? "扫描中…" : "开始全站扫描"}
           </Button>
           <Button size="sm" variant="outline" className="h-9" onClick={exportCsv} disabled={!hasResults}>
@@ -422,8 +422,8 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
 
       {/* Progress */}
       {scanning && (
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
-          <div className="h-full bg-emerald-500 transition-all" style={{ width: `${progress}%` }} />
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+          <div className="h-full bg-success transition-all" style={{ width: `${progress}%` }} />
         </div>
       )}
 
@@ -447,25 +447,25 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">问题 / 已修复 / 未修复</p>
                 <p className="mt-1 text-2xl font-bold text-foreground">
                   {kpi.totalIssues}<span className="text-base text-muted-foreground"> / </span>
-                  <span className="text-emerald-400">{kpi.fixedCount}</span><span className="text-base text-muted-foreground"> / </span>
-                  <span className="text-amber-400">{kpi.unfixedCount}</span>
+                  <span className="text-success">{kpi.fixedCount}</span><span className="text-base text-muted-foreground"> / </span>
+                  <span className="text-warning">{kpi.unfixedCount}</span>
                 </p>
-                <Button size="sm" variant="ghost" className="mt-1 h-6 px-1 text-xs text-zinc-400 hover:text-emerald-300" onClick={markAllFixed}>
+                <Button size="sm" variant="ghost" className="mt-1 h-6 px-1 text-xs text-muted-foreground hover:text-success" onClick={markAllFixed}>
                   <CheckCheck className="h-3 w-3" />标记全部已修复
                 </Button>
               </CardContent>
             </Card>
             <Card className="border-border/40 bg-card/60">
               <CardContent className="p-3.5">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">阻塞性问题（🔴）</p>
-                <p className="mt-1 text-2xl font-bold text-red-400">{kpi.criticalCount}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">阻塞性问题</p>
+                <p className="mt-1 text-2xl font-bold text-destructive-text">{kpi.criticalCount}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">直接影响排名</p>
               </CardContent>
             </Card>
             <Card className="border-border/40 bg-card/60">
               <CardContent className="p-3.5">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">可优化问题（🟡🔵）</p>
-                <p className="mt-1 text-2xl font-bold text-amber-400">{kpi.warningCount + kpi.suggestionCount}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">可优化问题</p>
+                <p className="mt-1 text-2xl font-bold text-warning">{kpi.warningCount + kpi.suggestionCount}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">影响排名但不阻塞</p>
               </CardContent>
             </Card>
@@ -473,13 +473,13 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
 
           {/* 被忽略提示 */}
           {ignoredCount > 0 && (
-            <div className="flex items-center justify-between rounded-lg border border-zinc-700 bg-zinc-900/40 px-3 py-2">
-              <p className="text-sm text-zinc-400">已忽略 {ignoredCount} 项问题（{showIgnored ? "当前已显示" : "当前已隐藏"}）。</p>
+            <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 px-3 py-2">
+              <p className="text-sm text-muted-foreground">已忽略 {ignoredCount} 项问题（{showIgnored ? "当前已显示" : "当前已隐藏"}）。</p>
               <div className="flex gap-2">
                 <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setShowIgnored((v) => !v)}>
                   {showIgnored ? "隐藏已忽略" : "显示已忽略"}
                 </Button>
-                <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-400 hover:text-emerald-300" onClick={restoreIgnored}>
+                <Button size="sm" variant="ghost" className="h-7 text-xs text-success hover:text-success" onClick={restoreIgnored}>
                   恢复全部
                 </Button>
               </div>
@@ -499,15 +499,15 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
                     className="flex w-full items-center gap-2 px-4 py-3 text-left"
                     onClick={() => toggleGroup(cat)}
                   >
-                    {expanded ? <ChevronDown className="h-4 w-4 text-zinc-400" /> : <ChevronRight className="h-4 w-4 text-zinc-400" />}
-                    <span className={cn("text-base font-semibold", meta.tone)}>{meta.emoji} {meta.label}</span>
-                    <Badge className={cn("ml-1", cat === "critical" ? "bg-red-500/15 text-red-400 border-red-500/30" : cat === "warning" ? "bg-amber-500/15 text-amber-400 border-amber-500/30" : "bg-sky-500/15 text-sky-400 border-sky-500/30")}>
+                    {expanded ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+                    <span className={cn("text-base font-semibold", meta.tone)}>{meta.label}</span>
+                    <Badge className={cn("ml-1 border", cat === "critical" ? "border-destructive-border bg-destructive-bg text-destructive-text" : cat === "warning" ? "border-warning-border bg-warning-bg text-warning" : "border-info-border bg-info-bg text-info")}>
                       {grpIssues} 项问题
                     </Badge>
                     <span className="ml-auto text-xs text-muted-foreground">权重 {Math.round(SEO_CATEGORY_WEIGHT[cat] * 100)}%</span>
                   </button>
                   {expanded && (
-                    <CardContent className="space-y-2 border-t border-border/10 p-3">
+                    <CardContent className="space-y-2 border-t border-border p-3">
                       {checks.map((c, i) => {
                         const ratio = c.totalCount > 0 ? c.passedCount / c.totalCount : 1;
                         const pts = Math.round(c.maxPoints * ratio * 10) / 10;
@@ -515,13 +515,13 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
                         return (
                           <div key={i} className="rounded-lg border border-border/20 bg-card/40 p-2.5">
                             <div className="flex items-center gap-2">
-                              {ok ? <CheckCircle2 className="h-4 w-4 text-emerald-400" /> : <AlertTriangle className={cn("h-4 w-4", meta.tone)} />}
+                              {ok ? <CheckCircle2 className="h-4 w-4 text-success" /> : <AlertTriangle className={cn("h-4 w-4", meta.tone)} />}
                               <span className="text-base font-medium text-foreground">{c.checkName}</span>
                               <span className="ml-auto text-xs text-muted-foreground">{pts}/{c.maxPoints} 分 · {c.passedCount}/{c.totalCount} 通过</span>
                             </div>
-                            {c.note && <p className="mt-1 text-xs text-zinc-500">{c.note}</p>}
+                            {c.note && <p className="mt-1 text-xs text-muted-foreground">{c.note}</p>}
                             {c.issues.length > 0 && (
-                              <div className="mt-1.5 max-h-32 overflow-y-auto rounded bg-zinc-950/40 p-1.5 text-xs text-muted-foreground">
+                              <div className="mt-1.5 max-h-32 overflow-y-auto rounded bg-muted/40 p-1.5 text-xs text-muted-foreground">
                                 {c.issues.slice(0, 10).map((it, j) => (
                                   <div key={j} className="flex items-center gap-1.5">
                                     <span className="text-foreground">{it.targetTitle}</span>
@@ -554,7 +554,7 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-base">
-                  <thead className="border-y border-zinc-800 text-sm text-zinc-500">
+                  <thead className="border-y border-border text-sm text-muted-foreground">
                     <tr>
                       <th className="px-3 py-2 text-left">优先级</th>
                       <th className="px-3 py-2 text-left">商品/对象</th>
@@ -567,7 +567,7 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
                   </thead>
                   <tbody>
                     {displayedIssues.length === 0 ? (
-                      <tr><td colSpan={7} className="px-3 py-10 text-center text-sm text-emerald-400">🎉 未检测到 SEO 问题，全站基础指标健康！</td></tr>
+                      <tr><td colSpan={7} className="px-3 py-10 text-center text-sm text-success">未检测到 SEO 问题，全站基础指标健康！</td></tr>
                     ) : (
                       displayedIssues.map((it) => {
                         const pm = priorityMeta(it.category);
@@ -576,20 +576,20 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
                         return (
                           <Fragment key={it.key}>
                             <tr
-                              className={cn("cursor-pointer border-b border-zinc-800/60 hover:bg-zinc-800/40", isFixed && "opacity-60")}
+                              className={cn("cursor-pointer border-b border-border/60 hover:bg-muted/40", isFixed && "opacity-60")}
                               onClick={() => setExpandedRow((p) => (p === it.key ? null : it.key))}
                             >
                               <td className={cn("px-3 py-2 text-sm font-medium", pm.cls)}>
-                                {isFixed ? "✅" : pm.emoji}
+                                {isFixed ? <CheckCheck className="h-3.5 w-3.5 text-success" /> : ""}
                               </td>
-                              <td className="px-3 py-2 text-zinc-100">
+                              <td className="px-3 py-2 text-foreground">
                                 {it.targetTitle}
-                                {it.groupItems && it.groupItems.length > 0 && <span className="text-xs text-zinc-500"> ×{it.groupItems.length}</span>}
+                                {it.groupItems && it.groupItems.length > 0 && <span className="text-xs text-muted-foreground"> ×{it.groupItems.length}</span>}
                               </td>
-                              <td className="px-3 py-2 text-zinc-300">{it.checkName}</td>
-                              <td className="px-3 py-2 text-xs text-zinc-500">{it.targetType}</td>
-                              <td className="px-3 py-2 text-zinc-400">{it.currentValue}</td>
-                              <td className="px-3 py-2 text-emerald-300/90">{it.suggestedValue}</td>
+                              <td className="px-3 py-2 text-foreground">{it.checkName}</td>
+                              <td className="px-3 py-2 text-xs text-muted-foreground">{it.targetType}</td>
+                              <td className="px-3 py-2 text-muted-foreground">{it.currentValue}</td>
+                              <td className="px-3 py-2 text-success">{it.suggestedValue}</td>
                               <td className="px-3 py-2">
                                 <div className="flex flex-wrap justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                                   {rowActions(it)}
@@ -597,18 +597,18 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
                               </td>
                             </tr>
                             {isOpen && (
-                              <tr className="border-b border-zinc-800/60 bg-zinc-950/30">
+                              <tr className="border-b border-border/60 bg-muted/30">
                                 <td colSpan={7} className="px-4 py-3">
-                                  <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
+                                  <div className="rounded-lg border border-border bg-card/60 p-3">
                                     <div className="flex items-center gap-2 text-base font-semibold text-foreground">
-                                      {pm.emoji} {it.checkName}
-                                      {isFixed && <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">已修复 · {new Date(fixedMap[it.key]).toLocaleDateString("zh-CN")}</Badge>}
+                                      {it.checkName}
+                                      {isFixed && <Badge className="border-success-border bg-success-bg text-success">已修复 · {new Date(fixedMap[it.key]).toLocaleDateString("zh-CN")}</Badge>}
                                     </div>
                                     <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{it.detail}</p>
                                     {it.groupItems && it.groupItems.length > 0 && (
                                       <div className="mt-2">
-                                        <p className="text-xs font-medium text-zinc-400">问题对象（{it.groupItems.length}）：</p>
-                                        <div className="mt-1 max-h-32 overflow-y-auto rounded bg-zinc-950/40 p-1.5 text-xs text-muted-foreground">
+                                        <p className="text-xs font-medium text-muted-foreground">问题对象（{it.groupItems.length}）：</p>
+                                        <div className="mt-1 max-h-32 overflow-y-auto rounded bg-muted/40 p-1.5 text-xs text-muted-foreground">
                                           {it.groupItems.map((g, gi) => (
                                             <div key={gi} className="flex items-center gap-1.5">
                                               <span className="text-foreground">#{g.id} {g.title}</span>
@@ -619,12 +619,12 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
                                       </div>
                                     )}
                                     <div className="mt-2 flex items-start gap-2">
-                                      <ListTodo className="mt-0.5 h-3 w-3 shrink-0 text-emerald-400" />
-                                      <p className="text-xs leading-relaxed text-zinc-300">💡 建议：{it.suggestedValue}。{it.category === "critical" ? "该问题会直接稀释排名，建议优先处理。" : ""}</p>
+                                      <ListTodo className="mt-0.5 h-3 w-3 shrink-0 text-success" />
+                                      <p className="text-xs leading-relaxed text-foreground">建议：{it.suggestedValue}。{it.category === "critical" ? "该问题会直接稀释排名，建议优先处理。" : ""}</p>
                                     </div>
                                     <div className="mt-2 flex flex-wrap gap-2">
                                       {it.editTab && it.targetType === "product" && (
-                                        <Button size="sm" className="h-7 bg-emerald-600 text-white hover:bg-emerald-500" onClick={() => openProductEdit(it.targetId, it.editTab as any)}>
+                                        <Button size="sm" className="h-7" onClick={() => openProductEdit(it.targetId, it.editTab as any)}>
                                           <Pencil className="h-3 w-3" />{it.editTab === "seo" ? "编辑 SEO" : it.editTab === "images" ? "添加 Alt" : "编辑商品"}
                                         </Button>
                                       )}
@@ -633,10 +633,10 @@ export default function SEOHealthPanel(props: SEOHealthPanelProps) {
                                           <Pencil className="h-3 w-3" />批量编辑标题
                                         </Button>
                                       )}
-                                      <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-400 hover:text-emerald-300" onClick={() => markFixed(it.key)}>
+                                      <Button size="sm" variant="ghost" className="h-7 text-xs text-success hover:text-success" onClick={() => markFixed(it.key)}>
                                         <CheckCheck className="h-3 w-3" />标记为已修复
                                       </Button>
-                                      <Button size="sm" variant="ghost" className="h-7 text-xs text-zinc-500 hover:text-rose-400" onClick={() => ignoreIssue(it.key)}>
+                                      <Button size="sm" variant="ghost" className="h-7 text-xs text-muted-foreground hover:text-destructive-text" onClick={() => ignoreIssue(it.key)}>
                                         <XCircle className="h-3 w-3" />忽略此问题
                                       </Button>
                                     </div>

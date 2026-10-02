@@ -53,9 +53,9 @@ export const SEO_CATEGORY_META: Record<
   SEOCheckCategory,
   { label: string; emoji: string; tone: string; short: string }
 > = {
-  critical: { label: "严重（阻塞排名）", emoji: "🔴", tone: "text-red-400", short: "严重" },
-  warning: { label: "警告（影响排名）", emoji: "🟡", tone: "text-amber-400", short: "警告" },
-  suggestion: { label: "建议（可优化）", emoji: "🔵", tone: "text-sky-400", short: "建议" },
+  critical: { label: "严重（阻塞排名）", emoji: "🔴", tone: "text-destructive-text", short: "严重" },
+  warning: { label: "警告（影响排名）", emoji: "🟡", tone: "text-warning", short: "警告" },
+  suggestion: { label: "建议（可优化）", emoji: "🔵", tone: "text-info", short: "建议" },
 };
 
 /* ─── 工具函数 ─────────────────────────────────────────── */
