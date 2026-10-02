@@ -20,18 +20,18 @@ interface CategoryAnalyticsPanelProps {
 /* ─── Helpers ─────────────────────────────────────────── */
 
 const HEALTH: Record<string, { label: string; emoji: string; color: string; bg: string }> = {
-  healthy: { label: "健康", emoji: "🟢", color: "text-emerald-400", bg: "bg-emerald-500/15" },
-  ok: { label: "一般", emoji: "🟡", color: "text-amber-400", bg: "bg-amber-500/15" },
-  watch: { label: "需关注", emoji: "🟠", color: "text-orange-400", bg: "bg-orange-500/15" },
-  danger: { label: "危险", emoji: "🔴", color: "text-red-400", bg: "bg-red-500/15" },
+  healthy: { label: "健康", emoji: "🟢", color: "text-success", bg: "bg-success-bg" },
+  ok: { label: "一般", emoji: "🟡", color: "text-warning", bg: "bg-warning-bg" },
+  watch: { label: "需关注", emoji: "🟠", color: "text-warning", bg: "bg-warning-bg" },
+  danger: { label: "危险", emoji: "🔴", color: "text-destructive-text", bg: "bg-destructive-bg" },
 };
 
 const QUADRANTS = { star: "🌟 明星品类", potential: "💎 潜力品类", problem: "⚡ 问题品类", eliminate: "💤 淘汰候选" };
 const GRADES = [
-  { grade: "S", label: "核心品类", min: 0.2, color: "text-amber-400" },
-  { grade: "A", label: "重要品类", min: 0.1, color: "text-purple-400" },
-  { grade: "B", label: "常规品类", min: 0.05, color: "text-sky-400" },
-  { grade: "C", label: "长尾品类", min: 0, color: "text-zinc-400" },
+  { grade: "S", label: "核心品类", min: 0.2, color: "text-warning" },
+  { grade: "A", label: "重要品类", min: 0.1, color: "text-info" },
+  { grade: "B", label: "常规品类", min: 0.05, color: "text-info" },
+  { grade: "C", label: "长尾品类", min: 0, color: "text-muted-foreground" },
 ];
 
 /* ─── Demo Data ───────────────────────────────────────── */
@@ -98,11 +98,11 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
 
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
 
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><PieChart className="h-6 w-6 text-fuchsia-400" />品类分析</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName} · {categories.length} 个品类{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><PieChart className="h-6 w-6 text-info" />品类分析</h2>
+        <p className="mt-1 text-base text-muted-foreground">{shopName} · {categories.length} 个品类{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       {/* Grade Summary */}
@@ -112,7 +112,7 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
         ))}
         <div className="ml-auto flex gap-1">
           {([{k:"cards",l:"卡片",i:Eye},{k:"table",l:"表格",i:Table},{k:"bubble",l:"气泡图",i:BarChart4}] as const).map((v) => (
-            <Button key={v.k} size="sm" variant={view === v.k ? "default" : "outline"} onClick={() => setView(v.k)} className={`h-6 text-[9px] gap-0.5 ${view===v.k?"bg-fuchsia-600":""}`}><v.i className="h-2.5 w-2.5"/>{v.l}</Button>
+            <Button key={v.k} size="sm" variant={view === v.k ? "default" : "outline"} onClick={() => setView(v.k)} className={`h-6 text-[9px] gap-0.5 ${view===v.k?"bg-info text-white":""}`}><v.i className="h-2.5 w-2.5"/>{v.l}</Button>
           ))}
           <Button size="sm" variant="outline" onClick={generateReport} className="h-6 text-[9px] gap-0.5"><Download className="h-2.5 w-2.5"/>报告</Button>
         </div>
@@ -125,23 +125,23 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
             const h = HEALTH[cat.healthLabel];
             const aboveAvg = cat.profitRate >= avgProfitRate;
             return (
-              <Card key={cat.name} className={`border-2 cursor-pointer hover:shadow-lg transition-shadow ${aboveAvg ? "border-emerald-500/20 bg-card/60" : "border-red-500/20 bg-card/60"}`}
+              <Card key={cat.name} className={`border-2 cursor-pointer hover:shadow-lg transition-shadow ${aboveAvg ? "border-success/20 bg-card/60" : "border-destructive/20 bg-card/60"}`}
                 onClick={() => setExpandedCat(expandedCat === cat.name ? null : cat.name)}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <Badge className={`text-[9px] px-1.5 py-0 ${cat.rank <= 3 ? (cat.rank === 1 ? "bg-amber-500/15 text-amber-400" : cat.rank === 2 ? "bg-zinc-400/15 text-zinc-300" : "bg-orange-500/15 text-orange-400") : "bg-muted/20 text-muted-foreground"}`}>#{cat.rank}</Badge>
+                      <Badge className={`text-[9px] px-1.5 py-0 ${cat.rank <= 3 ? (cat.rank === 1 ? "bg-warning-bg text-warning" : cat.rank === 2 ? "bg-muted text-muted-foreground" : "bg-warning-bg text-warning") : "bg-muted/20 text-muted-foreground"}`}>#{cat.rank}</Badge>
                       <p className="font-semibold text-foreground">{cat.name}</p>
                     </div>
                     <Badge className={`text-[8px] px-1 py-0 ${h.bg} ${h.color}`}>{h.emoji} {h.label}</Badge>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1"><span>GMV: <span className="text-foreground font-semibold">{formatCny(cat.gmv * EXCHANGE_RATE)}</span></span><span className="ml-auto">占全店 {cat.gmvShare.toFixed(1)}%</span></div>
-                  <div className="h-1.5 rounded bg-muted/20 mb-2"><div className="h-full bg-fuchsia-500/50 rounded" style={{ width: `${cat.gmvShare * 100}%` }} /></div>
+                  <div className="h-1.5 rounded bg-muted/20 mb-2"><div className="h-full bg-info/50 rounded" style={{ width: `${cat.gmvShare * 100}%` }} /></div>
                   <div className="grid grid-cols-4 gap-1 text-xs">
                     <div><p className="text-muted-foreground">销量</p><p className="tabular-nums">{cat.qty}</p></div>
-                    <div><p className="text-muted-foreground">利润率</p><p className={`tabular-nums ${aboveAvg ? "text-emerald-400" : "text-red-400"}`}>{cat.profitRate.toFixed(1)}%</p></div>
-                    <div><p className="text-muted-foreground">退货率</p><p className={`tabular-nums ${cat.returnRate > 8 ? "text-red-400" : ""}`}>{cat.returnRate.toFixed(1)}%</p></div>
-                    <div><p className="text-muted-foreground">周增长</p><p className={`tabular-nums ${cat.weekGrowth >= 0 ? "text-emerald-400" : "text-red-400"}`}>{cat.weekGrowth > 0 ? "+" : ""}{cat.weekGrowth}%</p></div>
+                    <div><p className="text-muted-foreground">利润率</p><p className={`tabular-nums ${aboveAvg ? "text-success" : "text-destructive-text"}`}>{cat.profitRate.toFixed(1)}%</p></div>
+                    <div><p className="text-muted-foreground">退货率</p><p className={`tabular-nums ${cat.returnRate > 8 ? "text-destructive-text" : ""}`}>{cat.returnRate.toFixed(1)}%</p></div>
+                    <div><p className="text-muted-foreground">周增长</p><p className={`tabular-nums ${cat.weekGrowth >= 0 ? "text-success" : "text-destructive-text"}`}>{cat.weekGrowth > 0 ? "+" : ""}{cat.weekGrowth}%</p></div>
                   </div>
                   <p className="text-[9px] text-muted-foreground mt-1.5">{cat.productCount} 件商品 · 趋势: {cat.trend === "rising" ? "🔥 上升" : cat.trend === "declining" ? "📉 下降" : "➡ 平稳"}</p>
                 </CardContent>
@@ -163,9 +163,9 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
                 <td className="py-2 px-2 text-right">{cat.productCount}</td>
                 <td className="py-2 px-2 text-right tabular-nums">{formatCny(cat.gmv * EXCHANGE_RATE)}</td>
                 <td className="py-2 px-2 text-right tabular-nums">{cat.gmvShare.toFixed(1)}%</td>
-                <td className={`py-2 px-2 text-right tabular-nums ${cat.profitRate >= avgProfitRate ? "text-emerald-400" : "text-red-400"}`}>{cat.profitRate.toFixed(1)}%</td>
-                <td className={`py-2 px-2 text-right tabular-nums ${cat.returnRate > 8 ? "text-red-400" : ""}`}>{cat.returnRate.toFixed(1)}%</td>
-                <td className={`py-2 px-2 text-right tabular-nums ${cat.weekGrowth >= 0 ? "text-emerald-400" : "text-red-400"}`}>{cat.weekGrowth > 0 ? "+" : ""}{cat.weekGrowth}%</td>
+                <td className={`py-2 px-2 text-right tabular-nums ${cat.profitRate >= avgProfitRate ? "text-success" : "text-destructive-text"}`}>{cat.profitRate.toFixed(1)}%</td>
+                <td className={`py-2 px-2 text-right tabular-nums ${cat.returnRate > 8 ? "text-destructive-text" : ""}`}>{cat.returnRate.toFixed(1)}%</td>
+                <td className={`py-2 px-2 text-right tabular-nums ${cat.weekGrowth >= 0 ? "text-success" : "text-destructive-text"}`}>{cat.weekGrowth > 0 ? "+" : ""}{cat.weekGrowth}%</td>
                 <td className="py-2 px-2 text-center"><Badge className={`text-[8px] px-1 py-0 ${h.bg} ${h.color}`}>{cat.healthScore}</Badge></td>
               </tr>);
             })}</tbody>
@@ -181,10 +181,10 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
           </div>
           <div className="relative w-full h-[350px] border border-border/20 rounded bg-muted/5">
             <div className="absolute inset-0 flex items-center justify-center"><div className="w-full h-px bg-border/40" /><div className="absolute w-px h-full bg-border/40" /></div>
-            <div className="absolute top-2 left-3 text-[8px] text-emerald-400">{QUADRANTS.potential}</div>
-            <div className="absolute top-2 right-3 text-[8px] text-amber-400">{QUADRANTS.star}</div>
-            <div className="absolute bottom-2 left-3 text-[8px] text-zinc-400">{QUADRANTS.eliminate}</div>
-            <div className="absolute bottom-2 right-3 text-[8px] text-red-400">{QUADRANTS.problem}</div>
+            <div className="absolute top-2 left-3 text-[8px] text-success">{QUADRANTS.potential}</div>
+            <div className="absolute top-2 right-3 text-[8px] text-warning">{QUADRANTS.star}</div>
+            <div className="absolute bottom-2 left-3 text-[8px] text-muted-foreground">{QUADRANTS.eliminate}</div>
+            <div className="absolute bottom-2 right-3 text-[8px] text-destructive-text">{QUADRANTS.problem}</div>
             {scatterPoints.map((p) => {
               const colors: Record<string, string> = { healthy: "#22c55e", ok: "#f59e0b", watch: "#f97316", danger: "#ef4444" };
               const xPct = Math.min(92, Math.max(8, p.x * 3));
@@ -198,10 +198,10 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
 
       {/* Expanded Detail */}
       {expanded && (
-        <Card className="border-border/40 bg-card/60 shadow-xl border-l-2 border-l-fuchsia-500">
+        <Card className="border-border/40 bg-card/60 shadow-xl border-l-2 border-l-info-border">
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center justify-between"><p className="text-base font-semibold text-foreground">{expanded.name}</p><Button size="sm" variant="ghost" onClick={()=>setExpandedCat(null)}><X className="h-4 w-4"/></Button></div>
-            <div className="flex gap-1">{(["overview","finance","inventory","compare"] as const).map((t)=>{const l=t==="overview"?"📊 总览":t==="finance"?"💰 财务":t==="inventory"?"📦 库存":"🆚 对比";return(<button key={t} onClick={()=>setDetailTab(t)} className={`px-3 py-1 rounded text-xs font-medium ${detailTab===t?"bg-fuchsia-500/15 text-fuchsia-400":"text-muted-foreground"}`}>{l}</button>);})}</div>
+            <div className="flex gap-1">{(["overview","finance","inventory","compare"] as const).map((t)=>{const l=t==="overview"?"📊 总览":t==="finance"?"💰 财务":t==="inventory"?"📦 库存":"🆚 对比";return(<button key={t} onClick={()=>setDetailTab(t)} className={`px-3 py-1 rounded text-xs font-medium ${detailTab===t?"bg-info-bg text-info":"text-muted-foreground"}`}>{l}</button>);})}</div>
             {detailTab === "overview" && <p className="text-xs text-muted-foreground">GMV: {formatCny(expanded.gmv*EXCHANGE_RATE)} · 利润率: {expanded.profitRate.toFixed(1)}% · {expanded.productCount} 件商品 · 健康状况: {HEALTH[expanded.healthLabel].emoji} {HEALTH[expanded.healthLabel].label}</p>}
             {detailTab === "finance" && <p className="text-xs text-muted-foreground">采购成本 ~{(45).toFixed(0)}% · 物流 ~{(12).toFixed(0)}% · 网关 ~{(3.5).toFixed(0)}% · 建议: {expanded.profitRate<avgProfitRate?"该品类利润率低于全店均值，建议优化成本结构":"该品类表现良好"}</p>}
             {detailTab === "inventory" && <p className="text-xs text-muted-foreground">库存分布: 充足 {Math.round(expanded.productCount*0.4)}件 · 偏低 {Math.round(expanded.productCount*0.3)}件 · 滞销 {Math.round(expanded.productCount*0.2)}件</p>}
