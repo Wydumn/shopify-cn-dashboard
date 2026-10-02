@@ -270,9 +270,9 @@ function GrowthKpiCard({
   accent: "emerald" | "sky" | "amber";
 }) {
   const colors = {
-    emerald: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
-    sky: "bg-sky-500/10 text-sky-400 ring-sky-500/20",
-    amber: "bg-amber-500/10 text-amber-400 ring-amber-500/20",
+    emerald: "bg-success-bg text-success ring-success-border",
+    sky: "bg-info-bg text-info ring-info-border",
+    amber: "bg-warning-bg text-warning ring-warning-border",
   };
   return (
     <Card className="group relative overflow-hidden border-border/40 bg-card/60 shadow-lg backdrop-blur-lg transition-all hover:border-border/60">
@@ -283,11 +283,11 @@ function GrowthKpiCard({
             <p className="text-3xl font-bold tracking-tight text-foreground">{value}</p>
             <div className="flex items-center gap-1.5">
               {growth >= 0 ? (
-                <ArrowUpRight className="h-4 w-4 text-emerald-500" />
+                <ArrowUpRight className="h-4 w-4 text-success" />
               ) : (
-                <ArrowDownRight className="h-4 w-4 text-red-500" />
+                <ArrowDownRight className="h-4 w-4 text-destructive-text" />
               )}
-              <span className={`text-base font-semibold ${growth >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+              <span className={`text-base font-semibold ${growth >= 0 ? "text-success" : "text-destructive-text"}`}>
                 {growth >= 0 ? "+" : ""}{growth.toFixed(1)}%
               </span>
               <span className="text-sm text-muted-foreground">{subtitle}</span>
@@ -395,12 +395,12 @@ export default function TrendAnalysisPanel({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
-            <BarChart3 className="h-6 w-6 text-sky-400" />
+            <BarChart3 className="h-6 w-6 text-info" />
             趋势同比 / 环比分析
           </h2>
           <p className="mt-1 text-base text-muted-foreground">
             {shopName} · 多维度历史数据动态对比
-            {isDemo && <span className="ml-2 text-sm text-amber-400">(模拟 14 天数据流)</span>}
+            {isDemo && <span className="ml-2 text-sm text-warning">(模拟 14 天数据流)</span>}
           </p>
         </div>
         <Select value={timeRange} onValueChange={(v) => setTimeRange(v as TimeRange)}>
@@ -421,7 +421,7 @@ export default function TrendAnalysisPanel({
         <span>当前：{formatDate(currentStart)} ~ {formatDate(currentEnd)}</span>
         <span className="text-muted-foreground/50">vs</span>
         <span>上期：{formatDate(previousStart)} ~ {formatDate(previousEnd)}</span>
-        <span className="ml-auto text-emerald-400">
+        <span className="ml-auto text-success">
           汇率 1 {currency} = ¥{exchangeRate}
         </span>
       </div>

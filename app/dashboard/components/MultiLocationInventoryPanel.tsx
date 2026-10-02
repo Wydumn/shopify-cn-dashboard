@@ -149,11 +149,11 @@ export default function MultiLocationInventoryPanel({ isDemo, shopUrl, accessTok
 
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
 
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Warehouse className="h-6 w-6 text-orange-400" />多仓库存管理</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName} · {locations.length} 个仓库{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Warehouse className="h-6 w-6 text-warning" />多仓库存管理</h2>
+        <p className="mt-1 text-base text-muted-foreground">{shopName} · {locations.length} 个仓库{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       {/* Distribution Analysis */}
@@ -173,8 +173,8 @@ export default function MultiLocationInventoryPanel({ isDemo, shopUrl, accessTok
           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
             {locations.map((l) => { const pct = totalAll > 0 ? ((totalPerLoc[l.id] || 0) / totalAll) * 100 : 0; return <span key={l.id}>{l.name}: <span className="text-foreground tabular-nums">{totalPerLoc[l.id] || 0}</span> ({pct.toFixed(1)}%)</span>; })}
           </div>
-          {locations.some((l) => !totalPerLoc[l.id]) && <p className="text-xs text-red-400">⚠ 以下仓库库存为 0：{locations.filter((l) => !totalPerLoc[l.id]).map((l) => l.name).join(", ")}</p>}
-          {Object.values(totalPerLoc).some((v) => totalAll > 0 && v / totalAll > 0.8) && <p className="text-xs text-amber-400">⚠ 库存集中度过高，建议分散以降低风险</p>}
+          {locations.some((l) => !totalPerLoc[l.id]) && <p className="text-xs text-destructive-text">⚠ 以下仓库库存为 0：{locations.filter((l) => !totalPerLoc[l.id]).map((l) => l.name).join(", ")}</p>}
+          {Object.values(totalPerLoc).some((v) => totalAll > 0 && v / totalAll > 0.8) && <p className="text-xs text-warning">⚠ 库存集中度过高，建议分散以降低风险</p>}
         </CardContent></Card>
       )}
 
@@ -182,7 +182,7 @@ export default function MultiLocationInventoryPanel({ isDemo, shopUrl, accessTok
       <Card className="border-border/40 bg-card/60"><CardContent className="flex flex-wrap items-center gap-2 px-3 py-2">
         <div className="flex items-center gap-1 flex-wrap">
           <span className="text-xs text-muted-foreground">仓库:</span>
-          {locations.map((l) => <label key={l.id} className="flex items-center gap-0.5 text-xs cursor-pointer"><input type="checkbox" checked={visibleLocIds.has(l.id)} onChange={() => toggleLoc(l.id)} className="accent-orange-500"/>{l.name}</label>)}
+          {locations.map((l) => <label key={l.id} className="flex items-center gap-0.5 text-xs cursor-pointer"><input type="checkbox" checked={visibleLocIds.has(l.id)} onChange={() => toggleLoc(l.id)} className="accent-warning"/>{l.name}</label>)}
         </div>
         <Button size="sm" variant="ghost" onClick={() => setVisibleLocIds(new Set(locations.map((l) => l.id)))} className="h-6 text-[9px]">全选</Button>
         <Button size="sm" variant="ghost" onClick={() => setVisibleLocIds(new Set(locations.filter((l) => l.type === "overseas").map((l) => l.id)))} className="h-6 text-[9px]">仅海外仓</Button>
@@ -217,11 +217,11 @@ export default function MultiLocationInventoryPanel({ isDemo, shopUrl, accessTok
                     </td>
                     {visibleLocs.map((l) => {
                       const qty = firstVar.locationStocks[l.id] || 0;
-                      const cls = qty === 0 ? "bg-red-500/10 text-red-400" : qty < 5 ? "bg-red-500/5 text-red-400" : qty < 10 ? "bg-amber-500/5 text-amber-400" : "";
+                      const cls = qty === 0 ? "bg-destructive-bg text-destructive-text" : qty < 5 ? "bg-destructive-bg text-destructive-text" : qty < 10 ? "bg-warning-bg text-warning" : "";
                       return <td key={l.id} className={`py-2 px-2 text-right tabular-nums font-mono ${cls}`}>{qty}</td>;
                     })}
                     <td className="py-2 px-2 text-right tabular-nums font-semibold">{totalInv}</td>
-                    <td className="py-2 px-2 text-center"><Button size="sm" variant="ghost" onClick={() => openTransfer(firstVar)} className="h-6 text-xs text-orange-400"><ArrowRightLeft className="h-3 w-3"/></Button></td>
+                    <td className="py-2 px-2 text-center"><Button size="sm" variant="ghost" onClick={() => openTransfer(firstVar)} className="h-6 text-xs text-warning"><ArrowRightLeft className="h-3 w-3"/></Button></td>
                   </tr>
                 );
               })}
@@ -236,7 +236,7 @@ export default function MultiLocationInventoryPanel({ isDemo, shopUrl, accessTok
           <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setTransferModal(null)}/>
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="w-full max-w-sm bg-card border border-border/40 rounded-xl shadow-2xl p-5 space-y-3">
-              <h3 className="text-base font-semibold flex items-center gap-2"><ArrowRightLeft className="h-4 w-4 text-orange-400"/>跨仓调拨</h3>
+              <h3 className="text-base font-semibold flex items-center gap-2"><ArrowRightLeft className="h-4 w-4 text-warning"/>跨仓调拨</h3>
               <p className="text-sm text-muted-foreground">{transferModal.variant.productTitle} · {transferModal.variant.sku}</p>
               <div className="grid grid-cols-2 gap-3">
                 <div><label className="text-xs text-muted-foreground block mb-0.5">来源仓库</label>
@@ -260,7 +260,7 @@ export default function MultiLocationInventoryPanel({ isDemo, shopUrl, accessTok
                 </div>
               )}
               <div className="flex gap-2">
-                <Button onClick={executeTransfer} disabled={transferQty <= 0 || transferTo === 0} className="flex-1 h-9 text-sm bg-orange-600 hover:bg-orange-500 text-white"><Save className="h-3 w-3 mr-1"/>确认调拨</Button>
+                <Button onClick={executeTransfer} disabled={transferQty <= 0 || transferTo === 0} className="flex-1 h-9 text-sm bg-warning text-white"><Save className="h-3 w-3 mr-1"/>确认调拨</Button>
                 <Button variant="outline" onClick={() => setTransferModal(null)} className="h-9 text-sm">取消</Button>
               </div>
             </div>

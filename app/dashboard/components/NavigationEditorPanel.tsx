@@ -138,7 +138,7 @@ function ItemModal({
             </div>
           </div>
           <div className="flex items-center gap-2 border-t border-border/20 px-5 py-3">
-            <Button onClick={handleSave} disabled={!title.trim()} className="flex-1 h-9 gap-1.5 text-sm bg-emerald-600 hover:bg-emerald-500 text-white"><Save className="h-3 w-3" />{isEdit ? "保存修改" : "添加"}</Button>
+            <Button onClick={handleSave} disabled={!title.trim()} className="flex-1 h-9 gap-1.5 text-sm bg-success text-white"><Save className="h-3 w-3" />{isEdit ? "保存修改" : "添加"}</Button>
             <Button variant="outline" onClick={onCancel} className="h-9 text-sm">取消</Button>
           </div>
         </div>
@@ -363,11 +363,11 @@ export default function NavigationEditorPanel({ isDemo, shopUrl, accessToken, sh
         )}
         <div className="flex-1 min-w-0 flex items-center gap-2">
           <span className="text-base text-foreground truncate">{item.title}</span>
-          <span className="text-xs text-emerald-400/70 font-mono truncate">→ {item.url}</span>
+          <span className="text-xs text-success/70 font-mono truncate">→ {item.url}</span>
         </div>
         <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
           <button onClick={() => handleEditItem(item)} className="h-6 w-6 flex items-center justify-center rounded hover:bg-muted/30"><Edit3 className="h-3 w-3 text-muted-foreground" /></button>
-          <button onClick={() => handleDeleteItem(item.id)} className="h-6 w-6 flex items-center justify-center rounded hover:bg-red-500/20"><Trash2 className="h-3 w-3 text-muted-foreground hover:text-red-400" /></button>
+          <button onClick={() => handleDeleteItem(item.id)} className="h-6 w-6 flex items-center justify-center rounded hover:bg-destructive-bg"><Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive-text" /></button>
         </div>
       </div>
       {(item.children && item.children.length > 0 && expanded.has(item.id)) && renderItems(item.children, level + 1)}
@@ -376,19 +376,19 @@ export default function NavigationEditorPanel({ isDemo, shopUrl, accessToken, sh
 
   return (
     <div className="space-y-4 animate-in fade-in duration-300">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
 
       {/* Header */}
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Menu className="h-6 w-6 text-sky-400" />导航菜单编辑</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName} · {menu.items.length} 个顶级项{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Menu className="h-6 w-6 text-info" />导航菜单编辑</h2>
+        <p className="mt-1 text-base text-muted-foreground">{shopName} · {menu.items.length} 个顶级项{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       {/* Change summary */}
       {changes.length > 0 && (
-        <div className="flex items-center gap-2 rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-2">
-          <AlertCircle className="h-4 w-4 text-amber-400 shrink-0" />
-          <span className="text-sm text-amber-300">未保存的变更：新增 {changes.filter((c) => c.type === "add").length} 项，修改 {changes.filter((c) => c.type === "update").length} 项，删除 {changes.filter((c) => c.type === "delete").length} 项</span>
+        <div className="flex items-center gap-2 rounded-lg border border-warning-border bg-warning-bg px-4 py-2">
+          <AlertCircle className="h-4 w-4 text-warning shrink-0" />
+          <span className="text-sm text-warning">未保存的变更：新增 {changes.filter((c) => c.type === "add").length} 项，修改 {changes.filter((c) => c.type === "update").length} 项，删除 {changes.filter((c) => c.type === "delete").length} 项</span>
         </div>
       )}
 
@@ -401,7 +401,7 @@ export default function NavigationEditorPanel({ isDemo, shopUrl, accessToken, sh
           </div>
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={handleCancel} disabled={changes.length === 0 || saving} className="h-9 gap-1 text-sm"><RotateCcw className="h-3 w-3" />取消</Button>
-            <Button size="sm" onClick={handleSave} disabled={changes.length === 0 || saving} className="h-9 gap-1 text-sm bg-emerald-600 hover:bg-emerald-500 text-white">
+            <Button size="sm" onClick={handleSave} disabled={changes.length === 0 || saving} className="h-9 gap-1 text-sm bg-success text-white">
               {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}保存{changes.length > 0 ? ` (${changes.length} 项)` : ""}
             </Button>
           </div>

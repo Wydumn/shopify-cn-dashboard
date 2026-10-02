@@ -168,7 +168,7 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
         const m = markets.find((x) => x.marketId === expandedMarket);
         if (!m) return null;
         return (
-          <Card className="border-border/40 bg-card/60 shadow-lg border-l-2 border-l-rose-500">
+          <Card className="border-border/40 bg-card/60 shadow-lg border-l-2 border-l-destructive-border">
             <CardContent className="p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <p className="text-base font-semibold flex items-center gap-2">{countryCodeToFlag(m.countryCode)} {m.countryName}<Badge className={`text-[9px] ${m.taxConfigured?"border-success-border bg-success-bg text-success":"border-destructive-border bg-destructive-bg text-destructive-text"}`}>{m.taxConfigured?"已配置":"未配置"}</Badge></p>

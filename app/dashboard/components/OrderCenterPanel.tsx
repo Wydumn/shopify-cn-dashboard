@@ -466,7 +466,7 @@ export default function OrderCenterPanel({
                         type="checkbox"
                         checked={visibleColumns.has(col)}
                         onChange={() => toggleColumn(col)}
-                        className="accent-emerald-500"
+                        className="accent-success"
                       />
                       <span className="text-foreground">{COLUMN_LABELS[col]}</span>
                     </label>
@@ -659,7 +659,7 @@ export default function OrderCenterPanel({
                         aria-label="选择当前页全部订单"
                         checked={pagedOrders.length > 0 && pagedOrders.every((o) => selectedIds.has(o.id))}
                         onChange={() => pagedOrders.every((o) => selectedIds.has(o.id)) ? clearSelection() : selectAllPage()}
-                        className="accent-emerald-500"
+                        className="accent-success"
                       />
                     </th>
                     {visibleColumns.has("orderNumber") && (
@@ -706,7 +706,7 @@ export default function OrderCenterPanel({
                           aria-label={`选择订单 ${o.orderNumber}`}
                           checked={selectedIds.has(o.id)}
                           onChange={() => toggleSelect(o.id)}
-                          className="accent-emerald-500"
+                          className="accent-success"
                         />
                       </td>
                       {visibleColumns.has("orderNumber") && (
