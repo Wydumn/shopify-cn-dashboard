@@ -128,23 +128,23 @@ const ATC_MULT = 2.9; // 加购 ≈ 成交 × 2.9（店铺均值估算，与漏�
 const GA4_CACHE_KEY = "ga4_last_result";
 
 const tooltipStyle = {
-  background: "#18181b",
-  border: "1px solid #27272a",
+  background: "var(--card)",
+  border: "1px solid var(--border)",
   borderRadius: 8,
-  color: "#e4e4e7",
+  color: "var(--foreground)",
   fontSize: 12,
 } as const;
 
 // Demo 模式下的来源 / 设备分布（与 GA4 模拟数据口径一致）
 const DEMO_SOURCES: Slice[] = [
-  { name: "自然搜索", value: 9200, color: "#34d399" },
-  { name: "付费搜索", value: 5400, color: "#60a5fa" },
-  { name: "直接访问", value: 4100, color: "#a78bfa" },
-  { name: "自然社媒", value: 3300, color: "#38bdf8" },
-  { name: "引荐流量", value: 2100, color: "#f472b6" },
-  { name: "邮件营销", value: 1800, color: "#fbbf24" },
-  { name: "付费社媒", value: 1500, color: "#818cf8" },
-  { name: "展示广告", value: 700, color: "#fb923c" },
+  { name: "自然搜索", value: 9200, color: "var(--chart-2)" },
+  { name: "付费搜索", value: 5400, color: "var(--chart-3)" },
+  { name: "直接访问", value: 4100, color: "var(--chart-6)" },
+  { name: "自然社媒", value: 3300, color: "var(--chart-1)" },
+  { name: "引荐流量", value: 2100, color: "var(--chart-5)" },
+  { name: "邮件营销", value: 1800, color: "var(--chart-4)" },
+  { name: "付费社媒", value: 1500, color: "var(--chart-7)" },
+  { name: "展示广告", value: 700, color: "var(--chart-8)" },
 ];
 const DEMO_TOTAL_ENTRIES = DEMO_SOURCES.reduce((s, x) => s + x.value, 0);
 
@@ -382,10 +382,10 @@ function buildPageDevices(row: LandingRow, bundle: ParsedBundle | null, isDemo: 
     const raw = (d as any).name || "未知";
     const name = raw.replace(/^设备:\s*/, "");
     const color = name === "桌面端" || name.toLowerCase() === "desktop"
-      ? "#60a5fa"
+      ? "var(--chart-3)"
       : name === "移动端" || name.toLowerCase() === "mobile"
-        ? "#34d399"
-        : "#fbbf24";
+        ? "var(--chart-2)"
+        : "var(--chart-4)";
     return { name, color, value: Math.round(((d as any).sessions || 0) * share) };
   });
 }
@@ -405,20 +405,20 @@ function DetailPanel({ row, isDemo, bundle }: { row: LandingRow; isDemo: boolean
   const totalDev = devices.reduce((s, x) => s + x.value, 0) || 1;
 
   return (
-    <div className="space-y-4 rounded-lg border border-zinc-800 bg-zinc-950/40 p-4">
+    <div className="space-y-4 rounded-lg border border-border bg-muted/40 p-4">
       {/* 日均入口量趋势（7 天）*/}
       <div>
-        <h4 className="mb-2 flex items-center gap-1.5 text-sm font-medium text-zinc-300">
-          <BarChart3 className="h-4 w-4 text-emerald-400" />日均入口量趋势（近 7 天）
+        <h4 className="mb-2 flex items-center gap-1.5 text-sm font-medium text-foreground">
+          <BarChart3 className="h-4 w-4 text-success" />日均入口量趋势（近 7 天）
         </h4>
         <div className="h-52 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={trend} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis dataKey="date" tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" />
-              <YAxis tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <XAxis dataKey="date" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} stroke="var(--border)" />
+              <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} stroke="var(--border)" />
               <Tooltip contentStyle={tooltipStyle} />
-              <Line type="monotone" dataKey="entries" name="入口量" stroke="#34d399" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="entries" name="入口量" stroke="var(--chart-2)" strokeWidth={2} dot={{ r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -427,8 +427,8 @@ function DetailPanel({ row, isDemo, bundle }: { row: LandingRow; isDemo: boolean
       {/* 来源 / 设备 分布 */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div>
-          <h4 className="mb-2 flex items-center gap-1.5 text-sm font-medium text-zinc-300">
-            <Globe2 className="h-4 w-4 text-sky-400" />流量来源分布
+          <h4 className="mb-2 flex items-center gap-1.5 text-sm font-medium text-foreground">
+            <Globe2 className="h-4 w-4 text-info" />流量来源分布
           </h4>
           <div className="h-52 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -453,8 +453,8 @@ function DetailPanel({ row, isDemo, bundle }: { row: LandingRow; isDemo: boolean
           </div>
         </div>
         <div>
-          <h4 className="mb-2 flex items-center gap-1.5 text-sm font-medium text-zinc-300">
-            <Smartphone className="h-4 w-4 text-violet-400" />设备分布
+          <h4 className="mb-2 flex items-center gap-1.5 text-sm font-medium text-foreground">
+            <Smartphone className="h-4 w-4 text-muted-foreground" />设备分布
           </h4>
           <div className="h-52 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -482,55 +482,55 @@ function DetailPanel({ row, isDemo, bundle }: { row: LandingRow; isDemo: boolean
 
       {/* 关联 Shopify 商品 / 集合 + 优化建议 */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card className="border-zinc-800 bg-zinc-900/50">
+        <Card className="border-border bg-card">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm">
-              {row.product ? <Package className="h-4 w-4 text-emerald-400" /> : <ShoppingBag className="h-4 w-4 text-blue-400" />}
+              {row.product ? <Package className="h-4 w-4 text-success" /> : <ShoppingBag className="h-4 w-4 text-info" />}
               关联 Shopify {row.product ? "商品" : row.collection ? "集合" : "实体"}
             </CardTitle>
           </CardHeader>
           <CardContent>
             {row.product ? (
               <div className="flex gap-3">
-                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-zinc-800">
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted">
                   {row.product.image ? (
                     <img src={row.product.image} alt={row.product.title} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-zinc-600"><Package className="h-6 w-6" /></div>
+                    <div className="flex h-full w-full items-center justify-center text-muted-foreground"><Package className="h-6 w-6" /></div>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-zinc-100" title={row.product.title}>{row.product.title}</p>
+                  <p className="truncate text-sm font-medium text-foreground" title={row.product.title}>{row.product.title}</p>
                   <div className="mt-1 flex flex-wrap gap-1">
-                    {row.product.productType && <Badge variant="outline" className="border-zinc-700 text-zinc-400">{row.product.productType}</Badge>}
-                    {row.product.vendor && <Badge variant="outline" className="border-zinc-700 text-zinc-400">{row.product.vendor}</Badge>}
-                    {row.product.status && <Badge variant="outline" className="border-emerald-500/30 text-emerald-400">{row.product.status}</Badge>}
+                    {row.product.productType && <Badge variant="outline" className="text-muted-foreground">{row.product.productType}</Badge>}
+                    {row.product.vendor && <Badge variant="outline" className="text-muted-foreground">{row.product.vendor}</Badge>}
+                    {row.product.status && <Badge variant="outline" className="text-success">{row.product.status}</Badge>}
                   </div>
-                  <p className="mt-1.5 text-sm text-zinc-300">
+                  <p className="mt-1.5 text-sm text-foreground">
                     {row.product.price ? `单价 $${row.product.price}` : "价格未设置"}
-                    <span className="ml-2 text-zinc-500">/{row.product.handle}</span>
+                    <span className="ml-2 text-muted-foreground">/{row.product.handle}</span>
                   </p>
                   {row.product.seoTitle && (
-                    <p className="mt-1 truncate text-xs text-zinc-500" title={row.product.seoTitle}>SEO：{row.product.seoTitle}</p>
+                    <p className="mt-1 truncate text-xs text-muted-foreground" title={row.product.seoTitle}>SEO：{row.product.seoTitle}</p>
                   )}
                 </div>
               </div>
             ) : row.collection ? (
               <div>
-                <p className="text-sm font-medium text-zinc-100">{row.collection.title}</p>
-                <p className="mt-1 text-xs text-zinc-500">/{row.collection.handle}</p>
-                <p className="mt-2 text-sm text-zinc-300">集合内商品数：{row.collection.productsCount ?? "未知"}</p>
+                <p className="text-sm font-medium text-foreground">{row.collection.title}</p>
+                <p className="mt-1 text-xs text-muted-foreground">/{row.collection.handle}</p>
+                <p className="mt-2 text-sm text-foreground">集合内商品数：{row.collection.productsCount ?? "未知"}</p>
               </div>
             ) : (
-              <p className="text-sm text-zinc-500">该页面为内容 / 系统页（首页、博客或政策页），无直接关联商品。</p>
+              <p className="text-sm text-muted-foreground">该页面为内容 / 系统页（首页、博客或政策页），无直接关联商品。</p>
             )}
           </CardContent>
         </Card>
 
         {row.isHighLow ? (
-          <Card className="border-amber-500/30 bg-amber-500/5">
+          <Card className="border-warning-border bg-warning-bg">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-sm text-amber-300">
+              <CardTitle className="flex items-center gap-2 text-sm text-warning">
                 <Lightbulb className="h-4 w-4" />高流量低转化 · 优化建议
               </CardTitle>
               <CardDescription>针对「入口量高但成交率偏低」的 4 项落地检查</CardDescription>
@@ -539,8 +539,8 @@ function DetailPanel({ row, isDemo, bundle }: { row: LandingRow; isDemo: boolean
               {OPT_SUGGESTIONS.map((s, i) => {
                 const Icon = s.icon;
                 return (
-                  <div key={i} className="flex items-start gap-2 text-xs text-zinc-300">
-                    <Icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
+                  <div key={i} className="flex items-start gap-2 text-xs text-foreground">
+                    <Icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
                     <span>{s.text}</span>
                   </div>
                 );
@@ -548,14 +548,14 @@ function DetailPanel({ row, isDemo, bundle }: { row: LandingRow; isDemo: boolean
             </CardContent>
           </Card>
         ) : (
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card className="border-border bg-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-300">页面概况</CardTitle>
+              <CardTitle className="text-sm text-foreground">页面概况</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-1.5 text-xs text-zinc-400">
+            <CardContent className="space-y-1.5 text-xs text-muted-foreground">
               <p>跳出率 {fmtPct(row.bounceRate)} · 平均停留 {fmtDuration(row.avgDuration)}</p>
               <p>加购率 {fmtPct(row.atcRate)} · 成交率 {fmtPct(row.convRate)}</p>
-              <p className="text-zinc-500">该页面转化表现正常，可结合 A/B 测试继续优化首屏与信任要素。</p>
+              <p className="text-muted-foreground">该页面转化表现正常，可结合 A/B 测试继续优化首屏与信任要素。</p>
             </CardContent>
           </Card>
         )}
@@ -567,10 +567,10 @@ function DetailPanel({ row, isDemo, bundle }: { row: LandingRow; isDemo: boolean
 /* ─── 主组件 ─────────────────────────────────────────── */
 
 const STATUS_META: Record<RowStatus, { label: string; cls: string; emoji: string }> = {
-  normal: { label: "正常", cls: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400", emoji: "🟢" },
-  excellent: { label: "优秀", cls: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400", emoji: "🟢" },
-  highlow: { label: "高流低转", cls: "border-red-500/30 bg-red-500/10 text-red-400", emoji: "🔴" },
-  bounce: { label: "高跳出", cls: "border-red-500/30 bg-red-500/10 text-red-400", emoji: "🔴" },
+  normal: { label: "正常", cls: "border-success-border bg-success-bg text-success", emoji: "" },
+  excellent: { label: "优秀", cls: "border-success-border bg-success-bg text-success", emoji: "" },
+  highlow: { label: "高流低转", cls: "border-destructive-border bg-destructive-bg text-destructive-text", emoji: "" },
+  bounce: { label: "高跳出", cls: "border-destructive-border bg-destructive-bg text-destructive-text", emoji: "" },
 };
 
 export default function LandingPagePanel({
@@ -624,23 +624,23 @@ export default function LandingPagePanel({
       {/* 标题 */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
-            <Target className="h-5 w-5 text-emerald-400" />
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+            <Target className="h-5 w-5 text-success" />
             着陆页分析
-            <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">加购率为估算值</span>
+            <span className="inline-flex h-5 items-center rounded-sm border border-warning-border bg-warning-bg px-1.5 text-[11px] font-medium text-warning">加购率为估算值</span>
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             {shopName} · 着陆页排行、高流量低转化检测与页面级下钻
           </p>
         </div>
-        {isDemo && <Badge variant="outline" className="border-amber-500/30 text-amber-400">Demo 演示数据</Badge>}
+        {isDemo && <Badge variant="outline" className="border-warning-border text-warning">Demo 演示数据</Badge>}
       </div>
 
       {ga4Missing && !isDemo && (
-        <Card className="border-amber-500/30 bg-amber-500/5">
+        <Card className="border-warning-border bg-warning-bg">
           <CardContent className="flex items-center gap-3 p-4">
-            <AlertTriangle className="h-5 w-5 text-amber-400" />
-            <p className="text-sm text-amber-200">
+            <AlertTriangle className="h-5 w-5 text-warning" />
+            <p className="text-sm text-warning">
               未检测到 GA4 缓存数据。着陆页分析需要 GA4 的「页面」维度；请先在「GA4 流量分析」面板配置并拉取数据。
             </p>
           </CardContent>
@@ -658,13 +658,13 @@ export default function LandingPagePanel({
           </div>
 
           {!isDemo && (
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               注：真实模式下「加购率」为估算值（GA4 缓存未含分页面电商事件，按店铺均值 × 成交率推算）；「成交率」取自 GA4 页面转化数。
             </p>
           )}
 
           {/* 排行表 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card className="border-border bg-card">
             <CardHeader className="pb-2">
               <CardTitle className="text-base">着陆页排行</CardTitle>
               <CardDescription>按入口量排序 · 点击任意行展开页面级趋势 / 来源 / 设备 / 关联商品</CardDescription>
@@ -672,14 +672,14 @@ export default function LandingPagePanel({
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-zinc-800 hover:bg-transparent">
-                    <TableHead className="w-[34%] text-zinc-400">页面</TableHead>
-                    <TableHead className="text-right text-zinc-400">入口量</TableHead>
-                    <TableHead className="text-right text-zinc-400">跳出率</TableHead>
-                    <TableHead className="text-right text-zinc-400" title={isDemo ? "加购率" : "加购率（估算值）"}>加购率</TableHead>
-                    <TableHead className="text-right text-zinc-400">成交率</TableHead>
-                    <TableHead className="text-right text-zinc-400">平均停留</TableHead>
-                    <TableHead className="text-zinc-400">状态</TableHead>
+                  <TableRow className="border-border hover:bg-transparent">
+                    <TableHead className="w-[34%] text-muted-foreground">页面</TableHead>
+                    <TableHead className="text-right text-muted-foreground">入口量</TableHead>
+                    <TableHead className="text-right text-muted-foreground">跳出率</TableHead>
+                    <TableHead className="text-right text-muted-foreground" title={isDemo ? "加购率" : "加购率（估算值）"}>加购率</TableHead>
+                    <TableHead className="text-right text-muted-foreground">成交率</TableHead>
+                    <TableHead className="text-right text-muted-foreground">平均停留</TableHead>
+                    <TableHead className="text-muted-foreground">状态</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -690,35 +690,35 @@ export default function LandingPagePanel({
                       <FragmentRow key={r.path}>
                         <TableRow
                           onClick={() => setSelected(isOpen ? null : r.path)}
-                          className={cn("cursor-pointer border-zinc-800 transition-colors hover:bg-zinc-800/40", isOpen && "bg-zinc-800/30")}
+                          className={cn("cursor-pointer border-border transition-colors hover:bg-muted/40", isOpen && "bg-muted/30")}
                         >
                           <TableCell>
                             <div className="max-w-[320px]">
                               <div className="flex items-center gap-1.5">
-                                <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-zinc-500 transition-transform", isOpen && "rotate-180")} />
-                                <span className="truncate font-medium text-zinc-200" title={r.path}>{r.path}</span>
+                                <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform", isOpen && "rotate-180")} />
+                                <span className="truncate font-medium text-foreground" title={r.path}>{r.path}</span>
                               </div>
-                              {r.title && <div className="truncate pl-5 text-xs text-zinc-500" title={r.title}>{r.title}</div>}
+                              {r.title && <div className="truncate pl-5 text-xs text-muted-foreground" title={r.title}>{r.title}</div>}
                             </div>
                           </TableCell>
-                          <TableCell className="text-right text-zinc-300">{fmtInt(r.entries)}</TableCell>
-                          <TableCell className={cn("text-right font-semibold", r.bounceRate >= 50 ? "text-red-400" : "text-zinc-300")}>
+                          <TableCell className="text-right text-foreground">{fmtInt(r.entries)}</TableCell>
+                          <TableCell className={cn("text-right font-semibold", r.bounceRate >= 50 ? "text-destructive-text" : "text-foreground")}>
                             {fmtPct(r.bounceRate)}
                           </TableCell>
-                          <TableCell className="text-right text-zinc-300">{fmtPct(r.atcRate)}</TableCell>
-                          <TableCell className={cn("text-right font-semibold", r.convRate < meanConv * 0.7 ? "text-red-400" : r.convRate >= meanConv * 1.2 ? "text-emerald-400" : "text-zinc-300")}>
+                          <TableCell className="text-right text-foreground">{fmtPct(r.atcRate)}</TableCell>
+                          <TableCell className={cn("text-right font-semibold", r.convRate < meanConv * 0.7 ? "text-destructive-text" : r.convRate >= meanConv * 1.2 ? "text-success" : "text-foreground")}>
                             {fmtPct(r.convRate)}
                           </TableCell>
-                          <TableCell className="text-right text-zinc-300">{fmtDuration(r.avgDuration)}</TableCell>
+                          <TableCell className="text-right text-foreground">{fmtDuration(r.avgDuration)}</TableCell>
                           <TableCell>
-                            <Badge variant="outline" className={cn("text-[10px]", meta.cls)}>
-                              {meta.emoji} {meta.label}
+                            <Badge variant="outline" className={cn("h-5 border px-1.5 text-[11px] font-medium", meta.cls)}>
+                              {meta.label}
                             </Badge>
                           </TableCell>
                         </TableRow>
                         {isOpen && (
-                          <TableRow className="border-zinc-800 hover:bg-transparent">
-                            <TableCell colSpan={7} className="bg-zinc-950/30 p-0">
+                          <TableRow className="border-border hover:bg-transparent">
+                            <TableCell colSpan={7} className="bg-muted/30 p-0">
                               <DetailPanel row={r} isDemo={isDemo} bundle={bundle} />
                             </TableCell>
                           </TableRow>
@@ -727,7 +727,7 @@ export default function LandingPagePanel({
                     );
                   })}
                   {rows.length === 0 && (
-                    <TableRow className="border-zinc-800"><TableCell colSpan={7} className="py-8 text-center text-zinc-500">无着陆页数据</TableCell></TableRow>
+                    <TableRow className="border-border"><TableCell colSpan={7} className="py-8 text-center text-muted-foreground">无着陆页数据</TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>
@@ -753,20 +753,20 @@ function KpiCard({ title, value, subtitle, icon, accent }: {
   accent: "emerald" | "sky" | "amber" | "red" | "violet";
 }) {
   const colors: Record<string, string> = {
-    emerald: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
-    sky: "bg-sky-500/10 text-sky-400 ring-sky-500/20",
-    amber: "bg-amber-500/10 text-amber-400 ring-amber-500/20",
-    red: "bg-red-500/10 text-red-400 ring-red-500/20",
-    violet: "bg-violet-500/10 text-violet-400 ring-violet-500/20",
+    emerald: "bg-success-bg text-success ring-success-border",
+    sky: "bg-info-bg text-info ring-info-border",
+    amber: "bg-warning-bg text-warning ring-warning-border",
+    red: "bg-destructive-bg text-destructive-text ring-destructive-border",
+    violet: "bg-muted text-muted-foreground ring-border",
   };
   return (
-    <Card className="border-zinc-800 bg-zinc-900/50">
+    <Card className="border-border bg-card">
       <CardContent className="relative p-5">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <p className="text-sm font-medium text-zinc-500">{title}</p>
-            <p className="text-2xl font-bold tracking-tight text-zinc-100">{value}</p>
-            <p className="text-xs text-zinc-500">{subtitle}</p>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold tracking-tight text-foreground tabular-nums">{value}</p>
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
           </div>
           <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl ring-1", colors[accent])}>
             {icon}
