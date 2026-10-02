@@ -326,8 +326,8 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
       <ToastBar message={toast} />
 
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Play className="h-6 w-6 text-amber-400" />批量操作引擎</h2>
-        <p className="mt-1 text-base text-muted-foreground">{products.length} 件商品 · {selectedIds.size} 已选{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Play className="h-6 w-6 text-success" />批量操作引擎</h2>
+        <p className="mt-1 text-base text-muted-foreground">{products.length} 件商品 · {selectedIds.size} 已选{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4 min-h-[calc(100vh-280px)]">
@@ -352,10 +352,10 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
                 const totalInv = p.variants.reduce((s, v) => s + v.inventory, 0);
                 return (
                   <label key={p.id} className="flex items-center gap-2 px-2 py-1 rounded cursor-pointer hover:bg-muted/20">
-                    <input type="checkbox" checked={selectedIds.has(p.id)} onChange={()=>toggleSelect(p.id)} className="accent-amber-500 shrink-0" />
+                    <input type="checkbox" checked={selectedIds.has(p.id)} onChange={()=>toggleSelect(p.id)} className="accent-success shrink-0" />
                     <div className="flex-1 min-w-0"><p className="text-[11px] text-foreground truncate">{p.title}</p></div>
-                    <span className="text-xs text-emerald-400 tabular-nums shrink-0">{formatCny(minPrice*EXCHANGE_RATE)}</span>
-                    <Badge className={`text-[9px] px-1 py-0 shrink-0 ${totalInv < 10 ? "bg-red-500/15 text-red-400" : "bg-muted/20 text-muted-foreground"}`}>{totalInv}</Badge>
+                    <span className="text-xs text-success tabular-nums shrink-0">{formatCny(minPrice*EXCHANGE_RATE)}</span>
+                    <Badge className={`text-[9px] px-1 py-0 shrink-0 ${totalInv < 10 ? "bg-destructive-bg text-destructive-text" : "bg-muted/20 text-muted-foreground"}`}>{totalInv}</Badge>
                   </label>
                 );
               })}
@@ -369,8 +369,8 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
           <CardContent className="p-3 flex flex-col h-full space-y-3">
             {/* Op Tabs */}
             <div className="flex gap-1 flex-wrap">
-              {([{k:"price",l:"📊 批量改价"},{k:"inventory",l:"🔄 批量改库存"},{k:"status",l:"🏷 改状态"},{k:"tags",l:"🏷 批量标签"}] as Array<{k:OpTab;l:string}>).map((t)=>(
-                <button key={t.k} onClick={()=>setOpTab(t.k)} className={`px-2.5 py-1 rounded text-[11px] font-semibold ${opTab===t.k?"bg-amber-500/15 text-amber-400":"text-muted-foreground hover:text-foreground"}`}>{t.l}</button>
+              {([{k:"price",l:"批量改价"},{k:"inventory",l:"批量改库存"},{k:"status",l:"改状态"},{k:"tags",l:"批量标签"}] as Array<{k:OpTab;l:string}>).map((t)=>(
+                <button key={t.k} onClick={()=>setOpTab(t.k)} className={`px-2.5 py-1 rounded text-[11px] font-semibold ${opTab===t.k?"bg-success-bg text-success":"text-muted-foreground hover:text-foreground"}`}>{t.l}</button>
               ))}
             </div>
 
@@ -380,7 +380,7 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
                 {/* Template selector */}
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
-                    {templateLocked && <Lock className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-amber-400" />}
+                    {templateLocked && <Lock className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-warning" />}
                     <select value={selectedTemplateId} onChange={(e) => { const tpl = allTemplates.find((t) => t.id === e.target.value); if (tpl) applyTemplate(tpl); else { setSelectedTemplateId(""); setTemplateLocked(false); } }} className="h-9 w-full rounded border border-border/40 bg-background text-sm text-foreground px-2" style={templateLocked?{paddingLeft:28}:{}}>
                       <option value="">自定义（手动输入）</option>
                       {PRESET_TEMPLATES.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -395,15 +395,15 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
                   <div className="flex items-center gap-1 flex-wrap">
                     <span className="text-[9px] text-muted-foreground">最近:</span>
                     {recentTemplates.map((t) => (
-                      <button key={t.id} onClick={() => applyTemplate(t)} className="px-2 py-0.5 rounded border border-border/30 text-[9px] text-muted-foreground hover:text-amber-400 hover:border-amber-500/30">{t.name}</button>
+                      <button key={t.id} onClick={() => applyTemplate(t)} className="px-2 py-0.5 rounded border border-border/30 text-[9px] text-muted-foreground hover:text-warning hover:border-warning/30">{t.name}</button>
                     ))}
                   </div>
                 )}
                 {/* Lock indicator */}
                 {templateLocked && (
-                  <div className="flex items-center gap-2 px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-xs text-amber-400">
+                  <div className="flex items-center gap-2 px-2 py-1 rounded bg-warning-bg border border-warning-border text-xs text-warning">
                     <Lock className="h-3 w-3"/>模板已锁定
-                    <button onClick={() => { setTemplateLocked(false); setSelectedTemplateId(""); }} className="text-sky-400 hover:underline">解锁手动编辑</button>
+                    <button onClick={() => { setTemplateLocked(false); setSelectedTemplateId(""); }} className="text-info hover:underline">解锁手动编辑</button>
                   </div>
                 )}
                 {/* Price controls */}
@@ -419,7 +419,7 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
                 {pricePreviews.length > 0 && (
                   <table className="w-full text-sm"><thead><tr className="border-b border-border/20 text-xs text-muted-foreground"><th className="py-1 text-left">商品</th><th className="py-1 text-right">原价</th><th className="py-1 text-center w-6"></th><th className="py-1 text-right">新价</th><th className="py-1 text-right">变化</th></tr></thead>
                     <tbody>{pricePreviews.map((pv,i)=>(
-                      <tr key={i} className="border-b border-border/10"><td className="py-1 text-foreground truncate max-w-[140px]">{pv.title}</td><td className="py-1 text-right tabular-nums">{formatCny(pv.old*EXCHANGE_RATE)}</td><td className="py-1 text-center text-muted-foreground">→</td><td className="py-1 text-right tabular-nums font-semibold" style={{color:pv.change>=0?"#f59e0b":"#10b981"}}>{formatCny(pv.new*EXCHANGE_RATE)}</td><td className="py-1 text-right tabular-nums" style={{color:pv.change>=0?"#f59e0b":"#10b981"}}>{pv.change>=0?"+":""}{pv.change.toFixed(2)}</td></tr>
+                      <tr key={i} className="border-b border-border/10"><td className="py-1 text-foreground truncate max-w-[140px]">{pv.title}</td><td className="py-1 text-right tabular-nums">{formatCny(pv.old*EXCHANGE_RATE)}</td><td className="py-1 text-center text-muted-foreground">→</td><td className={`py-1 text-right tabular-nums font-semibold ${pv.change>=0?"text-warning":"text-success"}`}>{formatCny(pv.new*EXCHANGE_RATE)}</td><td className={`py-1 text-right tabular-nums ${pv.change>=0?"text-warning":"text-success"}`}>{pv.change>=0?"+":""}{pv.change.toFixed(2)}</td></tr>
                     ))}</tbody></table>
                 )}
               </>)}
@@ -430,11 +430,11 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
                   <select value={invMode} onChange={(e)=>setInvMode(e.target.value)} className="h-9 rounded border border-border/40 bg-background text-sm text-foreground px-2"><option value="set">设为绝对值</option><option value="add">增加库存</option><option value="subtract">减少库存</option></select>
                   <Input type="number" value={invVal} onChange={(e)=>setInvVal(e.target.value)} className="h-9 w-32 text-sm" />
                 </div>
-                {invPreviews.some((p)=>p.new<0) && <p className="text-xs text-red-400">⚠ 以下商品的库存将被设为负数</p>}
+                {invPreviews.some((p)=>p.new<0) && <p className="text-xs text-destructive-text">⚠ 以下商品的库存将被设为负数</p>}
                 {invPreviews.length > 0 && (
                   <table className="w-full text-sm"><thead><tr className="border-b border-border/20 text-xs text-muted-foreground"><th className="py-1 text-left">商品</th><th className="py-1 text-left">SKU</th><th className="py-1 text-right">当前</th><th className="py-1 text-center w-6"></th><th className="py-1 text-right">新库存</th></tr></thead>
                     <tbody>{invPreviews.map((pv,i)=>(
-                      <tr key={i} className={`border-b border-border/10 ${pv.new<0?"bg-red-500/5 text-red-400":""}`}><td className="py-1 truncate max-w-[120px]">{pv.title}</td><td className="py-1 text-muted-foreground font-mono">{pv.sku}</td><td className="py-1 text-right tabular-nums">{pv.old}</td><td className="py-1 text-center">→</td><td className="py-1 text-right tabular-nums font-semibold">{pv.new}</td></tr>
+                      <tr key={i} className={`border-b border-border/10 ${pv.new<0?"bg-destructive-bg text-destructive-text":""}`}><td className="py-1 truncate max-w-[120px]">{pv.title}</td><td className="py-1 text-muted-foreground font-mono">{pv.sku}</td><td className="py-1 text-right tabular-nums">{pv.old}</td><td className="py-1 text-center">→</td><td className="py-1 text-right tabular-nums font-semibold">{pv.new}</td></tr>
                     ))}</tbody></table>
                 )}
               </>)}
@@ -443,7 +443,7 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
               {opTab === "status" && (<>
                 <div className="flex gap-2">
                   {(["ACTIVE","DRAFT","ARCHIVED"] as const).map((s)=>(
-                    <button key={s} onClick={()=>setTargetStatus(s)} className={`px-3 py-1.5 rounded text-sm font-medium ${targetStatus===s?(s==="ARCHIVED"?"bg-red-500/15 text-red-400":s==="ACTIVE"?"bg-emerald-500/15 text-emerald-400":"bg-amber-500/15 text-amber-400"):"text-muted-foreground border border-border/30"}`}>
+                    <button key={s} onClick={()=>setTargetStatus(s)} className={`px-3 py-1.5 rounded text-sm font-medium ${targetStatus===s?(s==="ARCHIVED"?"bg-destructive-bg text-destructive-text":s==="ACTIVE"?"bg-success-bg text-success":"bg-success-bg text-success"):"text-muted-foreground border border-border/30"}`}>
                       {s==="ACTIVE"?"上架":s==="DRAFT"?"下架":"归档"}
                     </button>
                   ))}
@@ -452,7 +452,7 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
                 {selected.length > 0 && (
                   <table className="w-full text-sm"><thead><tr className="border-b border-border/20 text-xs text-muted-foreground"><th className="py-1 text-left">商品</th><th className="py-1 text-center">当前</th><th className="py-1 text-center">→</th><th className="py-1 text-center">新状态</th></tr></thead>
                     <tbody>{selected.slice(0,8).map((p)=>(
-                      <tr key={p.id} className="border-b border-border/10"><td className="py-1 truncate max-w-[160px]">{p.title}</td><td className="py-1 text-center"><Badge className={`text-[9px] ${p.status==="ACTIVE"?"bg-emerald-500/15 text-emerald-400":"bg-zinc-500/15 text-zinc-400"}`}>{p.status==="ACTIVE"?"上架":"下架"}</Badge></td><td className="py-1 text-center">→</td><td className="py-1 text-center"><Badge className={`text-[9px] ${targetStatus==="ACTIVE"?"bg-emerald-500/15 text-emerald-400":targetStatus==="DRAFT"?"bg-amber-500/15 text-amber-400":"bg-red-500/15 text-red-400"}`}>{targetStatus==="ACTIVE"?"上架":targetStatus==="DRAFT"?"下架":"归档"}</Badge></td></tr>
+                      <tr key={p.id} className="border-b border-border/10"><td className="py-1 truncate max-w-[160px]">{p.title}</td><td className="py-1 text-center"><Badge className={`text-[9px] ${p.status==="ACTIVE"?"bg-success-bg text-success":"bg-muted text-muted-foreground"}`}>{p.status==="ACTIVE"?"上架":"下架"}</Badge></td><td className="py-1 text-center">→</td><td className="py-1 text-center"><Badge className={`text-[9px] ${targetStatus==="ACTIVE"?"bg-success-bg text-success":targetStatus==="DRAFT"?"bg-success-bg text-success":"bg-destructive-bg text-destructive-text"}`}>{targetStatus==="ACTIVE"?"上架":targetStatus==="DRAFT"?"下架":"归档"}</Badge></td></tr>
                     ))}</tbody></table>
                 )}
               </>)}
@@ -460,13 +460,13 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
               {/* Tab: Tags */}
               {opTab === "tags" && (<>
                 <div className="flex gap-1">
-                  {(["add","remove","replace"] as const).map((o)=>(<button key={o} onClick={()=>setTagOp(o)} className={`px-2 py-1 rounded text-xs ${tagOp===o?"bg-amber-500/15 text-amber-400":"text-muted-foreground border border-border/30"}`}>{o==="add"?"添加":o==="remove"?"移除":"替换"}</button>))}
+                  {(["add","remove","replace"] as const).map((o)=>(<button key={o} onClick={()=>setTagOp(o)} className={`px-2 py-1 rounded text-xs ${tagOp===o?"bg-success-bg text-success":"text-muted-foreground border border-border/30"}`}>{o==="add"?"添加":o==="remove"?"移除":"替换"}</button>))}
                 </div>
                 <Input value={tagInput} onChange={(e)=>setTagInput(e.target.value)} placeholder="标签,逗号分隔" className="h-9 text-sm" />
                 {allTags.length > 0 && <div className="flex flex-wrap gap-1">{allTags.map((t)=><Badge key={t} variant="outline" className="text-[9px] px-1 py-0 cursor-pointer hover:bg-muted/20" onClick={()=>setTagInput((prev)=>prev?prev+","+t:t)}>{t}</Badge>)}</div>}
                 {tagPreview.length > 0 && (
-                  <table className="w-full text-sm"><thead><tr className="border-b border-border/20 text-xs text-muted-foreground"><th className="py-1 text-left">商品</th><th className="py-1 text-left">当前</th><th className="py-1 text-left text-emerald-400">操作后</th></tr></thead>
-                    <tbody>{tagPreview.map((pv,i)=>(<tr key={i} className="border-b border-border/10"><td className="py-1 truncate max-w-[120px]">{pv.title}</td><td className="py-1 text-muted-foreground">{pv.old||"-"}</td><td className="py-1 text-emerald-400">{pv.new||"-"}</td></tr>))}</tbody></table>
+                  <table className="w-full text-sm"><thead><tr className="border-b border-border/20 text-xs text-muted-foreground"><th className="py-1 text-left">商品</th><th className="py-1 text-left">当前</th><th className="py-1 text-left text-success">操作后</th></tr></thead>
+                    <tbody>{tagPreview.map((pv,i)=>(<tr key={i} className="border-b border-border/10"><td className="py-1 truncate max-w-[120px]">{pv.title}</td><td className="py-1 text-muted-foreground">{pv.old||"-"}</td><td className="py-1 text-success">{pv.new||"-"}</td></tr>))}</tbody></table>
                 )}
               </>)}
             </div>
@@ -475,16 +475,16 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
             <div className="flex items-center gap-2 pt-2 border-t border-border/20">
               {executing ? (
                 <>
-                  <div className="flex-1 h-2 rounded bg-muted/20 overflow-hidden"><div className="h-full bg-amber-500 rounded transition-all" style={{width:`${progress.total>0?(progress.done/progress.total)*100:0}%`}}/></div>
-                  <span className="text-xs tabular-nums text-amber-400">{progress.done}/{progress.total}</span>
-                  <span className="text-xs text-emerald-400">{progress.ok}✓</span>
-                  <span className="text-xs text-red-400">{progress.fail}✕</span>
-                  <Button size="sm" variant="outline" onClick={()=>{abortRef.current=true}} className="h-7 text-xs text-red-400"><Pause className="h-3 w-3"/></Button>
+                  <div className="flex-1 h-2 rounded bg-muted/20 overflow-hidden"><div className="h-full bg-success rounded transition-all" style={{width:`${progress.total>0?(progress.done/progress.total)*100:0}%`}}/></div>
+                  <span className="text-xs tabular-nums text-warning">{progress.done}/{progress.total}</span>
+                  <span className="text-xs text-success">{progress.ok}✓</span>
+                  <span className="text-xs text-destructive-text">{progress.fail}✕</span>
+                  <Button size="sm" variant="outline" onClick={()=>{abortRef.current=true}} className="h-7 text-xs text-destructive-text"><Pause className="h-3 w-3"/></Button>
                 </>
               ) : (
                 <>
                   <Button size="sm" variant="outline" onClick={()=>setPreviewOpen(!previewOpen)} disabled={selectedIds.size===0} className="h-9 text-sm">预览</Button>
-                  <Button size="sm" onClick={execute} disabled={selectedIds.size===0} className="h-9 gap-1 bg-amber-600 hover:bg-amber-500 text-white text-sm"><Play className="h-3 w-3"/>确认执行</Button>
+                  <Button size="sm" onClick={execute} disabled={selectedIds.size===0} className="h-9 gap-1  text-sm"><Play className="h-3 w-3"/>确认执行</Button>
                   <span className="ml-auto text-xs text-muted-foreground">{totalOps} 项操作</span>
                 </>
               )}
@@ -500,8 +500,8 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
           <div className="w-full max-w-xl max-h-[80vh] bg-card border border-border/40 rounded-xl shadow-2xl flex flex-col">
             <div className="flex items-center justify-between px-5 py-3 border-b border-border/20 shrink-0"><h3 className="text-base font-semibold">变更预览</h3><Button size="sm" variant="ghost" onClick={()=>setPreviewOpen(false)}><X className="h-4 w-4"/></Button></div>
             <div className="flex-1 overflow-y-auto p-4 text-sm text-muted-foreground space-y-1">
-              {opTab==="price"&&pricePreviews.map((pv,i)=><div key={i}>{pv.title}: {formatCny(pv.old*EXCHANGE_RATE)} → <span style={{color:pv.change>=0?"#f59e0b":"#10b981"}}>{formatCny(pv.new*EXCHANGE_RATE)}</span></div>)}
-              {opTab==="inventory"&&invPreviews.map((pv,i)=><div key={i}>{pv.title}: {pv.old} → <span className={pv.new<0?"text-red-400":""}>{pv.new}</span></div>)}
+              {opTab==="price"&&pricePreviews.map((pv,i)=><div key={i}>{pv.title}: {formatCny(pv.old*EXCHANGE_RATE)} → <span className={pv.change>=0?"text-warning":"text-success"}>{formatCny(pv.new*EXCHANGE_RATE)}</span></div>)}
+              {opTab==="inventory"&&invPreviews.map((pv,i)=><div key={i}>{pv.title}: {pv.old} → <span className={pv.new<0?"text-destructive-text":""}>{pv.new}</span></div>)}
               {opTab==="status"&&selected.map((p)=><div key={p.id}>{p.title}: {p.status} → {targetStatus}</div>)}
               {opTab==="tags"&&tagPreview.map((pv,i)=><div key={i}>{pv.title}: {pv.old||"(空)"} → {pv.new||"(空)"}</div>)}
               {totalOps>10&&<p className="text-xs pt-2">...还有 {totalOps-10} 项</p>}
@@ -512,7 +512,7 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
 
       {/* Error summary */}
       {errors.length>0&&!executing&&(
-        <Card className="border-red-500/30 bg-red-500/10"><CardContent className="py-3 px-4"><p className="text-base font-semibold text-red-400 flex items-center gap-1.5"><AlertCircle className="h-4 w-4"/>失败 {errors.length} 项</p><div className="mt-2 max-h-32 overflow-y-auto space-y-1">{errors.map((e,i)=><div key={i} className="flex justify-between text-sm"><span className="text-red-300">{e.title}</span><span className="text-red-400/70">{e.reason}</span></div>)}</div></CardContent></Card>
+        <Card className="border-destructive-border bg-destructive-bg"><CardContent className="py-3 px-4"><p className="text-base font-semibold text-destructive-text flex items-center gap-1.5"><AlertCircle className="h-4 w-4"/>失败 {errors.length} 项</p><div className="mt-2 max-h-32 overflow-y-auto space-y-1">{errors.map((e,i)=><div key={i} className="flex justify-between text-sm"><span className="text-destructive-text">{e.title}</span><span className="text-destructive-text/70">{e.reason}</span></div>)}</div></CardContent></Card>
       )}
 
       {/* Save Template Modal */}
@@ -530,15 +530,15 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
                 {PRESET_TEMPLATES.map((t)=>(
                   <div key={t.id} className="flex items-center gap-2 py-1 border-b border-border/10">
                     <div className="flex-1"><p className="text-sm text-foreground">{t.name}</p><p className="text-[9px] text-muted-foreground">{t.description}</p></div>
-                    <Button size="sm" variant="ghost" onClick={() => { applyTemplate(t); setTemplateManageOpen(false); }} className="h-7 text-xs text-emerald-400">使用</Button>
+                    <Button size="sm" variant="ghost" onClick={() => { applyTemplate(t); setTemplateManageOpen(false); }} className="h-7 text-xs text-success">使用</Button>
                   </div>
                 ))}
                 <p className="text-xs font-semibold text-muted-foreground pt-2">自定义模板 ({templates.length}/20)</p>
                 {templates.length > 0 ? templates.map((t)=>(
                   <div key={t.id} className="flex items-center gap-2 py-1 border-b border-border/10">
                     <div className="flex-1"><p className="text-sm text-foreground">{t.name}</p><p className="text-[9px] text-muted-foreground">{t.description || "无描述"}</p></div>
-                    <Button size="sm" variant="ghost" onClick={() => { applyTemplate(t); setTemplateManageOpen(false); }} className="h-7 text-xs text-emerald-400">使用</Button>
-                    <Button size="sm" variant="ghost" onClick={() => { if (confirm("确定删除模板\""+t.name+"\"？")) deleteTemplate(t.id); }} className="h-7 text-xs text-red-400"><X className="h-3 w-3"/></Button>
+                    <Button size="sm" variant="ghost" onClick={() => { applyTemplate(t); setTemplateManageOpen(false); }} className="h-7 text-xs text-success">使用</Button>
+                    <Button size="sm" variant="ghost" onClick={() => { if (confirm("确定删除模板\""+t.name+"\"？")) deleteTemplate(t.id); }} className="h-7 text-xs text-destructive-text"><X className="h-3 w-3"/></Button>
                   </div>
                 )) : <p className="text-xs text-muted-foreground py-2">暂无自定义模板</p>}
               </div>
@@ -564,7 +564,7 @@ function TemplateSaveModal({ open, onClose, onSave }: { open: boolean; onClose: 
           <h3 className="text-base font-semibold">另存为模板</h3>
           <div><label className="text-sm text-muted-foreground block mb-0.5">模板名称 *</label><Input value={name} onChange={(e)=>setName(e.target.value)} autoFocus className="h-9 text-sm"/></div>
           <div><label className="text-sm text-muted-foreground block mb-0.5">描述</label><textarea value={desc} onChange={(e)=>setDesc(e.target.value)} rows={2} className="w-full rounded-md border border-border/40 bg-background px-3 py-2 text-sm resize-none"/></div>
-          <div className="flex gap-2"><Button onClick={()=>onSave(name,desc)} disabled={!name.trim()} className="flex-1 h-9 bg-emerald-600 text-white text-sm"><Save className="h-3 w-3 mr-1"/>保存</Button><Button variant="outline" onClick={onClose} className="h-9 text-sm">取消</Button></div>
+          <div className="flex gap-2"><Button onClick={()=>onSave(name,desc)} disabled={!name.trim()} className="flex-1 h-9  text-sm"><Save className="h-3 w-3 mr-1"/>保存</Button><Button variant="outline" onClick={onClose} className="h-9 text-sm">取消</Button></div>
         </div>
       </div>
     </>
