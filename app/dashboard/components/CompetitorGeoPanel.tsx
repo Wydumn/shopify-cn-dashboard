@@ -152,9 +152,9 @@ function gapToneToCellTone(gap: ComparisonRow["gap"]): CellTone {
 }
 
 const PRIO_CLS: Record<TodoPriority, string> = {
-  high: "bg-red-500/15 text-red-300 border-red-500/30",
-  medium: "bg-amber-500/15 text-amber-300 border-amber-500/30",
-  low: "bg-zinc-500/15 text-zinc-300 border-zinc-500/30",
+  high: "bg-destructive-bg text-destructive-text border-destructive-border",
+  medium: "bg-warning-bg text-warning border-warning-border",
+  low: "bg-muted text-muted-foreground border-border",
 };
 const PRIO_LABEL: Record<TodoPriority, string> = { high: "高", medium: "中", low: "低" };
 
@@ -345,9 +345,9 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
       {/* Header */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-2 text-lg font-semibold text-foreground">
-          <Swords className="h-6 w-6 text-emerald-400" />GEO 竞品对比
-          <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">竞品数据为公开页模拟</span>
-          {isDemo && <span className="ml-1 text-sm text-amber-400">(演示)</span>}
+          <Swords className="h-6 w-6 text-success" />GEO 竞品对比
+          <span className="inline-flex h-5 items-center rounded-sm border border-warning-border bg-warning-bg px-1.5 text-[11px] font-medium text-warning">竞品数据为公开页模拟</span>
+          {isDemo && <span className="ml-1 text-sm text-warning">(演示)</span>}
         </div>
         <div className="ml-auto flex items-center gap-2">
           {!isDemo && (
@@ -368,7 +368,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-[11px] text-muted-foreground">对比对象：</span>
         {displayCompetitors.length === 0 && (
-          <span className="text-[11px] text-amber-400">
+          <span className="text-[11px] text-warning">
             {isDemo ? "（演示预设竞品）" : "尚未添加竞品，点击右上角「添加竞品」"}
           </span>
         )}
@@ -377,7 +377,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
             <span className="font-medium">{c.name}</span>
             <span className="text-muted-foreground">· {c.domain}</span>
             {!isDemo && (
-              <button className="ml-0.5 text-zinc-500 hover:text-red-400" onClick={() => removeCompetitor(c.domain)}>
+              <button className="ml-0.5 text-muted-foreground hover:text-destructive-text" onClick={() => removeCompetitor(c.domain)}>
                 <X className="h-3 w-3" />
               </button>
             )}
@@ -392,7 +392,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
             <button
               key={s.key}
               onClick={() => setScope(s.key)}
-              className={`rounded-lg border px-2.5 py-1 text-[11px] transition-colors ${scope === s.key ? "border-emerald-500/50 bg-emerald-500/10 text-foreground" : "border-border/40 bg-card/40 text-muted-foreground hover:text-foreground"}`}
+              className={`rounded-lg border px-2.5 py-1 text-[11px] transition-colors ${scope === s.key ? "border-success-border bg-success-bg text-foreground" : "border-border/40 bg-card/40 text-muted-foreground hover:text-foreground"}`}
             >
               {s.label}
             </button>
@@ -404,7 +404,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
               key={v.key}
               disabled={v.key === "fields" && !canShowFields}
               onClick={() => setView(v.key)}
-              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-colors disabled:opacity-40 ${effectiveView === v.key ? "border-emerald-500/50 bg-emerald-500/10 text-foreground" : "border-border/40 bg-card/40 text-muted-foreground hover:text-foreground"}`}
+              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-colors disabled:opacity-40 ${effectiveView === v.key ? "border-success-border bg-success-bg text-foreground" : "border-border/40 bg-card/40 text-muted-foreground hover:text-foreground"}`}
             >
               {v.icon}<span>{v.label}</span>
             </button>
@@ -414,12 +414,12 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
 
       {/* 进度 */}
       {running && (
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
-          <div className="h-full w-2/3 animate-pulse bg-emerald-500" />
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+          <div className="h-full w-2/3 animate-pulse bg-success" />
         </div>
       )}
       {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-[11px] text-red-300">
+        <div className="rounded-lg border border-destructive-border bg-destructive-bg px-3 py-2 text-[11px] text-destructive-text">
           <AlertTriangle className="mr-1 inline h-3 w-3" />{error}
         </div>
       )}
@@ -437,7 +437,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
             <Card className="border-border/40 bg-card/60">
               <CardContent className="p-3.5">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">本店 GEO 健康分</p>
-                <p className={`mt-1 text-2xl font-bold ${computeGeoHealth(result.own) >= 60 ? "text-emerald-400" : computeGeoHealth(result.own) >= 40 ? "text-amber-400" : "text-red-400"}`}>{computeGeoHealth(result.own)}<span className="text-base text-muted-foreground">/100</span></p>
+                <p className={`mt-1 text-2xl font-bold ${computeGeoHealth(result.own) >= 60 ? "text-success" : computeGeoHealth(result.own) >= 40 ? "text-warning" : "text-destructive-text"}`}>{computeGeoHealth(result.own)}<span className="text-base text-muted-foreground">/100</span></p>
               </CardContent>
             </Card>
             <Card className="border-border/40 bg-card/60">
@@ -449,7 +449,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
             <Card className="border-border/40 bg-card/60">
               <CardContent className="p-3.5">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">领先维度（合计）</p>
-                <p className="mt-1 text-2xl font-bold text-emerald-400">
+                <p className="mt-1 text-2xl font-bold text-success">
                   {result.comparisons.reduce((a, c) => a + c.rows.filter((r) => r.gap === "leading").length, 0)}
                 </p>
               </CardContent>
@@ -457,7 +457,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
             <Card className="border-border/40 bg-card/60">
               <CardContent className="p-3.5">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">落后维度（合计）</p>
-                <p className="mt-1 text-2xl font-bold text-red-400">
+                <p className="mt-1 text-2xl font-bold text-destructive-text">
                   {result.comparisons.reduce((a, c) => a + c.rows.filter((r) => r.gap === "behind").length, 0)}
                 </p>
               </CardContent>
@@ -466,10 +466,10 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
 
           {/* 图例 */}
           <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><span className="text-emerald-400">●</span>领先（绿）</span>
-            <span className="flex items-center gap-1"><span className="text-zinc-400">●</span>持平/无差异（灰）</span>
-            <span className="flex items-center gap-1"><span className="text-amber-400">●</span>差距 10–30%（黄）</span>
-            <span className="flex items-center gap-1"><span className="text-red-400">●</span>落后 &gt;30%（红）</span>
+            <span className="flex items-center gap-1"><span className="text-success">●</span>领先（绿）</span>
+            <span className="flex items-center gap-1"><span className="text-muted-foreground">●</span>持平/无差异（灰）</span>
+            <span className="flex items-center gap-1"><span className="text-warning">●</span>差距 10–30%（黄）</span>
+            <span className="flex items-center gap-1"><span className="text-destructive-text">●</span>落后 &gt;30%（红）</span>
           </div>
 
           {/* 概览视图 */}
@@ -533,7 +533,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
                             <tr key={r.label} className="border-t border-border/10">
                               <td className="py-1.5 px-2 text-foreground">{r.label}</td>
                               <td className="py-1.5 px-2 text-center">
-                                {r.own ? <Check className="mx-auto h-3.5 w-3.5 text-emerald-400" /> : <X className="mx-auto h-3.5 w-3.5 text-zinc-600" />}
+                                {r.own ? <Check className="mx-auto h-3.5 w-3.5 text-success" /> : <X className="mx-auto h-3.5 w-3.5 text-muted-foreground" />}
                               </td>
                               {result.comparisons.map((c) => {
                                 const cr = c.rows.find((x) => x.label === r.label);
@@ -542,7 +542,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
                                   <td key={c.competitor.domain} className="py-1.5 px-2 text-center">
                                     {cr && cr.competitor !== null ? (
                                       cr.competitor ? <Check className={`mx-auto h-3.5 w-3.5 ${toneClass(t)}`} /> : <X className={`mx-auto h-3.5 w-3.5 ${toneClass(t)}`} />
-                                    ) : <span className="text-zinc-600">—</span>}
+                                    ) : <span className="text-muted-foreground">—</span>}
                                   </td>
                                 );
                               })}
@@ -593,7 +593,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
                                   return (
                                     <tr key={f.path} className="border-t border-border/10">
                                       <td className="py-1 px-2 text-foreground">{f.name}<span className="text-muted-foreground"> · {f.path}</span></td>
-                                      <td className="py-1 px-2 text-center">{ownV ? <Check className="mx-auto h-3 w-3 text-emerald-400" /> : <X className="mx-auto h-3 w-3 text-zinc-600" />}</td>
+                                      <td className="py-1 px-2 text-center">{ownV ? <Check className="mx-auto h-3 w-3 text-success" /> : <X className="mx-auto h-3 w-3 text-muted-foreground" />}</td>
                                       {result.comparisons.map((c) => {
                                         const v = c.competitor.fieldComparison[t.type]?.[f.path] ?? false;
                                         const tone: CellTone = ownV === v ? "gray" : ownV ? "green" : "red";
@@ -627,12 +627,12 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
                   <Card key={c.competitor.domain} className="border-border/40 bg-card/60">
                     <CardContent className="p-3">
                       <div className="mb-2 flex items-center gap-2">
-                        <Target className="h-4 w-4 text-emerald-400" />
+                        <Target className="h-4 w-4 text-success" />
                         <p className="text-base font-semibold text-foreground">对比「{c.competitor.storeName}」的赶超建议</p>
                         <Badge variant="outline" className="ml-auto text-xs">{todos.length} 项</Badge>
                       </div>
                       {todos.length === 0 ? (
-                        <p className="py-4 text-center text-sm text-emerald-400"><Trophy className="mr-1 inline h-3.5 w-3.5" />在该竞品面前无明显差距，保持领先！</p>
+                        <p className="py-4 text-center text-sm text-success"><Trophy className="mr-1 inline h-3.5 w-3.5" />在该竞品面前无明显差距，保持领先！</p>
                       ) : (
                         <div className="space-y-2">
                           {todos.map((t: TodoItem, i: number) => (
@@ -642,7 +642,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
                                 <span className="text-sm font-medium text-foreground">{t.title}</span>
                                 {t.jumpMenu && (
                                   <button
-                                    className="ml-auto flex items-center gap-1 text-xs text-emerald-400 hover:underline"
+                                    className="ml-auto flex items-center gap-1 text-xs text-success hover:underline"
                                     onClick={() => setActiveMenu(t.jumpMenu as any)}
                                   >
                                     去处理 <ExternalLink className="h-3 w-3" />
@@ -676,7 +676,7 @@ export default function CompetitorGeoPanel(props: CompetitorGeoPanelProps) {
             <div className="w-full max-w-md rounded-xl border border-border/40 bg-card shadow-2xl backdrop-blur-xl">
               <div className="flex items-center justify-between border-b border-border/20 px-5 py-3">
                 <p className="text-base font-semibold text-foreground">添加竞品店铺</p>
-                <button className="text-zinc-500 hover:text-foreground" onClick={() => setShowAdd(false)}><X className="h-4 w-4" /></button>
+                <button className="text-muted-foreground hover:text-foreground" onClick={() => setShowAdd(false)}><X className="h-4 w-4" /></button>
               </div>
               <div className="space-y-3 p-5">
                 <div>
