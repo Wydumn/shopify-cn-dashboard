@@ -89,14 +89,14 @@ function buildAuditInput(props: SchemaAuditPanelProps): AuditInput {
 }
 
 function healthColor(score: number): string {
-  if (score >= 80) return "text-emerald-400";
-  if (score >= 60) return "text-amber-400";
-  return "text-red-400";
+  if (score >= 80) return "text-success";
+  if (score >= 60) return "text-warning";
+  return "text-destructive-text";
 }
 function healthBadge(score: number): { label: string; cls: string } {
-  if (score >= 80) return { label: "优秀", cls: "bg-emerald-500/15 text-emerald-400" };
-  if (score >= 60) return { label: "待优化", cls: "bg-amber-500/15 text-amber-400" };
-  return { label: "风险", cls: "bg-red-500/15 text-red-400" };
+  if (score >= 80) return { label: "优秀", cls: "bg-success-bg text-success" };
+  if (score >= 60) return { label: "待优化", cls: "bg-warning-bg text-warning" };
+  return { label: "风险", cls: "bg-destructive-bg text-destructive-text" };
 }
 
 /* ─── 主组件 ──────────────────────────────────────────── */
@@ -220,22 +220,22 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
   return (
     <div className="space-y-4">
       {toast && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>
       )}
 
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
-            <Braces className="h-6 w-6 text-emerald-400" />Schema 结构化数据审计
+            <Braces className="h-6 w-6 text-success" />Schema 结构化数据审计
           </h2>
           <p className="mt-1 text-base text-muted-foreground">
             {shopName} · GEO（生成式引擎优化）覆盖度分析
-            {isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}
+            {isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" onClick={runScan} disabled={scanning} className="h-9 gap-1.5 bg-emerald-600 text-white hover:bg-emerald-500">
+          <Button size="sm" onClick={runScan} disabled={scanning} className="h-9 gap-1.5 bg-success text-white hover:bg-success/90">
             <Search className="h-3.5 w-3.5" />{scanning ? "扫描中…" : "重新扫描"}
           </Button>
           <Button size="sm" variant="outline" onClick={exportCsv} disabled={!results} className="h-9 gap-1.5">
@@ -248,7 +248,7 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
       {scanning && (
         <div className="space-y-1">
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all" style={{ width: `${progress}%` }} />
+            <div className="h-full rounded-full bg-gradient-to-r from-success to-success/70 transition-all" style={{ width: `${progress}%` }} />
           </div>
           <p className="text-xs text-muted-foreground">正在遍历商品页、内容页与站点级实体… {progress}%</p>
         </div>
@@ -288,7 +288,7 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
             <Card className="border-border/40 bg-card/60">
               <CardContent className="p-3.5">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">缺失关键字段</p>
-                <p className={`mt-1 text-3xl font-bold tabular-nums ${kpis.missingCritical > 0 ? "text-red-400" : "text-emerald-400"}`}>{kpis.missingCritical}</p>
+                <p className={`mt-1 text-3xl font-bold tabular-nums ${kpis.missingCritical > 0 ? "text-destructive-text" : "text-success"}`}>{kpis.missingCritical}</p>
                 <p className="mt-1 text-xs text-muted-foreground">待修复缺口（页面级）</p>
               </CardContent>
             </Card>
@@ -300,7 +300,7 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
             <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg flex-1 w-full overflow-hidden">
               <CardContent className="p-0">
                 <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border/20">
-                  <ListChecks className="h-4 w-4 text-emerald-400" />
+                  <ListChecks className="h-4 w-4 text-success" />
                   <span className="text-base font-semibold text-foreground">Schema 覆盖矩阵</span>
                   <span className="text-xs text-muted-foreground">（点击类型展开缺口明细）</span>
                 </div>
@@ -320,7 +320,7 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
                       {results.map((r) => {
                         const isOpen = expandedType === r.schemaType;
                         const cov = Math.round(r.coverageRate * 100);
-                        const covColor = r.coverageRate >= 0.999 ? "text-emerald-400" : r.coverageRate >= 0.6 ? "text-amber-400" : "text-red-400";
+                        const covColor = r.coverageRate >= 0.999 ? "text-success" : r.coverageRate >= 0.6 ? "text-warning" : "text-destructive-text";
                         return (
                           <Fragment key={r.schemaType}>
                             <tr
@@ -331,7 +331,7 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
                               <td className="py-2 px-2">
                                 <div className="flex items-center gap-2">
                                   <span className="text-foreground font-medium">{r.title}</span>
-                                  {r.missingFields.length > 0 && <Badge className="text-[8px] bg-red-500/15 text-red-400 px-1.5">{r.missingFields.length} 缺口</Badge>}
+                                  {r.missingFields.length > 0 && <Badge className="text-[8px] bg-destructive-bg text-destructive-text px-1.5">{r.missingFields.length} 缺口</Badge>}
                                 </div>
                               </td>
                               <td className="py-2 px-2 text-center tabular-nums text-muted-foreground">{Math.round((SCHEMA_WEIGHT[r.schemaType] || 0) * 100)}%</td>
@@ -340,7 +340,7 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
                               <td className="py-2 px-2 text-center">
                                 <div className="flex items-center justify-center gap-1.5">
                                   <div className="h-1.5 w-10 overflow-hidden rounded-full bg-muted">
-                                    <div className={`h-full rounded-full ${r.coverageRate >= 0.999 ? "bg-emerald-500" : r.coverageRate >= 0.6 ? "bg-amber-500" : "bg-red-500"}`} style={{ width: `${cov}%` }} />
+                                    <div className={`h-full rounded-full ${r.coverageRate >= 0.999 ? "bg-success" : r.coverageRate >= 0.6 ? "bg-warning" : "bg-destructive"}`} style={{ width: `${cov}%` }} />
                                   </div>
                                   <span className={`tabular-nums text-xs ${covColor}`}>{cov}</span>
                                 </div>
@@ -355,7 +355,7 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
                                       <button
                                         key={k}
                                         onClick={() => { setDetailTab(k); if (k === "fix") loadTypeTemplate(r.schemaType); }}
-                                        className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors ${detailTab === k ? "bg-emerald-500/15 text-emerald-400" : "text-muted-foreground hover:text-foreground"}`}
+                                        className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors ${detailTab === k ? "bg-success-bg text-success" : "text-muted-foreground hover:text-foreground"}`}
                                       >
                                         {k === "missing" && <AlertTriangle className="h-3 w-3" />}
                                         {k === "preview" && <FileJson className="h-3 w-3" />}
@@ -368,20 +368,20 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
                                   {detailTab === "missing" && (
                                     <div className="space-y-1.5 max-h-60 overflow-y-auto">
                                       {expandedResult.missingFields.length === 0 ? (
-                                        <div className="flex items-center gap-2 text-[11px] text-emerald-400"><CheckCircle2 className="h-3.5 w-3.5" />该类型在所有页面均已完整覆盖，无需修复。</div>
+                                        <div className="flex items-center gap-2 text-[11px] text-success"><CheckCircle2 className="h-3.5 w-3.5" />该类型在所有页面均已完整覆盖，无需修复。</div>
                                       ) : (
                                         expandedResult.missingFields.map((m, i) => (
                                           <button
                                             key={i}
                                             onClick={() => loadPagePreview(m, r.schemaType)}
-                                            className="flex w-full items-start gap-2 rounded-md border border-border/20 bg-background/40 px-2.5 py-1.5 text-left hover:border-emerald-500/30 transition-colors"
+                                            className="flex w-full items-start gap-2 rounded-md border border-border/20 bg-background/40 px-2.5 py-1.5 text-left hover:border-success-border transition-colors"
                                           >
                                             <span className="mt-0.5 text-xs tabular-nums text-muted-foreground">#{m.pageId}</span>
                                             <div className="min-w-0 flex-1">
                                               <p className="truncate text-[11px] font-medium text-foreground">{m.pageTitle}</p>
                                               <p className="text-[9px] text-muted-foreground truncate">{m.pageUrl}</p>
                                               <div className="mt-1 flex flex-wrap gap-1">
-                                                {m.missingFieldNames.map((f) => <span key={f} className="rounded bg-red-500/10 px-1.5 py-0.5 text-[9px] text-red-400">{f}</span>)}
+                                                {m.missingFieldNames.map((f) => <span key={f} className="rounded bg-destructive-bg px-1.5 py-0.5 text-[9px] text-destructive-text">{f}</span>)}
                                               </div>
                                             </div>
                                             <FileJson className="h-3 w-3 shrink-0 text-muted-foreground mt-1" />
@@ -414,7 +414,7 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
                                         </Button>
                                         <Button
                                           size="sm"
-                                          className="h-7 text-xs gap-1 bg-emerald-600 text-white hover:bg-emerald-500"
+                                          className="h-7 text-xs gap-1 bg-success text-white hover:bg-success/90"
                                           onClick={() => {
                                             const field = selectedPage?.missingFieldNames[0]
                                               || expandedResult?.missingFields[0]?.missingFieldNames[0]
@@ -448,18 +448,18 @@ export default function SchemaAuditPanel(props: SchemaAuditPanelProps) {
               <CardContent className="p-0">
                 <div className="flex items-center justify-between border-b border-border/20 px-4 py-2.5">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-emerald-400" />
+                    <Sparkles className="h-4 w-4 text-success" />
                     <span className="text-base font-semibold text-foreground">JSON-LD 预览</span>
                   </div>
                   {previewJson && (
-                    <Button size="sm" variant="ghost" className="h-7 text-xs gap-1 text-emerald-400 hover:text-emerald-300" onClick={() => copyText(previewJson, "JSON-LD")}>
+                    <Button size="sm" variant="ghost" className="h-7 text-xs gap-1 text-success hover:text-success/80" onClick={() => copyText(previewJson, "JSON-LD")}>
                       <ClipboardCopy className="h-3 w-3" />复制
                     </Button>
                   )}
                 </div>
                 <div className="max-h-[520px] overflow-auto p-3">
                   {previewJson ? (
-                    <pre className="whitespace-pre-wrap break-all text-xs leading-relaxed text-emerald-300/90 font-mono">{previewJson}</pre>
+                    <pre className="whitespace-pre-wrap break-all text-xs leading-relaxed text-success font-mono">{previewJson}</pre>
                   ) : (
                     <p className="py-16 text-center text-[11px] text-muted-foreground">
                       选择左侧缺口页面或类型<br />查看可注入的 JSON-LD 代码
