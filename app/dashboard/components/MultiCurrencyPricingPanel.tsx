@@ -45,13 +45,13 @@ function calcLocalPrice(base: number, adj: number | null, manualPrice?: number):
 }
 
 function getAdjustmentColor(base: number, local: number): string {
-  if (local === base) return "text-zinc-400";
+  if (local === base) return "text-muted-foreground";
   const pct = ((local - base) / base) * 100;
-  if (pct > 10) return "text-amber-400";
-  if (pct > 0) return "text-amber-300";
-  if (pct < -10) return "text-emerald-400";
-  if (pct < 0) return "text-emerald-300";
-  return "text-zinc-400";
+  if (pct > 10) return "text-warning";
+  if (pct > 0) return "text-warning";
+  if (pct < -10) return "text-success";
+  if (pct < 0) return "text-success";
+  return "text-muted-foreground";
 }
 
 function getAdjustmentLabel(base: number, local: number): string {
@@ -162,11 +162,11 @@ export default function MultiCurrencyPricingPanel({ isDemo, shopUrl, accessToken
 
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
 
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><DollarSign className="h-6 w-6 text-amber-400" />多币种定价矩阵</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName}{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><DollarSign className="h-6 w-6 text-warning" />多币种定价矩阵</h2>
+        <p className="mt-1 text-base text-muted-foreground">{shopName}{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       {/* Exchange Rates */}
@@ -182,10 +182,10 @@ export default function MultiCurrencyPricingPanel({ isDemo, shopUrl, accessToken
 
       {/* Color Legend */}
       <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
-        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-zinc-500 inline-block"/> =基础价</span>
-        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-amber-500/70 inline-block"/> 上调</span>
-        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-emerald-500/70 inline-block"/> 下调</span>
-        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-sky-500/70 inline-block"/> 手动覆盖</span>
+        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-muted inline-block"/> =基础价</span>
+        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-warning inline-block"/> 上调</span>
+        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-success inline-block"/> 下调</span>
+        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded bg-info inline-block"/> 手动覆盖</span>
       </div>
 
       {/* Toolbar */}
@@ -196,7 +196,7 @@ export default function MultiCurrencyPricingPanel({ isDemo, shopUrl, accessToken
         <div className="flex items-center gap-1 ml-2">
           {markets.map((m) => (
             <label key={m.id} className="flex items-center gap-0.5 cursor-pointer text-xs">
-              <input type="checkbox" checked={visibleMarketIds.has(m.id)} onChange={()=>toggleMarket(m.id)} className="accent-sky-500"/>{countryCodeToFlag(m.countryCode)} {m.currency}
+              <input type="checkbox" checked={visibleMarketIds.has(m.id)} onChange={()=>toggleMarket(m.id)} className="accent-info"/>{countryCodeToFlag(m.countryCode)} {m.currency}
             </label>
           ))}
         </div>
@@ -204,13 +204,13 @@ export default function MultiCurrencyPricingPanel({ isDemo, shopUrl, accessToken
 
       {/* Batch Ops Bar */}
       {selCount > 0 && (
-        <Card className="border-amber-500/30 bg-amber-500/5"><CardContent className="flex items-center gap-2 py-2 px-4">
-          <span className="text-xs text-amber-400">已选 {selCount} 行</span>
+        <Card className="border-warning-border bg-warning-bg"><CardContent className="flex items-center gap-2 py-2 px-4">
+          <span className="text-xs text-warning">已选 {selCount} 行</span>
           <Button size="sm" variant="outline" onClick={()=>applyBatchAdjustment(1.5,"multiply")} className="h-7 text-xs">×1.5</Button>
           <Button size="sm" variant="outline" onClick={()=>applyBatchAdjustment(0.8,"multiply")} className="h-7 text-xs">×0.8</Button>
-          <Button size="sm" variant="outline" onClick={()=>applyBatchAdjustment(5,"up")} className="h-7 text-xs text-amber-400">+5%</Button>
-          <Button size="sm" variant="outline" onClick={()=>applyBatchAdjustment(5,"down")} className="h-7 text-xs text-emerald-400">−5%</Button>
-          <Button size="sm" variant="outline" onClick={()=>applyBatchAdjustment(0,"reset")} className="h-7 text-xs text-sky-400">重置默认</Button>
+          <Button size="sm" variant="outline" onClick={()=>applyBatchAdjustment(5,"up")} className="h-7 text-xs text-warning">+5%</Button>
+          <Button size="sm" variant="outline" onClick={()=>applyBatchAdjustment(5,"down")} className="h-7 text-xs text-success">−5%</Button>
+          <Button size="sm" variant="outline" onClick={()=>applyBatchAdjustment(0,"reset")} className="h-7 text-xs text-info">重置默认</Button>
         </CardContent></Card>
       )}
 
@@ -232,7 +232,7 @@ export default function MultiCurrencyPricingPanel({ isDemo, shopUrl, accessToken
                 const showVariants = isExpanded && group.variants.length > 1;
                 return (
                   <tr key={pid} className="border-b border-border/10 hover:bg-muted/5">
-                    <td className="py-2 pl-3"><input type="checkbox" onChange={()=>{const k=`${mainVariant.variantId}`;setSelectedIds((p)=>{const n=new Set(p);n.has(k)?n.delete(k):n.add(k);return n;});}} checked={selectedIds.has(`${mainVariant.variantId}`)} className="accent-amber-500"/></td>
+                    <td className="py-2 pl-3"><input type="checkbox" onChange={()=>{const k=`${mainVariant.variantId}`;setSelectedIds((p)=>{const n=new Set(p);n.has(k)?n.delete(k):n.add(k);return n;});}} checked={selectedIds.has(`${mainVariant.variantId}`)} className="accent-warning"/></td>
                     <td className="py-2 pl-2">
                       <div className="flex items-center gap-1">
                         {group.variants.length > 1 && <button onClick={()=>toggleExpand(pid)}>{isExpanded?<ChevronDown className="h-3 w-3"/>:<ChevronRight className="h-3 w-3"/>}</button>}
@@ -246,9 +246,9 @@ export default function MultiCurrencyPricingPanel({ isDemo, shopUrl, accessToken
                       const adj = m.priceAdjustment?.value ?? null;
                       const defaultPrice = calcLocalPrice(v.basePrice, adj);
                       const editing = editingCell?.variantId === v.variantId && editingCell?.marketId === m.id;
-                      const colorClass = manual ? "text-sky-400" : getAdjustmentColor(v.basePrice, price);
+                      const colorClass = manual ? "text-info" : getAdjustmentColor(v.basePrice, price);
                       return (
-                        <td key={m.id} className={`py-2 px-3 text-right ${manual ? "border-l-2 border-l-sky-500 cursor-pointer" : "cursor-pointer"}`} onClick={() => startEdit(v.variantId, m.id, price)}>
+                        <td key={m.id} className={`py-2 px-3 text-right ${manual ? "border-l-2 border-l-info-border cursor-pointer" : "cursor-pointer"}`} onClick={() => startEdit(v.variantId, m.id, price)}>
                           {editing ? (
                             <Input type="number" step="0.01" value={editValue} onChange={(e)=>setEditValue(e.target.value)} onBlur={saveEdit} onKeyDown={handleKeyDown} autoFocus className="h-6 w-20 text-sm tabular-nums inline-block" onClick={(e)=>e.stopPropagation()} />
                           ) : (
