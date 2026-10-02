@@ -154,16 +154,16 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
 
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
 
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Globe className="h-6 w-6 text-sky-400" />多市场运营</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName}{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Globe className="h-6 w-6 text-info" />多市场运营</h2>
+        <p className="mt-1 text-base text-muted-foreground">{shopName}{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        {[{v:stats.total,l:"总市场",c:"text-sky-400"},{v:stats.active,l:"已激活",c:"text-emerald-400"},{v:stats.currencies,l:"币种",c:"text-amber-400"},{v:stats.languages,l:"语言",c:"text-violet-400"}].map((s,i)=>
+        {[{v:stats.total,l:"总市场",c:"text-info"},{v:stats.active,l:"已激活",c:"text-success"},{v:stats.currencies,l:"币种",c:"text-warning"},{v:stats.languages,l:"语言",c:"text-info"}].map((s,i)=>
           <Card key={i} className="border-border/40 bg-card/60"><CardContent className="p-3 text-center"><p className={`text-2xl font-bold tabular-nums ${s.c}`}>{s.v}</p><p className="text-xs text-muted-foreground mt-0.5">{s.l}</p></CardContent></Card>
         )}
       </div>
@@ -174,9 +174,9 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
         <Button size="sm" variant="ghost" onClick={clearSelect} className="h-7 text-xs">取消</Button>
         {selectedIds.size > 0 && (
           <>
-            <Button size="sm" variant="outline" onClick={() => setMarkets((p) => p.map((m) => selectedIds.has(m.id) ? { ...m, enabled: true } : m))} className="h-7 text-xs text-emerald-400">批量激活</Button>
-            <Button size="sm" variant="outline" onClick={() => setMarkets((p) => p.map((m) => selectedIds.has(m.id) ? { ...m, enabled: false } : m))} className="h-7 text-xs text-red-400">批量停用</Button>
-            <Button size="sm" variant="outline" onClick={() => setBulkAdj({ open: true, value: "" })} className="h-7 text-xs text-amber-400">批量调价</Button>
+            <Button size="sm" variant="outline" onClick={() => setMarkets((p) => p.map((m) => selectedIds.has(m.id) ? { ...m, enabled: true } : m))} className="h-7 text-xs text-success">批量激活</Button>
+            <Button size="sm" variant="outline" onClick={() => setMarkets((p) => p.map((m) => selectedIds.has(m.id) ? { ...m, enabled: false } : m))} className="h-7 text-xs text-destructive-text">批量停用</Button>
+            <Button size="sm" variant="outline" onClick={() => setBulkAdj({ open: true, value: "" })} className="h-7 text-xs text-warning">批量调价</Button>
             <span className="text-xs text-muted-foreground ml-2">已选 {selectedIds.size}</span>
           </>
         )}
@@ -184,10 +184,10 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
       </div>
 
       {bulkAdj.open && (
-        <Card className="border-amber-500/30 bg-amber-500/5"><CardContent className="flex items-center gap-2 py-2 px-4">
-          <span className="text-xs text-amber-400">调整百分比:</span>
+        <Card className="border-warning-border bg-warning-bg"><CardContent className="flex items-center gap-2 py-2 px-4">
+          <span className="text-xs text-warning">调整百分比:</span>
           <Input type="number" value={bulkAdj.value} onChange={(e) => setBulkAdj({ ...bulkAdj, value: e.target.value })} className="h-7 w-24 text-sm" placeholder="+10"/>
-          <Button size="sm" onClick={applyBulkAdj} className="h-7 text-xs bg-amber-600 text-white">应用</Button>
+          <Button size="sm" onClick={applyBulkAdj} className="h-7 text-xs bg-warning text-white">应用</Button>
           <Button size="sm" variant="ghost" onClick={() => setBulkAdj({ open: false, value: "" })} className="h-7 text-xs"><X className="h-3 w-3"/></Button>
         </CardContent></Card>
       )}
@@ -195,22 +195,22 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
       {/* Market Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {markets.map((m) => (
-          <Card key={m.id} className={`border-border/40 bg-card/60 shadow-lg backdrop-blur-lg cursor-pointer hover:border-sky-500/30 transition-colors ${selectedIds.has(m.id) ? "ring-2 ring-sky-500/50" : ""}`}
+          <Card key={m.id} className={`border-border/40 bg-card/60 shadow-lg backdrop-blur-lg cursor-pointer hover:border-info-border transition-colors ${selectedIds.has(m.id) ? "ring-2 ring-info-border" : ""}`}
             onClick={() => { if (!bulkAdj.open) setDetailMarket(m); }}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <input type="checkbox" checked={selectedIds.has(m.id)} onChange={(e) => { e.stopPropagation(); toggleSelect(m.id); }} className="accent-sky-500" />
+                  <input type="checkbox" checked={selectedIds.has(m.id)} onChange={(e) => { e.stopPropagation(); toggleSelect(m.id); }} className="accent-info" />
                   <span className="text-3xl">{countryCodeToFlag(m.countryCode)}</span>
                   <div><p className="text-base font-semibold text-foreground">{m.name}</p><p className="text-xs text-muted-foreground">{m.handle}</p></div>
                 </div>
-                <Badge className={`text-[9px] px-1.5 py-0 ${m.enabled ? "bg-emerald-500/15 text-emerald-400" : "bg-zinc-500/15 text-zinc-400"}`}>{m.enabled ? "激活" : "未激活"}</Badge>
+                <Badge className={`text-[9px] px-1.5 py-0 ${m.enabled ? "bg-success-bg text-success" : "bg-muted text-muted-foreground"}`}>{m.enabled ? "激活" : "未激活"}</Badge>
               </div>
               <div className="space-y-1 text-[11px] text-muted-foreground">
                 <div className="flex items-center gap-1"><span className="font-semibold text-foreground">{m.currency}</span> · {m.languages.map((l) => l.name).join(", ")}</div>
                 <div className="text-xs">{m.domain}{m.subfolder}</div>
                 <div className="text-xs">
-                  {m.priceAdjustment ? <>基础价 × {m.priceAdjustment.type === "percentage" ? <span className="text-amber-400">{(1 + m.priceAdjustment.value / 100).toFixed(2)}（{m.priceAdjustment.value > 0 ? "+" : ""}{m.priceAdjustment.value}%）</span> : `+¥${m.priceAdjustment.value}`}</> : <span className="text-emerald-400">使用店铺默认价格</span>}
+                  {m.priceAdjustment ? <>基础价 × {m.priceAdjustment.type === "percentage" ? <span className="text-warning">{(1 + m.priceAdjustment.value / 100).toFixed(2)}（{m.priceAdjustment.value > 0 ? "+" : ""}{m.priceAdjustment.value}%）</span> : `+¥${m.priceAdjustment.value}`}</> : <span className="text-success">使用店铺默认价格</span>}
                 </div>
                 <div className="text-xs">已为 {m.productCount > 0 ? m.productCount : "—"} 件商品设置本地价格</div>
               </div>
@@ -233,7 +233,7 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
                 <Button size="sm" variant="ghost" onClick={() => setDetailMarket(null)}><X className="h-4 w-4"/></Button>
               </div>
               <div className="flex gap-1 px-5 py-2 border-b border-border/20 shrink-0">
-                {(["overview","pricing","domain"] as const).map((t) => (<button key={t} onClick={() => setDetailTab(t)} className={`px-3 py-1 rounded text-xs font-medium ${detailTab === t ? "bg-sky-500/15 text-sky-400" : "text-muted-foreground"}`}>{t==="overview"?"概况":t==="pricing"?"商品定价":"域名与语言"}</button>))}
+                {(["overview","pricing","domain"] as const).map((t) => (<button key={t} onClick={() => setDetailTab(t)} className={`px-3 py-1 rounded text-xs font-medium ${detailTab === t ? "bg-info-bg text-info" : "text-muted-foreground"}`}>{t==="overview"?"概况":t==="pricing"?"商品定价":"域名与语言"}</button>))}
               </div>
               <div className="flex-1 overflow-y-auto p-5 space-y-4">
 
@@ -249,7 +249,7 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
                   </div>
                   <div><label className="text-xs font-semibold text-muted-foreground mb-0.5 block">语言</label>
                     <div className="flex flex-wrap gap-1 mb-1">{(detailMarket.languages || []).map((l) => (
-                      <Badge key={l.isoCode} className="text-xs gap-1 bg-sky-500/15 text-sky-400">{l.name}<button onClick={() => setDetailMarket({ ...detailMarket, languages: detailMarket.languages.filter((x) => x.isoCode !== l.isoCode) })}><X className="h-2.5 w-2.5"/></button></Badge>))}</div>
+                      <Badge key={l.isoCode} className="text-xs gap-1 bg-info-bg text-info">{l.name}<button onClick={() => setDetailMarket({ ...detailMarket, languages: detailMarket.languages.filter((x) => x.isoCode !== l.isoCode) })}><X className="h-2.5 w-2.5"/></button></Badge>))}</div>
                     <select value="" onChange={(e) => { if (e.target.value) { const lang = LANGUAGES.find((l) => l.code === e.target.value); if (lang && !detailMarket.languages.find((l) => l.isoCode === lang.code)) setDetailMarket({ ...detailMarket, languages: [...detailMarket.languages, { isoCode: lang.code, name: lang.name }] }); e.target.value = ""; } }} className="h-9 rounded border border-border/40 bg-background px-2 text-sm text-foreground">
                       <option value="">+ 添加语言</option>{LANGUAGES.filter((l) => !detailMarket.languages.find((x) => x.isoCode === l.code)).map((l) => <option key={l.code} value={l.code}>{l.name}</option>)}
                     </select>
@@ -259,7 +259,7 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
                     <div><label className="text-sm font-semibold text-muted-foreground mb-0.5 block">子路径</label><Input value={detailMarket.subfolder || ""} onChange={(e) => setDetailMarket({ ...detailMarket, subfolder: e.target.value })} className="h-9 text-sm" placeholder="/en"/></div>
                   </div>
                   <div className="border-t border-border/20 pt-3">
-                    <label className="flex items-center justify-between"><span className="text-xs font-semibold text-muted-foreground">价格调整</span><input type="checkbox" checked={!!detailMarket.priceAdjustment} onChange={() => setDetailMarket({ ...detailMarket, priceAdjustment: detailMarket.priceAdjustment ? null : { type:"percentage", value:0 } })} className="accent-amber-500"/></label>
+                    <label className="flex items-center justify-between"><span className="text-xs font-semibold text-muted-foreground">价格调整</span><input type="checkbox" checked={!!detailMarket.priceAdjustment} onChange={() => setDetailMarket({ ...detailMarket, priceAdjustment: detailMarket.priceAdjustment ? null : { type:"percentage", value:0 } })} className="accent-warning"/></label>
                     {detailMarket.priceAdjustment && (
                       <div className="flex items-center gap-2 mt-2">
                         <span className="text-xs text-muted-foreground">百分比</span>
@@ -280,12 +280,12 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
                   <table className="w-full text-sm">
                     <thead><tr className="border-b border-border/20 text-xs text-muted-foreground"><th className="py-1 text-left">商品</th><th className="py-1 text-right">基础价</th><th className="py-1 text-right">本地价</th><th className="py-1 text-center">方式</th><th className="py-1 w-12"/></tr></thead>
                     <tbody>{filteredPricing.map((p) => (
-                      <tr key={p.productId} className={`border-b border-border/10 ${p.adjustmentType === "manual" ? "border-l-2 border-l-sky-500 pl-1" : ""}`}>
+                      <tr key={p.productId} className={`border-b border-border/10 ${p.adjustmentType === "manual" ? "border-l-2 border-l-info-border pl-1" : ""}`}>
                         <td className="py-1 truncate max-w-[160px]">{p.title}</td>
                         <td className="py-1 text-right tabular-nums">¥{p.basePrice}</td>
-                        <td className="py-1 text-right tabular-nums font-semibold text-sky-400">¥{p.localPrice}</td>
-                        <td className="py-1 text-center"><Badge className={`text-[9px] px-1 py-0 ${p.adjustmentType === "manual" ? "bg-sky-500/15 text-sky-400" : "bg-muted/20 text-muted-foreground"}`}>{p.adjustmentType === "manual" ? "手动" : "默认"}</Badge></td>
-                        <td className="py-1 text-right"><Button size="sm" variant="ghost" onClick={() => setOverrideModal({ productId: p.productId, pct: String(p.manualPercent || ""), price: String(p.manualPrice || "") })} className="h-6 text-xs text-amber-400">覆盖</Button></td>
+                        <td className="py-1 text-right tabular-nums font-semibold text-info">¥{p.localPrice}</td>
+                        <td className="py-1 text-center"><Badge className={`text-[9px] px-1 py-0 ${p.adjustmentType === "manual" ? "bg-info-bg text-info" : "bg-muted/20 text-muted-foreground"}`}>{p.adjustmentType === "manual" ? "手动" : "默认"}</Badge></td>
+                        <td className="py-1 text-right"><Button size="sm" variant="ghost" onClick={() => setOverrideModal({ productId: p.productId, pct: String(p.manualPercent || ""), price: String(p.manualPrice || "") })} className="h-6 text-xs text-warning">覆盖</Button></td>
                       </tr>
                     ))}</tbody>
                   </table>
@@ -295,23 +295,23 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
                 {detailTab === "domain" && (<>
                   <Card className="border-border/40 bg-muted/10"><CardContent className="p-3 space-y-2 text-sm text-muted-foreground">
                     <p className="text-foreground font-semibold">域名预览</p>
-                    <p>主域名: <span className="text-sky-400">{detailMarket.domain}</span></p>
-                    <p>子路径: <span className="text-sky-400">{detailMarket.subfolder || "/"}</span></p>
-                    <p>完整 URL: <span className="text-sky-400">https://{detailMarket.domain}{detailMarket.subfolder || ""}</span></p>
+                    <p>主域名: <span className="text-info">{detailMarket.domain}</span></p>
+                    <p>子路径: <span className="text-info">{detailMarket.subfolder || "/"}</span></p>
+                    <p>完整 URL: <span className="text-info">https://{detailMarket.domain}{detailMarket.subfolder || ""}</span></p>
                   </CardContent></Card>
                   <div>
                     <p className="text-xs font-semibold text-muted-foreground mb-1">已激活语言</p>
                     {detailMarket.languages.map((l) => (
                       <div key={l.isoCode} className="flex items-center justify-between py-1 px-2 rounded bg-muted/10 mb-1 text-sm">
                         <span>{l.name} <span className="text-muted-foreground">({l.isoCode})</span></span>
-                        <span className="text-sky-400">https://{detailMarket.domain}{detailMarket.subfolder || "/"}</span>
+                        <span className="text-info">https://{detailMarket.domain}{detailMarket.subfolder || "/"}</span>
                       </div>
                     ))}
                   </div>
                 </>)}
               </div>
               <div className="flex gap-2 px-5 py-3 border-t border-border/20 shrink-0">
-                <Button size="sm" onClick={() => { showToast(isDemo ? "演示：已保存" : "已保存"); }} className="h-9 gap-1 bg-emerald-600 text-white text-sm"><Save className="h-3 w-3"/>保存</Button>
+                <Button size="sm" onClick={() => { showToast(isDemo ? "演示：已保存" : "已保存"); }} className="h-9 gap-1 bg-success text-white text-sm"><Save className="h-3 w-3"/>保存</Button>
                 <Button size="sm" variant="outline" onClick={() => toggleMarket(detailMarket.id)} className="h-9 text-sm">{detailMarket.enabled ? "停用" : "激活"}此市场</Button>
               </div>
             </div>
@@ -328,7 +328,7 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
               <h3 className="text-base font-semibold">手动定价覆盖</h3>
               <div><label className="text-sm text-muted-foreground block mb-0.5">调整百分比 (%)</label><Input type="number" value={overrideModal.pct} onChange={(e) => setOverrideModal({ ...overrideModal, pct: e.target.value })} className="h-9 text-sm" placeholder="+10"/></div>
               <div><label className="text-sm text-muted-foreground block mb-0.5">或直接设置价格</label><Input type="number" step="0.01" value={overrideModal.price} onChange={(e) => setOverrideModal({ ...overrideModal, price: e.target.value })} className="h-9 text-sm" placeholder="直接输入价格"/></div>
-              <div className="flex gap-2"><Button onClick={applyOverride} className="flex-1 h-9 bg-emerald-600 text-white text-sm">应用覆盖</Button><Button variant="outline" onClick={() => setOverrideModal(null)} className="h-9 text-sm">取消</Button></div>
+              <div className="flex gap-2"><Button onClick={applyOverride} className="flex-1 h-9 bg-success text-white text-sm">应用覆盖</Button><Button variant="outline" onClick={() => setOverrideModal(null)} className="h-9 text-sm">取消</Button></div>
             </div>
           </div>
         </>
