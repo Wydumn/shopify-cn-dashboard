@@ -710,7 +710,7 @@ const SearchConsolePanel = dynamic(function () { return import("./components/Sea
           <div className="h-9 w-32 rounded-lg bg-muted" />
           <div className="h-9 w-32 rounded-lg bg-muted" />
         </div>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+        <div className="rounded-xl border border-border bg-card p-4">
           <div className="h-64 rounded-lg bg-muted" />
         </div>
       </div>
@@ -724,7 +724,7 @@ const KeywordResearchPanel = dynamic(function () { return import("./components/K
       <div className="space-y-4 animate-pulse">
         <div className="h-9 w-72 rounded-lg bg-muted" />
         <div className="h-9 w-64 rounded-lg bg-muted" />
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+        <div className="rounded-xl border border-border bg-card p-4">
           <div className="h-72 rounded-lg bg-muted" />
         </div>
       </div>
@@ -1215,11 +1215,11 @@ export default function DashboardPage() {
       <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
         <CardContent className="flex flex-col items-center gap-5 py-16 px-16">
           <div className="relative flex h-20 w-20 items-center justify-center">
-            <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-emerald-500 border-r-emerald-500/30" />
-            <Globe className="relative h-7 w-7 text-emerald-500 animate-pulse" />
+            <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-success border-r-success/30" />
+            <Globe className="relative h-7 w-7 text-success animate-pulse" />
           </div>
           <p className="text-lg font-semibold text-foreground">正在同步 Shopify 跨境数据...</p>
-          <div className="h-1 w-48 overflow-hidden rounded-full bg-muted"><div className="h-full w-1/2 animate-[loading_1.5s_ease-in-out_infinite] rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400" /></div>
+          <div className="h-1 w-48 overflow-hidden rounded-full bg-muted"><div className="h-full w-1/2 animate-[loading_1.5s_ease-in-out_infinite] rounded-full bg-gradient-to-r from-success to-success/70" /></div>
         </CardContent>
       </Card>
     </div>
@@ -1230,11 +1230,11 @@ export default function DashboardPage() {
     <div className="flex min-h-screen items-center justify-center">
       <Card className="w-full max-w-md border-border/40 bg-card/80 shadow-2xl backdrop-blur-lg">
         <CardContent className="flex flex-col items-center gap-4 p-8">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 ring-1 ring-red-500/20"><AlertCircle className="h-6 w-6 text-red-500" /></div>
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10 ring-1 ring-destructive/20"><AlertCircle className="h-6 w-6 text-destructive" /></div>
           <p className="text-lg font-medium text-foreground">数据加载失败</p>
           <p className="text-base text-muted-foreground text-center">{error}</p>
           <div className="flex gap-3">
-            <Button onClick={() => currentStore && fetchData(currentStore)} className="gap-2 bg-emerald-600 text-white hover:bg-emerald-500"><RefreshCw className="h-4 w-4" />重试</Button>
+            <Button onClick={() => currentStore && fetchData(currentStore)} className="gap-2 bg-success text-white hover:bg-success/90"><RefreshCw className="h-4 w-4" />重试</Button>
             <Button variant="outline" onClick={() => {
               const demoStore = saveDefaultDemoStore();
               setStores([demoStore]);
