@@ -72,11 +72,11 @@ export default function ProductAffinityPanel({ isDemo, shopUrl, accessToken, sho
 
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
 
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Link className="h-6 w-6 text-violet-400" />商品关联分析</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName} · {allRules.length} 条关联规则{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Link className="h-6 w-6 text-info" />商品关联分析</h2>
+        <p className="mt-1 text-base text-muted-foreground">{shopName} · {allRules.length} 条关联规则{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       {/* Filters */}
@@ -100,14 +100,14 @@ export default function ProductAffinityPanel({ isDemo, shopUrl, accessToken, sho
             {topRules.map(function (r, i) {
               var action = getAction(r);
               return (
-                <tr key={i} className={"border-b border-border/10 hover:bg-muted/5 cursor-pointer " + (selectedRule === i ? "bg-violet-500/10" : "")} onClick={function () { setSelectedRule(selectedRule === i ? -1 : i); }}>
+                <tr key={i} className={"border-b border-border/10 hover:bg-muted/5 cursor-pointer " + (selectedRule === i ? "bg-info-bg" : "")} onClick={function () { setSelectedRule(selectedRule === i ? -1 : i); }}>
                   <td className="py-2 pl-3 font-medium text-foreground truncate max-w-[140px]">{r.productA}</td>
                   <td className="py-2 text-center text-muted-foreground">→</td>
                   <td className="py-2 text-foreground truncate max-w-[140px]">{r.productB}</td>
                   <td className="py-2 px-2 text-right tabular-nums">{r.abCount} 次</td>
                   <td className="py-2 px-2 text-right tabular-nums font-semibold">{r.confidence.toFixed(1)}%</td>
-                  <td className="py-2 px-2 text-right tabular-nums font-bold text-violet-400">{r.lift.toFixed(1)}x</td>
-                  <td className="py-2 px-2 text-center"><Badge className="text-[8px] px-1 py-0 bg-violet-500/15 text-violet-400">{action}</Badge></td>
+                  <td className="py-2 px-2 text-right tabular-nums font-bold text-info">{r.lift.toFixed(1)}x</td>
+                  <td className="py-2 px-2 text-center"><Badge className="text-[8px] px-1 py-0 bg-info-bg text-info">{action}</Badge></td>
                 </tr>
               );
             })}
@@ -125,10 +125,10 @@ export default function ProductAffinityPanel({ isDemo, shopUrl, accessToken, sho
               var opacity = Math.max(0.3, Math.min(1, r.lift / 5));
               var isSelected = selectedRule === i;
               return (
-                <div key={i} className={"flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] border cursor-pointer transition-all " + (isSelected ? "border-violet-500 bg-violet-500/10" : "border-border/20 bg-muted/5")} onClick={function () { setSelectedRule(i); }} style={{ opacity: opacity }}>
+                <div key={i} className={"flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] border cursor-pointer transition-all " + (isSelected ? "border-info-border bg-info-bg" : "border-border/20 bg-muted/5")} onClick={function () { setSelectedRule(i); }} style={{ opacity: opacity }}>
                   <span className="font-semibold text-foreground truncate max-w-[70px]">{r.productA}</span>
-                  <ArrowRight className="h-2.5 w-2.5 text-violet-400" />
-                  <span className="font-semibold text-violet-400 truncate max-w-[70px]">{r.productB}</span>
+                  <ArrowRight className="h-2.5 w-2.5 text-info" />
+                  <span className="font-semibold text-info truncate max-w-[70px]">{r.productB}</span>
                   <span className="text-muted-foreground">{r.lift.toFixed(1)}x</span>
                 </div>
               );
@@ -139,7 +139,7 @@ export default function ProductAffinityPanel({ isDemo, shopUrl, accessToken, sho
 
       {/* Detail Modal */}
       {selected && (
-        <Card className="border-border/40 bg-card/60 shadow-xl border-l-2 border-l-violet-500">
+        <Card className="border-border/40 bg-card/60 shadow-xl border-l-2 border-l-info-border">
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center justify-between">
               <p className="text-base font-semibold text-foreground">{selected.productA} → {selected.productB}</p>
@@ -147,8 +147,8 @@ export default function ProductAffinityPanel({ isDemo, shopUrl, accessToken, sho
             </div>
             <div className="grid grid-cols-4 gap-2 text-xs">
               <div className="bg-muted/10 rounded p-2"><p className="text-muted-foreground">共现次数</p><p className="text-lg font-bold tabular-nums">{selected.abCount}</p></div>
-              <div className="bg-muted/10 rounded p-2"><p className="text-muted-foreground">置信度</p><p className="text-lg font-bold tabular-nums text-violet-400">{selected.confidence.toFixed(1)}%</p></div>
-              <div className="bg-muted/10 rounded p-2"><p className="text-muted-foreground">提升度</p><p className="text-lg font-bold tabular-nums text-violet-400">{selected.lift.toFixed(1)}x</p></div>
+              <div className="bg-muted/10 rounded p-2"><p className="text-muted-foreground">置信度</p><p className="text-lg font-bold tabular-nums text-info">{selected.confidence.toFixed(1)}%</p></div>
+              <div className="bg-muted/10 rounded p-2"><p className="text-muted-foreground">提升度</p><p className="text-lg font-bold tabular-nums text-info">{selected.lift.toFixed(1)}x</p></div>
               <div className="bg-muted/10 rounded p-2"><p className="text-muted-foreground">建议</p><p className="text-base font-semibold text-foreground">{getAction(selected)}</p></div>
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs">
@@ -170,7 +170,7 @@ export default function ProductAffinityPanel({ isDemo, shopUrl, accessToken, sho
           </div>
           <table className="w-full text-xs">
             <thead><tr className="text-muted-foreground border-b border-border/20"><th className="py-1 text-left">商品组合</th><th className="py-1 text-right">原价</th><th className="py-1 text-right">捆绑价</th><th className="py-1 text-right">预估销量</th><th className="py-1 text-right">预估 GMV</th></tr></thead>
-            <tbody>{bundles.map(function (b, i) { return <tr key={i} className="border-b border-border/10"><td className="py-1">{b.products.join(" + ")}</td><td className="py-1 text-right tabular-nums">¥{b.originalTotal}</td><td className="py-1 text-right tabular-nums text-violet-400">¥{b.bundledPrice}</td><td className="py-1 text-right tabular-nums">{b.estimatedSales}</td><td className="py-1 text-right tabular-nums text-emerald-400">{formatCny(Math.round(b.bundleGMV * EXCHANGE_RATE))}</td></tr>; })}</tbody>
+            <tbody>{bundles.map(function (b, i) { return <tr key={i} className="border-b border-border/10"><td className="py-1">{b.products.join(" + ")}</td><td className="py-1 text-right tabular-nums">¥{b.originalTotal}</td><td className="py-1 text-right tabular-nums text-info">¥{b.bundledPrice}</td><td className="py-1 text-right tabular-nums">{b.estimatedSales}</td><td className="py-1 text-right tabular-nums text-success">{formatCny(Math.round(b.bundleGMV * EXCHANGE_RATE))}</td></tr>; })}</tbody>
           </table>
         </CardContent></Card>
       )}

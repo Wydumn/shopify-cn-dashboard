@@ -70,10 +70,10 @@ const DEMO_METAFIELDS: MetafieldItem[] = [
 /* ─── Value Renderer ──────────────────────────────────── */
 
 function MetaValue({ type, value }: { type: string; value: string }) {
-  if (type === "boolean") return <Badge className="text-xs px-1.5 py-0">{value === "true" ? <><CheckCircle2 className="h-2.5 w-2.5 mr-0.5 inline text-emerald-400" />是</> : <><X className="h-2.5 w-2.5 mr-0.5 inline text-red-400" />否</>}</Badge>;
+  if (type === "boolean") return <Badge className="text-xs px-1.5 py-0">{value === "true" ? <><CheckCircle2 className="h-2.5 w-2.5 mr-0.5 inline text-success" />是</> : <><X className="h-2.5 w-2.5 mr-0.5 inline text-destructive-text" />否</>}</Badge>;
   if (type === "color") return <span className="flex items-center gap-1.5"><span className="inline-block h-4 w-4 rounded border border-border/40" style={{ backgroundColor: value }} /><span className="text-sm font-mono">{value}</span></span>;
-  if (type === "url") return <a href={value} target="_blank" className="text-sm text-sky-400 underline truncate max-w-[200px] inline-block">{value}</a>;
-  if (type === "json") return <code className="text-xs bg-muted/20 px-1.5 py-0.5 rounded text-emerald-400 max-w-[200px] truncate inline-block">{value}</code>;
+  if (type === "url") return <a href={value} target="_blank" className="text-sm text-info underline truncate max-w-[200px] inline-block">{value}</a>;
+  if (type === "json") return <code className="text-xs bg-muted/20 px-1.5 py-0.5 rounded text-success max-w-[200px] truncate inline-block">{value}</code>;
   if (type === "multi_line_text_field") return <span className="text-sm max-w-[200px] truncate inline-block">{value.split("\n")[0]}{value.includes("\n") ? " ..." : ""}</span>;
   return <span className="text-sm text-foreground max-w-[200px] truncate inline-block">{value}</span>;
 }
@@ -121,13 +121,13 @@ function MetaModal({
             <div>
               <label className="text-xs font-semibold text-muted-foreground mb-0.5 block">值</label>
               {form.type === "boolean" ? (
-                <label className="flex items-center gap-2 text-base cursor-pointer"><input type="checkbox" checked={form.value === "true"} onChange={(e) => setForm({ ...form, value: e.target.checked ? "true" : "false" })} className="accent-emerald-500" /><span className="text-foreground">{form.value === "true" ? "是 (true)" : "否 (false)"}</span></label>
+                <label className="flex items-center gap-2 text-base cursor-pointer"><input type="checkbox" checked={form.value === "true"} onChange={(e) => setForm({ ...form, value: e.target.checked ? "true" : "false" })} className="accent-success" /><span className="text-foreground">{form.value === "true" ? "是 (true)" : "否 (false)"}</span></label>
               ) : form.type === "color" ? (
                 <div className="flex items-center gap-2"><Input type="color" value={form.value || "#000000"} onChange={(e) => setForm({ ...form, value: e.target.value })} className="h-9 w-12 p-1" /><Input value={form.value} onChange={(e) => setForm({ ...form, value: e.target.value })} className="h-9 text-sm font-mono flex-1" placeholder="#FF6B6B" /></div>
               ) : form.type === "json" || form.type === "multi_line_text_field" ? (
                 <div>
                   <textarea value={form.value} onChange={(e) => setForm({ ...form, value: e.target.value })} rows={form.type === "json" ? 4 : 3} className="w-full rounded-md border border-border/40 bg-background px-3 py-2 text-sm font-mono resize-none" />
-                  {form.type === "json" && jsonError && <p className="text-xs text-red-400 mt-0.5">JSON 格式无效，请检查</p>}
+                  {form.type === "json" && jsonError && <p className="text-xs text-destructive-text mt-0.5">JSON 格式无效，请检查</p>}
                 </div>
               ) : form.type === "date" ? (
                 <Input type="date" value={form.value} onChange={(e) => setForm({ ...form, value: e.target.value })} className="h-9 text-sm" />
@@ -144,7 +144,7 @@ function MetaModal({
             <div><label className="text-sm font-semibold text-muted-foreground mb-0.5 block">描述</label><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full rounded-md border border-border/40 bg-background px-3 py-2 text-sm resize-none" placeholder="此字段的用途..." /></div>
           </div>
           <div className="flex gap-2 border-t border-border/20 px-5 py-3">
-            <Button onClick={handleSave} className="flex-1 h-9 gap-1 bg-emerald-600 text-white text-sm"><Save className="h-3 w-3" />保存</Button>
+            <Button onClick={handleSave} className="flex-1 h-9 gap-1 bg-success text-white text-sm"><Save className="h-3 w-3" />保存</Button>
             <Button variant="outline" onClick={onCancel} className="h-9 text-sm">取消</Button>
           </div>
         </div>
@@ -322,11 +322,11 @@ export default function MetafieldsEditorPanel({ isDemo, shopUrl, accessToken, sh
   /* ── Render ────────────────────────────────────────── */
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
 
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Database className="h-6 w-6 text-pink-400" />Metafields 编辑器</h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName}{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Database className="h-6 w-6 text-info" />Metafields 编辑器</h2>
+        <p className="mt-1 text-base text-muted-foreground">{shopName}{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       {/* Context Selector */}
@@ -361,7 +361,7 @@ export default function MetafieldsEditorPanel({ isDemo, shopUrl, accessToken, sh
         <div className="text-center py-16 text-base text-muted-foreground"><Database className="h-10 w-10 mx-auto mb-2 text-muted-foreground/25" />请先选择目标对象</div>
       ) : (
         <>
-          <Button size="sm" onClick={openAdd} className="h-9 gap-1 bg-pink-600 hover:bg-pink-500 text-white text-sm"><Plus className="h-3 w-3" />添加 Metafield</Button>
+          <Button size="sm" onClick={openAdd} className="h-9 gap-1 bg-info text-white text-sm"><Plus className="h-3 w-3" />添加 Metafield</Button>
           <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
             <CardContent className="p-0">
               {currentMetafields.length > 0 ? (
@@ -379,7 +379,7 @@ export default function MetafieldsEditorPanel({ isDemo, shopUrl, accessToken, sh
                         <td className="py-2.5 px-2 text-center">
                           <div className="flex items-center justify-center gap-0.5">
                             <button onClick={() => openEdit(m)} className="h-6 w-6 flex items-center justify-center rounded hover:bg-muted/30"><Edit3 className="h-3 w-3 text-muted-foreground" /></button>
-                            <button onClick={() => setDeleteId(m.id)} className="h-6 w-6 flex items-center justify-center rounded hover:bg-red-500/20"><Trash2 className="h-3 w-3 text-muted-foreground hover:text-red-400" /></button>
+                            <button onClick={() => setDeleteId(m.id)} className="h-6 w-6 flex items-center justify-center rounded hover:bg-destructive-bg"><Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive-text" /></button>
                           </div>
                         </td>
                       </tr>
@@ -403,10 +403,10 @@ export default function MetafieldsEditorPanel({ isDemo, shopUrl, accessToken, sh
           <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setDeleteId(null)} />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="bg-card border border-border/40 rounded-xl p-5 max-w-sm space-y-3 shadow-2xl">
-              <AlertCircle className="h-9 w-8 text-red-400" />
+              <AlertCircle className="h-9 w-8 text-destructive-text" />
               <p className="text-base font-semibold">确定删除此 metafield？</p>
               <p className="text-sm text-muted-foreground">此操作不可恢复。</p>
-              <div className="flex gap-2"><Button onClick={handleDelete} className="flex-1 bg-red-600 text-white text-sm">删除</Button><Button variant="outline" onClick={() => setDeleteId(null)} className="flex-1 text-sm">取消</Button></div>
+              <div className="flex gap-2"><Button onClick={handleDelete} className="flex-1 bg-destructive text-white text-sm">删除</Button><Button variant="outline" onClick={() => setDeleteId(null)} className="flex-1 text-sm">取消</Button></div>
             </div>
           </div>
         </>

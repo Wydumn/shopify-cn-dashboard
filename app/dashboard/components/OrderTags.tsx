@@ -22,17 +22,17 @@ interface OrderTagsProps {
 /* ─── Quick tag templates ──────────────────────────── */
 
 const QUICK_TAGS = [
-  { label: "待审单", color: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
-  { label: "已催付", color: "bg-sky-500/15 text-sky-400 border-sky-500/30" },
-  { label: "高价值客户", color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
-  { label: "疑似欺诈", color: "bg-red-500/15 text-red-400 border-red-500/30" },
-  { label: "需要发票", color: "bg-purple-500/15 text-purple-400 border-purple-500/30" },
+  { label: "待审单", color: "bg-warning-bg text-warning border-warning-border" },
+  { label: "已催付", color: "bg-info-bg text-info border-info-border" },
+  { label: "高价值客户", color: "bg-success-bg text-success border-success-border" },
+  { label: "疑似欺诈", color: "bg-destructive-bg text-destructive-text border-destructive-border" },
+  { label: "需要发票", color: "bg-info-bg text-info border-info-border" },
 ];
 
 function getTagColor(tag: string): string {
   const found = QUICK_TAGS.find((t) => t.label === tag);
   if (found) return found.color;
-  return "bg-zinc-500/15 text-zinc-400 border-zinc-500/30";
+  return "bg-muted text-muted-foreground border-border/30";
 }
 
 function normalizeTags(tags: string[]): string[] {
@@ -212,7 +212,7 @@ export default function OrderTags({
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-2">
           <Tag className="h-3 w-3" />订单标签
-          {tagSaving && <Loader2 className="h-3 w-3 animate-spin text-amber-400" />}
+          {tagSaving && <Loader2 className="h-3 w-3 animate-spin text-warning" />}
         </p>
 
         {/* Current tags */}
@@ -239,9 +239,9 @@ export default function OrderTags({
         {tagMsg && (
           <div className="flex items-center gap-1 text-sm mb-2">
             {tagMsg.type === "success"
-              ? <CheckCircle2 className="h-3 w-3 text-emerald-400" />
-              : <AlertCircle className="h-3 w-3 text-red-400" />}
-            <span className={tagMsg.type === "success" ? "text-emerald-400" : "text-red-400"}>{tagMsg.text}</span>
+              ? <CheckCircle2 className="h-3 w-3 text-success" />
+              : <AlertCircle className="h-3 w-3 text-destructive-text" />}
+            <span className={tagMsg.type === "success" ? "text-success" : "text-destructive-text"}>{tagMsg.text}</span>
           </div>
         )}
 
@@ -287,7 +287,7 @@ export default function OrderTags({
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-2">
           <FileText className="h-3 w-3" />订单备注
-          {noteSaving && <Loader2 className="h-3 w-3 animate-spin text-amber-400" />}
+          {noteSaving && <Loader2 className="h-3 w-3 animate-spin text-warning" />}
         </p>
 
         <textarea
@@ -295,15 +295,15 @@ export default function OrderTags({
           onChange={(e) => handleNoteChange(e.target.value)}
           placeholder="添加订单备注..."
           rows={3}
-          className="w-full rounded-md border border-border/40 bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
+          className="w-full rounded-md border border-border/40 bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-1 focus:ring-success/50"
         />
 
         {noteMsg && (
           <div className="flex items-center gap-1 text-sm mt-1.5">
             {noteMsg.type === "success"
-              ? <CheckCircle2 className="h-3 w-3 text-emerald-400" />
-              : <AlertCircle className="h-3 w-3 text-red-400" />}
-            <span className={noteMsg.type === "success" ? "text-emerald-400" : "text-red-400"}>{noteMsg.text}</span>
+              ? <CheckCircle2 className="h-3 w-3 text-success" />
+              : <AlertCircle className="h-3 w-3 text-destructive-text" />}
+            <span className={noteMsg.type === "success" ? "text-success" : "text-destructive-text"}>{noteMsg.text}</span>
           </div>
         )}
       </div>
