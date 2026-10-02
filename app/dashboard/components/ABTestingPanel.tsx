@@ -451,16 +451,16 @@ export default function ABTestingPanel({
       {/* 标题 */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
-            <GitBranch className="h-5 w-5 text-emerald-400" />
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+            <GitBranch className="h-5 w-5 text-success" />
             A/B 测试
-            <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">本地模拟实验</span>
+            <span className="inline-flex h-5 items-center rounded-sm border border-warning-border bg-warning-bg px-1.5 text-[11px] font-medium text-warning">本地模拟实验</span>
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             {shopName} · 实验方案设计 · 离线显著性检验 · 胜者可写回商品
           </p>
         </div>
-        {isDemo && <Badge variant="outline" className="border-amber-500/30 text-amber-400">Demo 演示数据</Badge>}
+        {isDemo && <Badge variant="outline" className="border-warning-border text-warning">Demo 演示数据</Badge>}
       </div>
 
       {/* 步骤条 */}
@@ -471,27 +471,27 @@ export default function ABTestingPanel({
               className={cn(
                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-full ring-1 transition-colors",
                 i < stepIndex
-                  ? "bg-emerald-500/15 text-emerald-400 ring-emerald-500/30"
+                  ? "bg-success-bg text-success ring-success/30"
                   : i === stepIndex
-                    ? "bg-emerald-500/20 text-emerald-300 ring-emerald-500/50"
-                    : "bg-zinc-800 text-zinc-600 ring-zinc-700",
+                    ? "bg-success-bg text-success ring-success/50"
+                    : "bg-muted text-muted-foreground ring-border",
               )}
             >
               {s.icon}
             </div>
-            <span className={cn("text-xs font-medium", i === stepIndex ? "text-zinc-200" : "text-zinc-500")}>{s.label}</span>
-            {i < steps.length - 1 && <div className={cn("h-px flex-1", i < stepIndex ? "bg-emerald-500/40" : "bg-zinc-800")} />}
+            <span className={cn("text-xs font-medium", i === stepIndex ? "text-foreground" : "text-muted-foreground")}>{s.label}</span>
+            {i < steps.length - 1 && <div className={cn("h-px flex-1", i < stepIndex ? "bg-success/40" : "bg-muted")} />}
           </div>
         ))}
       </div>
 
       {/* 错误条 */}
       {sim.apiError && (
-        <Card className="border-red-500/30 bg-red-500/5">
+        <Card className="border-destructive-border bg-destructive-bg">
           <CardContent className="flex items-start gap-3 p-3">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
-            <p className="flex-1 text-xs text-red-200">{sim.apiError}</p>
-            <button onClick={() => setSim((s) => ({ ...s, apiError: null }))} className="text-red-400/70 hover:text-red-300">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive-text" />
+            <p className="flex-1 text-xs text-destructive-text">{sim.apiError}</p>
+            <button onClick={() => setSim((s) => ({ ...s, apiError: null }))} className="text-destructive-text/70 hover:text-destructive-text">
               <X className="h-4 w-4" />
             </button>
           </CardContent>
@@ -500,25 +500,25 @@ export default function ABTestingPanel({
 
       {/* ── 阶段一：创建测试 ── */}
       {sim.phase === "setup" && (
-        <Card className="border-zinc-800 bg-zinc-900/50">
+        <Card className="border-border bg-card">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <FlaskConical className="h-4 w-4 text-emerald-400" />创建 A/B 测试
+              <FlaskConical className="h-4 w-4 text-success" />创建 A/B 测试
             </CardTitle>
             <CardDescription>选择测试类型与目标商品，开始后将把变体 B 写入商品并持续监控</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* 测试类型 */}
             <div>
-              <label className="mb-1.5 block text-xs text-zinc-500">测试类型</label>
+              <label className="mb-1.5 block text-xs text-muted-foreground">测试类型</label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => handleTypeChange("title")}
                   className={cn(
                     "flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors",
                     sim.testType === "title"
-                      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
-                      : "border-zinc-700 bg-zinc-800/40 text-zinc-400 hover:bg-zinc-800",
+                      ? "border-success-border bg-success-bg text-success"
+                      : "border-border bg-muted/40 text-muted-foreground hover:bg-muted",
                   )}
                 >
                   <Type className="h-4 w-4" />标题 A/B
@@ -528,8 +528,8 @@ export default function ABTestingPanel({
                   className={cn(
                     "flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors",
                     sim.testType === "price"
-                      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
-                      : "border-zinc-700 bg-zinc-800/40 text-zinc-400 hover:bg-zinc-800",
+                      ? "border-success-border bg-success-bg text-success"
+                      : "border-border bg-muted/40 text-muted-foreground hover:bg-muted",
                   )}
                 >
                   <Tag className="h-4 w-4" />价格 A/B
@@ -539,10 +539,10 @@ export default function ABTestingPanel({
 
             {/* 目标商品：搜索 + 下拉 */}
             <div>
-              <label className="mb-1.5 block text-xs text-zinc-500">目标商品（搜索或下拉）</label>
+              <label className="mb-1.5 block text-xs text-muted-foreground">目标商品（搜索或下拉）</label>
               <div className="space-y-2">
                 <div className="relative">
-                  <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                  <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -551,7 +551,7 @@ export default function ABTestingPanel({
                   />
                 </div>
                 <Select value={sim.productHandle ?? ""} onValueChange={(v) => handleSelectProduct(v as string)}>
-                  <SelectTrigger className="border-zinc-700 bg-zinc-800 text-zinc-100">
+                  <SelectTrigger className="border-border bg-muted text-foreground">
                     <SelectValue placeholder={products.length ? "选择商品" : "暂无商品（请先加载商品目录）"} />
                   </SelectTrigger>
                   <SelectContent>
@@ -559,7 +559,7 @@ export default function ABTestingPanel({
                       <SelectItem key={p.handle} value={p.handle}>{String(p.title)}</SelectItem>
                     ))}
                     {filteredProducts.length === 0 && (
-                      <div className="px-3 py-2 text-xs text-zinc-500">无匹配商品</div>
+                      <div className="px-3 py-2 text-xs text-muted-foreground">无匹配商品</div>
                     )}
                   </SelectContent>
                 </Select>
@@ -569,13 +569,13 @@ export default function ABTestingPanel({
             {/* 变体 A / B */}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="mb-1.5 block text-xs text-zinc-500">
+                <label className="mb-1.5 block text-xs text-muted-foreground">
                   变体 A（当前值{sim.testType === "price" ? " · 价格" : " · 标题"}）
                 </label>
-                <Input value={valueA} disabled className="bg-zinc-800/60 text-zinc-400" />
+                <Input value={valueA} disabled className="bg-muted/60 text-muted-foreground" />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs text-zinc-500">
+                <label className="mb-1.5 block text-xs text-muted-foreground">
                   变体 B（新值{sim.testType === "price" ? " · 价格" : " · 标题"}）
                 </label>
                 <Input
@@ -589,9 +589,9 @@ export default function ABTestingPanel({
 
             {/* 测试周期 */}
             <div>
-              <label className="mb-1.5 block text-xs text-zinc-500">测试周期</label>
+              <label className="mb-1.5 block text-xs text-muted-foreground">测试周期</label>
               <Select value={String(sim.duration)} onValueChange={(v) => setSim((s) => ({ ...s, duration: Number(v) }))}>
-                <SelectTrigger className="w-40 border-zinc-700 bg-zinc-800 text-zinc-100">
+                <SelectTrigger className="w-40 border-border bg-muted text-foreground">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -604,8 +604,8 @@ export default function ABTestingPanel({
             </div>
 
             {!isDemo && selectedProduct && (
-              <p className="flex items-start gap-2 text-xs text-zinc-500">
-                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sky-400" />
+              <p className="flex items-start gap-2 text-xs text-muted-foreground">
+                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-info" />
                 开始后将通过 Shopify Admin API 把「变体 B」写入商品
                 {sim.testType === "price" ? "的变体价格" : "标题"}（{valueA} → {sim.valueB || "（待输入）"}）。
               </p>
@@ -617,9 +617,9 @@ export default function ABTestingPanel({
                 {sim.writing ? "写入中..." : "开始测试"}
               </Button>
               {!canStart && selectedProduct && (
-                <span className="text-xs text-zinc-500">变体 B 需为与当前值不同的有效值</span>
+                <span className="text-xs text-muted-foreground">变体 B 需为与当前值不同的有效值</span>
               )}
-              {!selectedProduct && <span className="text-xs text-zinc-500">请先选择目标商品</span>}
+              {!selectedProduct && <span className="text-xs text-muted-foreground">请先选择目标商品</span>}
             </div>
           </CardContent>
         </Card>
@@ -629,28 +629,28 @@ export default function ABTestingPanel({
       {sim.phase === "running" && selectedProduct && (
         <div className="space-y-4">
           {/* 测试概要 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card className="border-border bg-card">
             <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-2 p-4 text-xs">
               <div>
-                <span className="text-zinc-500">商品：</span>
-                <span className="text-zinc-200">{String(selectedProduct.title)}</span>
+                <span className="text-muted-foreground">商品：</span>
+                <span className="text-foreground">{String(selectedProduct.title)}</span>
               </div>
               <div>
-                <span className="text-zinc-500">类型：</span>
-                <span className="text-zinc-200">{sim.testType === "title" ? "标题 A/B" : "价格 A/B"}</span>
+                <span className="text-muted-foreground">类型：</span>
+                <span className="text-foreground">{sim.testType === "title" ? "标题 A/B" : "价格 A/B"}</span>
               </div>
               <div className="flex items-center gap-1">
-                <span className="text-zinc-500">变体：</span>
-                <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-zinc-300">{sim.valueA}</span>
+                <span className="text-muted-foreground">变体：</span>
+                <span className="rounded bg-muted px-1.5 py-0.5 text-foreground">{sim.valueA}</span>
                 <ArrowText />
-                <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-emerald-300">{sim.valueB}</span>
+                <span className="rounded bg-success-bg px-1.5 py-0.5 text-success">{sim.valueB}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5 text-zinc-500" />
-                <span className="text-zinc-200">第 {sim.daysElapsed}/{sim.duration} 天</span>
+                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-foreground">第 {sim.daysElapsed}/{sim.duration} 天</span>
               </div>
               {sim.lastRefresh && (
-                <div className="text-zinc-500">
+                <div className="text-muted-foreground">
                   最后刷新：{new Date(sim.lastRefresh).toLocaleTimeString("zh-CN")}
                 </div>
               )}
@@ -658,19 +658,19 @@ export default function ABTestingPanel({
           </Card>
 
           {sim.liveNote && (
-            <Card className="border-sky-500/30 bg-sky-500/5">
+            <Card className="border-info-border bg-info-bg">
               <CardContent className="flex items-start gap-3 p-3">
-                <Info className="mt-0.5 h-4 w-4 shrink-0 text-sky-400" />
-                <p className="text-xs text-sky-200">{sim.liveNote}</p>
+                <Info className="mt-0.5 h-4 w-4 shrink-0 text-info" />
+                <p className="text-xs text-info">{sim.liveNote}</p>
               </CardContent>
             </Card>
           )}
 
           {/* A vs B 对比 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card className="border-border bg-card">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <GitCompare className="h-4 w-4 text-sky-400" />变体 A vs B 实时监控
+                <GitCompare className="h-4 w-4 text-info" />变体 A vs B 实时监控
               </CardTitle>
               <CardDescription>访问量 / 加购率 / 成交率对比（成交率为置信度计算主指标）</CardDescription>
             </CardHeader>
@@ -714,26 +714,26 @@ export default function ABTestingPanel({
           </Card>
 
           {/* 置信度 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card className="border-border bg-card">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <TrendingUp className="h-4 w-4 text-violet-400" />统计显著性（双比例 Z 检验）
+                <TrendingUp className="h-4 w-4 text-info" />统计显著性（双比例 Z 检验）
               </CardTitle>
               <CardDescription>基于成交率与样本量的置信度；≥ 80% 视为结果显著</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-end gap-4">
-                <p className={cn("text-4xl font-bold tabular-nums", confColor === "emerald" ? "text-emerald-400" : confColor === "amber" ? "text-amber-400" : "text-red-400")}>
+                <p className={cn("text-4xl font-bold tabular-nums", confColor === "emerald" ? "text-success" : confColor === "amber" ? "text-warning" : "text-destructive-text")}>
                   {sim.confidence.toFixed(1)}%
                 </p>
                 <div className="flex-1 pb-1">
-                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-zinc-800">
+                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                     <div
-                      className={cn("h-full rounded-full transition-all", confColor === "emerald" ? "bg-emerald-500" : confColor === "amber" ? "bg-amber-500" : "bg-red-500")}
+                      className={cn("h-full rounded-full transition-all", confColor === "emerald" ? "bg-success" : confColor === "amber" ? "bg-warning" : "bg-destructive")}
                       style={{ width: `${Math.max(2, sim.confidence)}%` }}
                     />
                   </div>
-                  <p className="mt-1.5 text-xs text-zinc-500">
+                  <p className="mt-1.5 text-xs text-muted-foreground">
                     {sim.confidence >= 80
                       ? "结果显著，可据此决策"
                       : sim.confidence >= 60
@@ -752,8 +752,8 @@ export default function ABTestingPanel({
             <Button variant="outline" onClick={finishTest} className="gap-2">
               <Square className="h-4 w-4" />结束测试
             </Button>
-            {!isDemo && <span className="text-xs text-zinc-500">真实模式每日自动拉取 GA4（此处轮询 {REAL_TICK_MS / 1000}s）</span>}
-            {isDemo && <span className="text-xs text-zinc-500">演示模式每 {DEMO_TICK_MS / 1000}s 推进 1 天，到达周期后自动结束</span>}
+            {!isDemo && <span className="text-xs text-muted-foreground">真实模式每日自动拉取 GA4（此处轮询 {REAL_TICK_MS / 1000}s）</span>}
+            {isDemo && <span className="text-xs text-muted-foreground">演示模式每 {DEMO_TICK_MS / 1000}s 推进 1 天，到达周期后自动结束</span>}
           </div>
         </div>
       )}
@@ -762,34 +762,34 @@ export default function ABTestingPanel({
       {sim.phase === "finished" && selectedProduct && (
         <div className="space-y-4">
           {/* 胜者 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card className="border-border bg-card">
             <CardContent className="p-5">
               <div className="flex items-center gap-4">
-                <div className={cn("flex h-12 w-12 items-center justify-center rounded-xl ring-1", sim.winner === "B" ? "bg-emerald-500/10 text-emerald-400 ring-emerald-500/30" : "bg-zinc-500/10 text-zinc-300 ring-zinc-600/30")}>
+                <div className={cn("flex h-12 w-12 items-center justify-center rounded-xl ring-1", sim.winner === "B" ? "bg-success-bg text-success ring-success/30" : "bg-muted text-foreground ring-border/30")}>
                   <Trophy className="h-6 w-6" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm text-zinc-500">胜出版本</p>
-                  <p className="text-xl font-bold text-zinc-100">
+                  <p className="text-sm text-muted-foreground">胜出版本</p>
+                  <p className="text-xl font-bold text-foreground">
                     变体 {sim.winner}（{sim.winner === "B" ? sim.valueB : sim.valueA}）
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className={cn("text-3xl font-bold tabular-nums", confColor === "emerald" ? "text-emerald-400" : confColor === "amber" ? "text-amber-400" : "text-red-400")}>
+                  <p className={cn("text-3xl font-bold tabular-nums", confColor === "emerald" ? "text-success" : confColor === "amber" ? "text-warning" : "text-destructive-text")}>
                     {sim.confidence.toFixed(1)}%
                   </p>
-                  <p className="text-xs text-zinc-500">置信度</p>
+                  <p className="text-xs text-muted-foreground">置信度</p>
                 </div>
               </div>
-              <div className="mt-4 rounded-lg border border-zinc-800 bg-zinc-950/30 p-3 text-sm">
+              <div className="mt-4 rounded-lg border border-border bg-muted/30 p-3 text-sm">
                 {sim.winner === "B" ? (
-                  <p className="text-zinc-300">
+                  <p className="text-foreground">
                     {sim.significant
                       ? `变体 B（${sim.valueB}）成交率 ${fmtPct(sim.metricB.convRate)} 优于变体 A（${fmtPct(sim.metricA.convRate)}），置信度 ${sim.confidence.toFixed(1)}%，建议将 B 设为正式版本。`
                       : `变体 B 当前领先，但置信度仅 ${sim.confidence.toFixed(1)}%，尚不显著。建议延长测试周期或扩大流量后再决策。`}
                   </p>
                 ) : (
-                  <p className="text-zinc-300">
+                  <p className="text-foreground">
                     {sim.significant
                       ? `变体 A（${sim.valueA}）成交率 ${fmtPct(sim.metricA.convRate)} 仍优于变体 B（${fmtPct(sim.metricB.convRate)}），置信度 ${sim.confidence.toFixed(1)}%。建议保留当前版本，或调整变体 B 后重试。`
                       : `两版本差异不显著（置信度 ${sim.confidence.toFixed(1)}%）。建议保留当前版本，或重新设计变体 B。`}
@@ -800,7 +800,7 @@ export default function ABTestingPanel({
           </Card>
 
           {/* 对比回顾 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card className="border-border bg-card">
             <CardHeader className="pb-2">
               <CardTitle className="text-base">结果对比</CardTitle>
             </CardHeader>
@@ -823,7 +823,7 @@ export default function ABTestingPanel({
                 {sim.writing ? "应用中..." : `应用胜出版本（变体 ${sim.winner}）`}
               </Button>
             ) : (
-              <span className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
+              <span className="flex items-center gap-2 rounded-lg border border-success-border bg-success-bg px-3 py-2 text-sm text-success">
                 <CheckCircle2 className="h-4 w-4" />
                 已应用：{sim.appliedValue}
               </span>
@@ -841,14 +841,14 @@ export default function ABTestingPanel({
 /* ─── 子组件 ─────────────────────────────────────────── */
 
 function ArrowText() {
-  return <span className="text-zinc-500">→</span>;
+  return <span className="text-muted-foreground">→</span>;
 }
 
 function VariantHead({ label, value, accent }: { label: string; value: string; accent: "zinc" | "emerald" }) {
   return (
-    <div className={cn("rounded-lg border p-3", accent === "emerald" ? "border-emerald-500/30 bg-emerald-500/5" : "border-zinc-800 bg-zinc-950/30")}>
-      <p className="text-xs text-zinc-500">{label}</p>
-      <p className={cn("mt-1 truncate text-sm font-semibold", accent === "emerald" ? "text-emerald-300" : "text-zinc-200")} title={value}>
+    <div className={cn("rounded-lg border p-3", accent === "emerald" ? "border-success-border bg-success-bg" : "border-border bg-muted/30")}>
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className={cn("mt-1 truncate text-sm font-semibold", accent === "emerald" ? "text-success" : "text-foreground")} title={value}>
         {value || "—"}
       </p>
     </div>
@@ -867,10 +867,10 @@ function CompareRow({
 }) {
   const max = Math.max(pa, pb, 1);
   return (
-    <div className={cn("rounded-lg border border-zinc-800 bg-zinc-950/30 p-3", highlight && "ring-1 ring-emerald-500/20")}>
-      <div className="mb-2 flex items-center justify-between text-xs text-zinc-400">
+    <div className={cn("rounded-lg border border-border bg-muted/30 p-3", highlight && "ring-1 ring-success/20")}>
+      <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
         <span>{label}</span>
-        <span className="text-zinc-500">{better === "high" ? "越高越好" : "越低越好"}</span>
+        <span className="text-muted-foreground">{better === "high" ? "越高越好" : "越低越好"}</span>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <CompareCell label="A" value={a} pct={pa / max} win={aWins && pa !== pb} accent="zinc" />
@@ -883,19 +883,19 @@ function CompareRow({
 function CompareCell({ label, value, pct, win, accent }: {
   label: string; value: string; pct: number; win: boolean; accent: "zinc" | "emerald";
 }) {
-  const bar = accent === "emerald" ? "bg-emerald-500" : "bg-zinc-500";
+  const bar = accent === "emerald" ? "bg-success" : "bg-muted-foreground";
   return (
     <div>
       <div className="mb-1 flex items-center justify-between">
-        <span className="text-xs text-zinc-400">{label}</span>
+        <span className="text-xs text-muted-foreground">{label}</span>
         {win && (
-          <span className={cn("text-[10px] font-semibold", accent === "emerald" ? "text-emerald-400" : "text-zinc-300")}>
+          <span className={cn("text-[10px] font-semibold", accent === "emerald" ? "text-success" : "text-foreground")}>
             领先
           </span>
         )}
       </div>
-      <p className="text-sm font-semibold text-zinc-100">{value}</p>
-      <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
+      <p className="text-sm font-semibold text-foreground">{value}</p>
+      <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted">
         <div className={cn("h-full rounded-full", bar)} style={{ width: `${Math.max(2, Math.min(100, pct * 100))}%` }} />
       </div>
     </div>
