@@ -207,12 +207,12 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
 
   return (
     <div className="space-y-4 animate-in fade-in duration-300">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl backdrop-blur-md">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl backdrop-blur-md">{toast}</div>}
 
       {/* Header */}
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Layers className="h-6 w-6 text-sky-400" />批量编辑面板</h2>
-        <p className="mt-1 text-base text-muted-foreground">{products.length} 个商品 · {selectedIds.size} 已选{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Layers className="h-6 w-6 text-info" />批量编辑面板</h2>
+        <p className="mt-1 text-base text-muted-foreground">{products.length} 个商品 · {selectedIds.size} 已选{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4" style={{ minHeight: "calc(100vh - 260px)" }}>
@@ -220,7 +220,7 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
         <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg lg:w-[40%] flex flex-col min-h-0">
           <CardHeader className="pb-2 shrink-0">
             <CardTitle className="text-base flex items-center gap-2">
-              <CheckSquare className="h-4 w-4 text-sky-400" />选择商品
+              <CheckSquare className="h-4 w-4 text-info" />选择商品
             </CardTitle>
             <CardDescription>已选 {selectedIds.size} / {products.length} 件</CardDescription>
           </CardHeader>
@@ -257,12 +257,12 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
                 const price = p.variants?.[0] ? parseFloat(p.variants[0].price) : 0;
                 return (
                   <label key={p.id} className="flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer hover:bg-muted/20 transition-colors">
-                    <input type="checkbox" checked={selectedIds.has(p.id)} onChange={() => toggleSelect(p.id)} className="accent-sky-500 shrink-0" />
+                    <input type="checkbox" checked={selectedIds.has(p.id)} onChange={() => toggleSelect(p.id)} className="accent-info shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-foreground truncate">{p.title}</p>
                     </div>
-                    <Badge className={`text-[9px] px-1 py-0 shrink-0 ${p.status === "active" ? "bg-emerald-500/15 text-emerald-400" : "bg-zinc-500/15 text-zinc-400"}`}>{p.status === "active" ? "上架" : "草稿"}</Badge>
-                    <span className="text-xs text-emerald-400 tabular-nums shrink-0">{formatCny(price * EXCHANGE_RATE)}</span>
+                    <Badge className={`text-[9px] px-1 py-0 shrink-0 ${p.status === "active" ? "bg-success-bg text-success" : "bg-muted text-muted-foreground"}`}>{p.status === "active" ? "上架" : "草稿"}</Badge>
+                    <span className="text-xs text-success tabular-nums shrink-0">{formatCny(price * EXCHANGE_RATE)}</span>
                   </label>
                 );
               })}
@@ -280,7 +280,7 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
             {/* Op Tabs */}
             <div className="flex gap-1 shrink-0 border-b border-border/20 pb-2 mb-3">
               {(["title", "desc", "seo", "tags"] as const).map((t) => (
-                <button key={t} onClick={() => setOpTab(t)} className={`px-2.5 py-1 rounded text-[11px] font-semibold transition-colors ${opTab === t ? "bg-sky-500/15 text-sky-400 border border-sky-500/30" : "text-muted-foreground hover:text-foreground border border-transparent"}`}>
+                <button key={t} onClick={() => setOpTab(t)} className={`px-2.5 py-1 rounded text-[11px] font-semibold transition-colors ${opTab === t ? "bg-info-bg text-info border border-info-border" : "text-muted-foreground hover:text-foreground border border-transparent"}`}>
                   {t === "title" ? "标题模板" : t === "desc" ? "描述处理" : t === "seo" ? "SEO设置" : "批量标签"}
                 </button>
               ))}
@@ -309,7 +309,7 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
                         <div key={pv.id} className="flex flex-col gap-0.5 py-1 border-b border-border/10 last:border-0">
                           <span className="text-foreground font-medium truncate">{pv.title}</span>
                           <span className="text-muted-foreground/60 line-through">{pv.orig.slice(0, 60)}{pv.orig.length > 60 ? "..." : ""}</span>
-                          <span className="text-emerald-400">{pv.newVal.slice(0, 60)}{pv.newVal.length > 60 ? "..." : ""}</span>
+                          <span className="text-success">{pv.newVal.slice(0, 60)}{pv.newVal.length > 60 ? "..." : ""}</span>
                         </div>
                       ))}
                     </div>
@@ -325,7 +325,7 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
                     <Input value={descReplace} onChange={(e) => setDescReplace(e.target.value)} placeholder="替换为..." className="h-9 text-sm flex-1" />
                   </div>
                   <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
-                    <input type="checkbox" checked={descRegex} onChange={() => setDescRegex(!descRegex)} className="accent-sky-500" />
+                    <input type="checkbox" checked={descRegex} onChange={() => setDescRegex(!descRegex)} className="accent-info" />
                     使用正则表达式
                   </label>
                   <div className="rounded-lg border border-border/20 bg-muted/10 p-3 text-sm text-muted-foreground">
@@ -356,7 +356,7 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
                       {preview.map((pv) => (
                         <div key={pv.id} className="py-1 border-b border-border/10 last:border-0">
                           <span className="text-foreground font-medium">{pv.title}</span>
-                          <span className="text-emerald-400 ml-2">{pv.newVal.slice(0, 70)}</span>
+                          <span className="text-success ml-2">{pv.newVal.slice(0, 70)}</span>
                         </div>
                       ))}
                     </div>
@@ -369,7 +369,7 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
                 <>
                   <div className="flex gap-1">
                     {(["add", "remove", "replace"] as const).map((op) => (
-                      <button key={op} onClick={() => setTagOp(op)} className={`px-3 py-1 rounded text-sm font-medium ${tagOp === op ? "bg-sky-500/15 text-sky-400 border border-sky-500/30" : "border border-border/30 text-muted-foreground"}`}>
+                      <button key={op} onClick={() => setTagOp(op)} className={`px-3 py-1 rounded text-sm font-medium ${tagOp === op ? "bg-info-bg text-info border border-info-border" : "border border-border/30 text-muted-foreground"}`}>
                         {op === "add" ? "添加标签" : op === "remove" ? "移除标签" : "替换标签"}
                       </button>
                     ))}
@@ -381,7 +381,7 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
                       {preview.map((pv) => (
                         <div key={pv.id} className="py-1 border-b border-border/10 last:border-0">
                           <span className="text-foreground">{pv.title}</span>
-                          <span className="text-emerald-400 ml-2">{pv.newVal || "(空)"}</span>
+                          <span className="text-success ml-2">{pv.newVal || "(空)"}</span>
                         </div>
                       ))}
                     </div>
@@ -402,16 +402,16 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
         {executing && (
           <div className="flex-1 flex items-center gap-2">
             <div className="flex-1 h-2 rounded bg-muted/20 overflow-hidden">
-              <div className="h-full bg-sky-500 rounded transition-all" style={{ width: `${progress.total > 0 ? (progress.done / progress.total) * 100 : 0}%` }} />
+              <div className="h-full bg-info rounded transition-all" style={{ width: `${progress.total > 0 ? (progress.done / progress.total) * 100 : 0}%` }} />
             </div>
-            <span className="text-sm tabular-nums text-sky-400 font-mono">{progress.done}/{progress.total}</span>
+            <span className="text-sm tabular-nums text-info font-mono">{progress.done}/{progress.total}</span>
             <span className="text-xs text-muted-foreground truncate max-w-[120px]">{progress.current}</span>
           </div>
         )}
         <div className="flex items-center gap-2 ml-auto">
           <Button size="sm" variant="outline" onClick={() => setPreviewOpen(!previewOpen)} disabled={selectedIds.size === 0} className="h-9 gap-1 text-sm"><Eye className="h-3 w-3" />预览</Button>
           {executing ? (
-            <Button size="sm" variant="outline" onClick={stopExecution} className="h-9 gap-1 text-sm bg-red-500/10 text-red-400 border-red-500/30"><Pause className="h-3 w-3" />停止</Button>
+            <Button size="sm" variant="outline" onClick={stopExecution} className="h-9 gap-1 text-sm bg-destructive-bg text-destructive-text border-destructive-border"><Pause className="h-3 w-3" />停止</Button>
           ) : (
             <Button size="sm" onClick={execute} disabled={selectedIds.size === 0} className="h-9 gap-1 text-sm" style={{ background: "#3b82f6" }}>
               {isDemo ? <Zap className="h-3 w-3" /> : <Save className="h-3 w-3" />}
@@ -438,7 +438,7 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
                       <th className="py-2 text-left">商品</th>
                       <th className="py-2 text-left">字段</th>
                       <th className="py-2 text-left">原值</th>
-                      <th className="py-2 text-left text-emerald-400">新值</th>
+                      <th className="py-2 text-left text-success">新值</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -447,7 +447,7 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
                         <td className="py-2 text-foreground font-medium truncate max-w-[120px]">{pv.title}</td>
                         <td className="py-2 text-muted-foreground">{pv.field}</td>
                         <td className="py-2 text-muted-foreground truncate max-w-[200px]">{pv.orig || "(空)"}</td>
-                        <td className="py-2 text-emerald-400 truncate max-w-[200px]">{pv.newVal || "(空)"}</td>
+                        <td className="py-2 text-success truncate max-w-[200px]">{pv.newVal || "(空)"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -460,14 +460,14 @@ export default function BulkEditPanel({ products, isDemo, shopUrl, accessToken }
 
       {/* ══ Error summary ══ */}
       {errors.length > 0 && !executing && (
-        <Card className="border-red-500/30 bg-red-500/10 backdrop-blur-lg">
+        <Card className="border-destructive-border bg-destructive-bg backdrop-blur-lg">
           <CardContent className="py-3 px-4">
-            <p className="text-base font-semibold text-red-400 flex items-center gap-1.5"><AlertCircle className="h-4 w-4" />失败 {errors.length} 件</p>
+            <p className="text-base font-semibold text-destructive-text flex items-center gap-1.5"><AlertCircle className="h-4 w-4" />失败 {errors.length} 件</p>
             <div className="mt-2 max-h-32 overflow-y-auto space-y-1">
               {errors.map((e, i) => (
                 <div key={i} className="flex items-center justify-between text-sm">
-                  <span className="text-red-300">{e.title}</span>
-                  <span className="text-red-400/70">{e.reason}</span>
+                  <span className="text-destructive-text">{e.title}</span>
+                  <span className="text-destructive-text/70">{e.reason}</span>
                 </div>
               ))}
             </div>
