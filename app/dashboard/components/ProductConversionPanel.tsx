@@ -310,10 +310,10 @@ function applySuggestions(rows: ProductRow[]): void {
 /* ─── 主组件 ─────────────────────────────────────────── */
 
 const SUG_ICON: Record<SuggestionType, ReactNode> = {
-  images: <ImageIcon className="h-3.5 w-3.5 shrink-0 text-amber-400" />,
-  description: <FileText className="h-3.5 w-3.5 shrink-0 text-amber-400" />,
-  reviews: <MessageSquare className="h-3.5 w-3.5 shrink-0 text-amber-400" />,
-  price: <Tag className="h-3.5 w-3.5 shrink-0 text-sky-400" />,
+  images: <ImageIcon className="h-3.5 w-3.5 shrink-0 text-warning" />,
+  description: <FileText className="h-3.5 w-3.5 shrink-0 text-warning" />,
+  reviews: <MessageSquare className="h-3.5 w-3.5 shrink-0 text-warning" />,
+  price: <Tag className="h-3.5 w-3.5 shrink-0 text-info" />,
 };
 
 const SUG_LABEL: Record<SuggestionType, string> = {
@@ -386,23 +386,23 @@ export default function ProductConversionPanel({
       {/* 标题 */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
-            <ShoppingCart className="h-5 w-5 text-emerald-400" />
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+            <ShoppingCart className="h-5 w-5 text-success" />
             商品转化分析
-            <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">加购率/评价含估算</span>
+            <span className="inline-flex h-5 items-center rounded-sm border border-warning-border bg-warning-bg px-1.5 text-[11px] font-medium text-warning">加购率/评价含估算</span>
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             {shopName} · 商品转化率排行、逐品优化建议与横向对比
           </p>
         </div>
-        {isDemo && <Badge variant="outline" className="border-amber-500/30 text-amber-400">Demo 演示数据</Badge>}
+        {isDemo && <Badge variant="outline" className="border-warning-border text-warning">Demo 演示数据</Badge>}
       </div>
 
       {ga4Missing && !isDemo && (
-        <Card className="border-amber-500/30 bg-amber-500/5">
+        <Card className="border-warning-border bg-warning-bg">
           <CardContent className="flex items-center gap-3 p-4">
-            <AlertTriangle className="h-5 w-5 text-amber-400" />
-            <p className="text-sm text-amber-200">
+            <AlertTriangle className="h-5 w-5 text-warning" />
+            <p className="text-sm text-warning">
               未检测到 GA4 缓存数据。商品转化分析需要 GA4 的「商品页」维度；请先在「GA4 流量分析」面板配置并拉取数据。
             </p>
           </CardContent>
@@ -420,13 +420,13 @@ export default function ProductConversionPanel({
           </div>
 
           {!isDemo && (
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               注：真实模式下「加购率」为估算值（GA4 未提供分页面电商事件，按店铺均值 × 成交率推算）；「评价」若店铺未回传评价字段则为估算值。
             </p>
           )}
 
           {/* 排行表 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card className="border-border bg-card">
             <CardHeader className="pb-2">
               <CardTitle className="text-base">商品转化率排行</CardTitle>
               <CardDescription>按页面访问排序 · 点击任意行展开逐品优化建议</CardDescription>
@@ -434,13 +434,13 @@ export default function ProductConversionPanel({
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-zinc-800 hover:bg-transparent">
-                    <TableHead className="w-[30%] text-zinc-400">商品</TableHead>
-                    <TableHead className="text-right text-zinc-400">页面访问</TableHead>
-                    <TableHead className="text-right text-zinc-400">跳出率</TableHead>
-                    <TableHead className="text-right text-zinc-400" title={isDemo ? "加购率" : "加购率（估算值）"}>加购率</TableHead>
-                    <TableHead className="text-right text-zinc-400">成交率</TableHead>
-                    <TableHead className="text-zinc-400">评价</TableHead>
+                  <TableRow className="border-border hover:bg-transparent">
+                    <TableHead className="w-[30%] text-muted-foreground">商品</TableHead>
+                    <TableHead className="text-right text-muted-foreground">页面访问</TableHead>
+                    <TableHead className="text-right text-muted-foreground">跳出率</TableHead>
+                    <TableHead className="text-right text-muted-foreground" title={isDemo ? "加购率" : "加购率（估算值）"}>加购率</TableHead>
+                    <TableHead className="text-right text-muted-foreground">成交率</TableHead>
+                    <TableHead className="text-muted-foreground">评价</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -450,49 +450,49 @@ export default function ProductConversionPanel({
                       <FragmentRow key={r.handle}>
                         <TableRow
                           onClick={() => setSelected(isOpen ? null : r.handle)}
-                          className={cn("cursor-pointer border-zinc-800 transition-colors hover:bg-zinc-800/40", isOpen && "bg-zinc-800/30")}
+                          className={cn("cursor-pointer border-border transition-colors hover:bg-muted/40", isOpen && "bg-muted/30")}
                         >
                           <TableCell>
                             <div className="flex items-center gap-2.5">
-                              <div className="h-9 w-9 shrink-0 overflow-hidden rounded-md bg-zinc-800">
+                              <div className="h-9 w-9 shrink-0 overflow-hidden rounded-md bg-muted">
                                 {r.image ? (
                                   <img src={r.image} alt={r.title} className="h-full w-full object-cover" />
                                 ) : (
-                                  <div className="flex h-full w-full items-center justify-center text-zinc-600"><Package className="h-4 w-4" /></div>
+                                  <div className="flex h-full w-full items-center justify-center text-muted-foreground"><Package className="h-4 w-4" /></div>
                                 )}
                               </div>
                               <div className="min-w-0">
                                 <div className="flex items-center gap-1">
-                                  <ChevronDown className={cn("h-3 w-3 shrink-0 text-zinc-500 transition-transform", isOpen && "rotate-180")} />
-                                  <span className="truncate font-medium text-zinc-200" title={r.title}>{r.title}</span>
+                                  <ChevronDown className={cn("h-3 w-3 shrink-0 text-muted-foreground transition-transform", isOpen && "rotate-180")} />
+                                  <span className="truncate font-medium text-foreground" title={r.title}>{r.title}</span>
                                 </div>
-                                <span className="ml-4 truncate text-xs text-zinc-500">/{r.handle}</span>
+                                <span className="ml-4 truncate text-xs text-muted-foreground">/{r.handle}</span>
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell className="text-right text-zinc-300">{fmtInt(r.visits)}</TableCell>
-                          <TableCell className={cn("text-right font-semibold", r.bounceRate >= 50 ? "text-red-400" : "text-zinc-300")}>
+                          <TableCell className="text-right text-foreground">{fmtInt(r.visits)}</TableCell>
+                          <TableCell className={cn("text-right font-semibold", r.bounceRate >= 50 ? "text-destructive-text" : "text-foreground")}>
                             {fmtPct(r.bounceRate)}
                           </TableCell>
-                          <TableCell className="text-right text-zinc-300">{fmtPct(r.atcRate)}</TableCell>
-                          <TableCell className={cn("text-right font-semibold", r.convRate < meanConv * 0.7 ? "text-red-400" : r.convRate >= Math.max(8, meanConv * 1.5) ? "text-emerald-400" : "text-zinc-300")}>
+                          <TableCell className="text-right text-foreground">{fmtPct(r.atcRate)}</TableCell>
+                          <TableCell className={cn("text-right font-semibold", r.convRate < meanConv * 0.7 ? "text-destructive-text" : r.convRate >= Math.max(8, meanConv * 1.5) ? "text-success" : "text-foreground")}>
                             {fmtPct(r.convRate)}
                           </TableCell>
                           <TableCell>
                             {r.review.count > 0 ? (
-                              <span className="flex items-center gap-1 text-xs text-zinc-300" title={r.review.estimated ? "评价为估算值" : "真实评价"}>
-                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                              <span className="flex items-center gap-1 text-xs text-foreground" title={r.review.estimated ? "评价为估算值" : "真实评价"}>
+                                <Star className="h-3.5 w-3.5 fill-warning text-warning" />
                                 {r.review.rating.toFixed(1)}
-                                <span className="text-zinc-500">· {r.review.count}</span>
+                                <span className="text-muted-foreground">· {r.review.count}</span>
                               </span>
                             ) : (
-                              <span className="text-xs text-red-400">无评价</span>
+                              <span className="text-xs text-destructive-text">无评价</span>
                             )}
                           </TableCell>
                         </TableRow>
                         {isOpen && (
-                          <TableRow className="border-zinc-800 hover:bg-transparent">
-                            <TableCell colSpan={6} className="bg-zinc-950/30 p-0">
+                          <TableRow className="border-border hover:bg-transparent">
+                            <TableCell colSpan={6} className="bg-muted/30 p-0">
                               <DetailPanel row={r} />
                             </TableCell>
                           </TableRow>
@@ -501,7 +501,7 @@ export default function ProductConversionPanel({
                     );
                   })}
                   {rows.length === 0 && (
-                    <TableRow className="border-zinc-800"><TableCell colSpan={6} className="py-8 text-center text-zinc-500">无商品页面数据</TableCell></TableRow>
+                    <TableRow className="border-border"><TableCell colSpan={6} className="py-8 text-center text-muted-foreground">无商品页面数据</TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>
@@ -509,19 +509,19 @@ export default function ProductConversionPanel({
           </Card>
 
           {/* 横向对比 */}
-          <Card className="border-zinc-800 bg-zinc-900/50">
+          <Card className="border-border bg-card">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <GitCompare className="h-4 w-4 text-sky-400" />商品横向对比
+                <GitCompare className="h-4 w-4 text-info" />商品横向对比
               </CardTitle>
               <CardDescription>选择两个商品，对比页面访问 / 跳出 / 加购 / 成交</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-500">商品 A</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">商品 A</label>
                   <Select value={compareA} onValueChange={(v) => setCompareA(v as string)}>
-                    <SelectTrigger className="border-zinc-700 bg-zinc-800 text-zinc-100">
+                    <SelectTrigger className="border-input bg-card text-foreground">
                       <SelectValue placeholder="选择商品" />
                     </SelectTrigger>
                     <SelectContent>
@@ -530,9 +530,9 @@ export default function ProductConversionPanel({
                   </Select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-500">商品 B</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">商品 B</label>
                   <Select value={compareB} onValueChange={(v) => setCompareB(v as string)}>
-                    <SelectTrigger className="border-zinc-700 bg-zinc-800 text-zinc-100">
+                    <SelectTrigger className="border-input bg-card text-foreground">
                       <SelectValue placeholder="选择商品" />
                     </SelectTrigger>
                     <SelectContent>
@@ -551,10 +551,10 @@ export default function ProductConversionPanel({
                     const aWins = m.better === "high" ? va >= vb : va <= vb;
                     const bWins = m.better === "high" ? vb >= va : vb <= va;
                     return (
-                      <div key={m.key} className="rounded-lg border border-zinc-800 bg-zinc-950/30 p-3">
-                        <div className="mb-2 flex items-center justify-between text-xs text-zinc-400">
+                      <div key={m.key} className="rounded-lg border border-border bg-muted/30 p-3">
+                        <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
                           <span>{m.label}</span>
-                          <span className="text-zinc-500">{m.better === "high" ? "越高越好" : "越低越好"}</span>
+                          <span className="text-muted-foreground">{m.better === "high" ? "越高越好" : "越低越好"}</span>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <CompareCell label={rowA.title} value={m.key === "bounce" || m.key === "atc" || m.key === "conv" ? fmtPct(va) : fmtInt(va)} pct={va / max} win={aWins && va !== vb} accent="emerald" />
@@ -565,26 +565,26 @@ export default function ProductConversionPanel({
                   })}
                   {/* 附加：评价 / 价格 */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-lg border border-zinc-800 bg-zinc-950/30 p-3 text-xs">
-                      <p className="mb-1 text-zinc-400">评价</p>
-                      <p className="text-zinc-200">{rowA.review.count > 0 ? `${rowA.review.rating.toFixed(1)}⭐ · ${rowA.review.count}` : "无评价"}</p>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3 text-xs">
+                      <p className="mb-1 text-muted-foreground">评价</p>
+                      <p className="text-foreground">{rowA.review.count > 0 ? `${rowA.review.rating.toFixed(1)} · ${rowA.review.count}` : "无评价"}</p>
                     </div>
-                    <div className="rounded-lg border border-zinc-800 bg-zinc-950/30 p-3 text-xs">
-                      <p className="mb-1 text-zinc-400">价格</p>
-                      <p className="text-zinc-200">{rowA.priceLabel ?? "—"}</p>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3 text-xs">
+                      <p className="mb-1 text-muted-foreground">价格</p>
+                      <p className="text-foreground">{rowA.priceLabel ?? "—"}</p>
                     </div>
-                    <div className="rounded-lg border border-zinc-800 bg-zinc-950/30 p-3 text-xs">
-                      <p className="mb-1 text-zinc-400">评价</p>
-                      <p className="text-zinc-200">{rowB.review.count > 0 ? `${rowB.review.rating.toFixed(1)}⭐ · ${rowB.review.count}` : "无评价"}</p>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3 text-xs">
+                      <p className="mb-1 text-muted-foreground">评价</p>
+                      <p className="text-foreground">{rowB.review.count > 0 ? `${rowB.review.rating.toFixed(1)} · ${rowB.review.count}` : "无评价"}</p>
                     </div>
-                    <div className="rounded-lg border border-zinc-800 bg-zinc-950/30 p-3 text-xs">
-                      <p className="mb-1 text-zinc-400">价格</p>
-                      <p className="text-zinc-200">{rowB.priceLabel ?? "—"}</p>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3 text-xs">
+                      <p className="mb-1 text-muted-foreground">价格</p>
+                      <p className="text-foreground">{rowB.priceLabel ?? "—"}</p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <p className="py-4 text-center text-sm text-zinc-500">请选择两个商品进行对比</p>
+                <p className="py-4 text-center text-sm text-muted-foreground">请选择两个商品进行对比</p>
               )}
             </CardContent>
           </Card>
@@ -600,39 +600,39 @@ function DetailPanel({ row }: { row: ProductRow }) {
   return (
     <div className="space-y-3 p-4">
       <div className="flex items-center gap-3">
-        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-zinc-800">
+        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-muted">
           {row.image ? (
             <img src={row.image} alt={row.title} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-zinc-600"><Package className="h-5 w-5" /></div>
+            <div className="flex h-full w-full items-center justify-center text-muted-foreground"><Package className="h-5 w-5" /></div>
           )}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-zinc-100">{row.title}</p>
+          <p className="truncate text-sm font-medium text-foreground">{row.title}</p>
           <div className="mt-1 flex flex-wrap gap-1">
-            {row.productType && <Badge variant="outline" className="border-zinc-700 text-zinc-400">{row.productType}</Badge>}
-            {row.vendor && <Badge variant="outline" className="border-zinc-700 text-zinc-400">{row.vendor}</Badge>}
-            {row.priceLabel && <Badge variant="outline" className="border-zinc-700 text-zinc-400">{row.priceLabel}</Badge>}
+            {row.productType && <Badge variant="outline" className="text-muted-foreground">{row.productType}</Badge>}
+            {row.vendor && <Badge variant="outline" className="text-muted-foreground">{row.vendor}</Badge>}
+            {row.priceLabel && <Badge variant="outline" className="text-muted-foreground">{row.priceLabel}</Badge>}
           </div>
         </div>
       </div>
 
       <div>
-        <h4 className="mb-2 flex items-center gap-1.5 text-sm font-medium text-zinc-300">
-          <Lightbulb className="h-4 w-4 text-amber-400" />逐商品优化建议
+        <h4 className="mb-2 flex items-center gap-1.5 text-sm font-medium text-foreground">
+          <Lightbulb className="h-4 w-4 text-warning" />逐商品优化建议
         </h4>
         {row.suggestions.length === 0 ? (
-          <p className="text-xs text-emerald-400">✅ 各项指标健康，暂无优化建议。</p>
+          <p className="text-xs text-success">各项指标健康，暂无优化建议。</p>
         ) : (
           <div className="space-y-2">
             {row.suggestions.map((s, i) => (
-              <div key={i} className="flex items-start gap-2 rounded-lg border border-zinc-800 bg-zinc-900/50 p-2.5">
+              <div key={i} className="flex items-start gap-2 rounded-lg border border-border bg-muted/40 p-2.5">
                 {SUG_ICON[s.type]}
                 <div className="min-w-0">
-                  <span className={cn("mr-1.5 rounded px-1.5 py-0.5 text-[10px] font-semibold", s.level === "warn" ? "bg-amber-500/10 text-amber-400" : "bg-sky-500/10 text-sky-400")}>
+                  <span className={cn("mr-1.5 rounded px-1.5 py-0.5 text-[10px] font-semibold", s.level === "warn" ? "bg-warning-bg text-warning" : "bg-info-bg text-info")}>
                     {SUG_LABEL[s.type]}
                   </span>
-                  <span className="text-xs text-zinc-300">{s.text}</span>
+                  <span className="text-xs text-foreground">{s.text}</span>
                 </div>
               </div>
             ))}
@@ -648,15 +648,15 @@ function DetailPanel({ row }: { row: ProductRow }) {
 function CompareCell({ label, value, pct, win, accent }: {
   label: string; value: string; pct: number; win: boolean; accent: "emerald" | "sky";
 }) {
-  const bar = accent === "emerald" ? "bg-emerald-500" : "bg-sky-500";
+  const bar = accent === "emerald" ? "bg-success" : "bg-info";
   return (
     <div>
       <div className="mb-1 flex items-center justify-between">
-        <span className="truncate text-xs text-zinc-300" title={label}>{label}</span>
-        {win && <span className={cn("text-[10px] font-semibold", accent === "emerald" ? "text-emerald-400" : "text-sky-400")}>领先</span>}
+        <span className="truncate text-xs text-foreground" title={label}>{label}</span>
+        {win && <span className={cn("text-[10px] font-semibold", accent === "emerald" ? "text-success" : "text-info")}>领先</span>}
       </div>
-      <p className="text-sm font-semibold text-zinc-100">{value}</p>
-      <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
+      <p className="text-sm font-semibold text-foreground tabular-nums">{value}</p>
+      <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted">
         <div className={cn("h-full rounded-full", bar)} style={{ width: `${Math.max(2, Math.min(100, pct * 100))}%` }} />
       </div>
     </div>
@@ -677,20 +677,20 @@ function KpiCard({ title, value, subtitle, icon, accent }: {
   accent: "emerald" | "sky" | "amber" | "red" | "violet";
 }) {
   const colors: Record<string, string> = {
-    emerald: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
-    sky: "bg-sky-500/10 text-sky-400 ring-sky-500/20",
-    amber: "bg-amber-500/10 text-amber-400 ring-amber-500/20",
-    red: "bg-red-500/10 text-red-400 ring-red-500/20",
-    violet: "bg-violet-500/10 text-violet-400 ring-violet-500/20",
+    emerald: "bg-success-bg text-success ring-success-border",
+    sky: "bg-info-bg text-info ring-info-border",
+    amber: "bg-warning-bg text-warning ring-warning-border",
+    red: "bg-destructive-bg text-destructive-text ring-destructive-border",
+    violet: "bg-muted text-muted-foreground ring-border",
   };
   return (
-    <Card className="border-zinc-800 bg-zinc-900/50">
+    <Card className="border-border bg-card">
       <CardContent className="relative p-5">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <p className="text-sm font-medium text-zinc-500">{title}</p>
-            <p className="text-2xl font-bold tracking-tight text-zinc-100">{value}</p>
-            <p className="text-xs text-zinc-500">{subtitle}</p>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold tracking-tight text-foreground tabular-nums">{value}</p>
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
           </div>
           <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl ring-1", colors[accent])}>
             {icon}
