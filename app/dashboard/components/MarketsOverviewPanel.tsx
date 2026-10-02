@@ -39,11 +39,6 @@ interface MarketsOverviewPanelProps {
 
 /* ─── Helpers ─────────────────────────────────────────── */
 
-function countryCodeToFlag(code: string): string {
-  if (!code || code.length !== 2) return "🏳️";
-  return String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1F1E6 + c.charCodeAt(0) - 65));
-}
-
 function adjustPrice(base: number, adj: MarketPriceAdjustment | null): number {
   if (!adj) return base;
   if (adj.type === "percentage") return Math.round(base * (1 + adj.value / 100) * 100) / 100;
@@ -201,7 +196,7 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <input type="checkbox" checked={selectedIds.has(m.id)} onChange={(e) => { e.stopPropagation(); toggleSelect(m.id); }} className="accent-info" />
-                  <span className="text-3xl">{countryCodeToFlag(m.countryCode)}</span>
+                  <span className="text-3xl"><Flag className="h-8 w-8" /></span>
                   <div><p className="text-base font-semibold text-foreground">{m.name}</p><p className="text-xs text-muted-foreground">{m.handle}</p></div>
                 </div>
                 <Badge className={`text-[9px] px-1.5 py-0 ${m.enabled ? "bg-success-bg text-success" : "bg-muted text-muted-foreground"}`}>{m.enabled ? "激活" : "未激活"}</Badge>
@@ -227,7 +222,7 @@ export default function MarketsOverviewPanel({ isDemo, shopUrl, accessToken, sho
             <div className="w-full max-w-2xl max-h-[85vh] bg-card border border-border/40 rounded-xl shadow-2xl flex flex-col">
               <div className="flex items-center justify-between px-5 py-3 border-b border-border/20 shrink-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">{countryCodeToFlag(detailMarket.countryCode)}</span>
+                  <span className="text-2xl"><Flag className="h-7 w-7" /></span>
                   <Input value={detailMarket.name} onChange={(e) => setDetailMarket({ ...detailMarket, name: e.target.value })} className="h-9 text-sm font-semibold w-48" />
                 </div>
                 <Button size="sm" variant="ghost" onClick={() => setDetailMarket(null)}><X className="h-4 w-4"/></Button>

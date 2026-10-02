@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import {
   DollarSign, Coins, Search, Download, ChevronDown, ChevronRight, X, Save,
-  TrendingUp, TrendingDown, RotateCcw, CheckCircle2, AlertCircle, RefreshCw,
+  TrendingUp, TrendingDown, RotateCcw, CheckCircle2, AlertCircle, RefreshCw, Flag,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -32,11 +32,6 @@ interface MultiCurrencyPricingPanelProps {
 }
 
 /* ─── Helpers ─────────────────────────────────────────── */
-
-function countryCodeToFlag(code: string): string {
-  if (!code || code.length !== 2) return "🏳️";
-  return String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1F1E6 + c.charCodeAt(0) - 65));
-}
 
 function calcLocalPrice(base: number, adj: number | null, manualPrice?: number): number {
   if (manualPrice !== undefined) return manualPrice;
@@ -196,7 +191,7 @@ export default function MultiCurrencyPricingPanel({ isDemo, shopUrl, accessToken
         <div className="flex items-center gap-1 ml-2">
           {markets.map((m) => (
             <label key={m.id} className="flex items-center gap-0.5 cursor-pointer text-xs">
-              <input type="checkbox" checked={visibleMarketIds.has(m.id)} onChange={()=>toggleMarket(m.id)} className="accent-info"/>{countryCodeToFlag(m.countryCode)} {m.currency}
+              <input type="checkbox" checked={visibleMarketIds.has(m.id)} onChange={()=>toggleMarket(m.id)} className="accent-info"/><Flag className="h-3.5 w-3.5 inline" /> {m.currency}
             </label>
           ))}
         </div>
@@ -222,7 +217,7 @@ export default function MultiCurrencyPricingPanel({ isDemo, shopUrl, accessToken
               <th className="py-2 pl-3 text-left w-6 sticky left-0 bg-card/90 backdrop-blur z-10">☐</th>
               <th className="py-2 pl-2 text-left sticky left-8 bg-card/90 backdrop-blur z-10">商品 / SKU</th>
               {visibleMarkets.map((m) => (
-                <th key={m.id} className="py-2 px-3 text-right min-w-[90px]">{countryCodeToFlag(m.countryCode)} {m.currency}</th>
+                <th key={m.id} className="py-2 px-3 text-right min-w-[90px]"><Flag className="h-3.5 w-3.5 inline" /> {m.currency}</th>
               ))}
             </tr></thead>
             <tbody>

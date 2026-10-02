@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import {
   Receipt, Shield, ChevronDown, ChevronRight, X, Download, ExternalLink,
-  CheckCircle2, AlertTriangle, AlertCircle, Info, Globe,
+  CheckCircle2, AlertTriangle, AlertCircle, Info, Globe, Flag, XCircle,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,11 +26,6 @@ interface TaxOverviewPanelProps {
 }
 
 /* ─── Helpers ─────────────────────────────────────────── */
-
-function countryCodeToFlag(code: string): string {
-  if (!code || code.length !== 2) return "🏳️";
-  return String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1F1E6 + c.charCodeAt(0) - 65));
-}
 
 const TAX_TIPS = [
   { title: "欧盟 IOSS 须知", content: "发往欧盟 ≤€150 的商品需注册 IOSS，由 Shopify 代收代缴 VAT。>€150 的商品在进口时缴纳关税和 VAT。" },
@@ -107,7 +102,7 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
                 {risk.level === "high" ? <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive-text"/> : <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning"/>}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2"><Badge className={`text-[8px] px-1 py-0 ${risk.level==="high"?"border-destructive-border bg-destructive-bg text-destructive-text":"border-warning-border bg-warning-bg text-warning"}`}>{risk.level==="high"?"高风险":"中风险"}</Badge>
-                    <span className="text-xs text-muted-foreground">{countryCodeToFlag(market.countryCode)} {market.countryName}</span>
+                    <span className="text-xs text-muted-foreground"><Flag className="h-3 w-3 inline" /> {market.countryName}</span>
                   </div>
                   <p className="mt-0.5 text-sm text-foreground">{risk.message}</p>
                 </div>
@@ -135,7 +130,7 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
             <table className="w-full text-sm min-w-[600px]">
               <thead><tr className="border-b border-border/20 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 <th className="py-2 pl-3 text-left sticky left-0 bg-card/90 backdrop-blur">税种</th>
-                {markets.map((m) => <th key={m.marketId} className="py-2 px-3 text-center min-w-[100px]">{countryCodeToFlag(m.countryCode)} {m.countryName}</th>)}
+                {markets.map((m) => <th key={m.marketId} className="py-2 px-3 text-center min-w-[100px]"><Flag className="h-3.5 w-3.5 inline" /> {m.countryName}</th>)}
               </tr></thead>
               <tbody>
                 {(["standardTax","taxIncluded","reducedTax","importTax"] as const).map((row) => {
@@ -147,7 +142,7 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
                       if (row === "standardTax") cell = m.taxRate ? <span className="text-foreground">{m.taxRate}%{m.risks.some((r) => r.level === "high") ? "" : " ✓"}</span> : <span className="text-destructive-text">未配置</span>;
                       else if (row === "taxIncluded") cell = m.taxIncluded ? <span className="text-success">✓ 含税</span> : <span className="text-muted-foreground">✗ 不含</span>;
                       else if (row === "reducedTax") cell = m.reducedRate ? <span className="text-foreground">{m.reducedRate}%</span> : "—";
-                      else cell = m.importTaxCollected ? <span className="text-success">✓ 代收</span> : <span className="text-warning">⚠ 未代收</span>;
+                      else cell = m.importTaxCollected ? <span className="text-success inline-flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> 代收</span> : <span className="text-warning inline-flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> 未代收</span>;
                       return (
                         <td key={m.marketId} className="py-2 px-3 text-center cursor-pointer hover:bg-muted/10" onClick={() => setExpandedMarket(expandedMarket === m.marketId ? null : m.marketId)}>
                           {cell}
@@ -171,7 +166,7 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
           <Card className="border-border/40 bg-card/60 shadow-lg border-l-2 border-l-destructive-border">
             <CardContent className="p-4 space-y-2">
               <div className="flex items-center justify-between">
-                <p className="text-base font-semibold flex items-center gap-2">{countryCodeToFlag(m.countryCode)} {m.countryName}<Badge className={`text-[9px] ${m.taxConfigured?"border-success-border bg-success-bg text-success":"border-destructive-border bg-destructive-bg text-destructive-text"}`}>{m.taxConfigured?"已配置":"未配置"}</Badge></p>
+                <p className="text-base font-semibold flex items-center gap-2"><Flag className="h-3.5 w-3.5 inline" /> {m.countryName}<Badge className={`text-[9px] ${m.taxConfigured?"border-success-border bg-success-bg text-success":"border-destructive-border bg-destructive-bg text-destructive-text"}`}>{m.taxConfigured?"已配置":"未配置"}</Badge></p>
                 <Button size="sm" variant="ghost" onClick={()=>setExpandedMarket(null)}><X className="h-4 w-4"/></Button>
               </div>
               <div className="grid grid-cols-3 gap-2 text-xs">
@@ -187,7 +182,7 @@ export default function TaxOverviewPanel({ isDemo, shopUrl, accessToken, shopNam
                   <p className="text-xs font-semibold text-muted-foreground mb-1">风险项</p>
                   {m.risks.map((r,i) => (
                     <div key={i} className="flex items-center gap-1.5 text-xs">
-                      <span className={r.level==="high"?"text-destructive-text":"text-warning"}>{r.level==="high"?"🔴":"🟡"}</span><span className="text-muted-foreground">{r.message}</span>
+                      <span className="text-xs inline-flex items-center gap-1">{r.level==="high"?<><XCircle className="h-3 w-3 text-destructive-text" />高</>:<><AlertTriangle className="h-3 w-3 text-warning" />中</>}</span><span className="text-muted-foreground">{r.message}</span>
                     </div>
                   ))}
                 </div>
