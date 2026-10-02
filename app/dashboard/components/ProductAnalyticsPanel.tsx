@@ -4,8 +4,9 @@ import { useState, useMemo } from "react";
 import {
   TrendingUp, BarChart4, Search, ChevronDown, ChevronRight, X, Download,
   Star, StarOff, TrendingDown, Zap, CheckCircle2, AlertCircle,
-  Package, DollarSign, RotateCcw,
+  Package, DollarSign, RotateCcw, Sparkles, Moon, ClipboardList,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,12 +23,12 @@ interface ProductAnalyticsPanelProps {
 
 /* ─── Helpers ─────────────────────────────────────────── */
 
-const LIFECYCLE: Record<LifecycleStage, { label: string; color: string; bg: string; emoji: string }> = {
-  new: { label: "新品期", color: "text-info", bg: "bg-info-bg", emoji: "🆕" },
-  rising: { label: "上升期", color: "text-success", bg: "bg-success-bg", emoji: "🔥" },
-  mature: { label: "成熟期", color: "text-info", bg: "bg-info-bg", emoji: "✅" },
-  declining: { label: "衰退期", color: "text-warning", bg: "bg-warning-bg", emoji: "📉" },
-  dormant: { label: "休眠期", color: "text-muted-foreground", bg: "bg-muted", emoji: "💤" },
+const LIFECYCLE: Record<LifecycleStage, { label: string; color: string; bg: string; icon: LucideIcon }> = {
+  new: { label: "新品期", color: "text-info", bg: "bg-info-bg", icon: Sparkles },
+  rising: { label: "上升期", color: "text-success", bg: "bg-success-bg", icon: TrendingUp },
+  mature: { label: "成熟期", color: "text-info", bg: "bg-info-bg", icon: CheckCircle2 },
+  declining: { label: "衰退期", color: "text-warning", bg: "bg-warning-bg", icon: TrendingDown },
+  dormant: { label: "休眠期", color: "text-muted-foreground", bg: "bg-muted", icon: Moon },
 };
 
 const COGS_RATE = 0.45; const SHIP_RATE = 0.12; const GW_RATE = 0.035; const AD_RATE = 0.08;
@@ -133,7 +134,7 @@ export default function ProductAnalyticsPanel({ isDemo, shopUrl, accessToken, sh
       {/* Toolbar */}
       <Card className="border-border/40 bg-card/60"><CardContent className="flex flex-wrap items-center gap-1.5 px-3 py-2">
         <div className="relative flex-1 min-w-[100px]"><Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground"/><Input value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="搜索..." className="h-7 pl-7 text-sm"/></div>
-        <select value={filterLifecycle} onChange={(e)=>setFilterLifecycle(e.target.value)} className="h-7 rounded border border-border/40 bg-background text-xs px-1"><option value="all">全部状态</option>{Object.entries(LIFECYCLE).map(([k,v])=><option key={k} value={k}>{v.emoji} {v.label}</option>)}</select>
+        <select value={filterLifecycle} onChange={(e)=>setFilterLifecycle(e.target.value)} className="h-7 rounded border border-border/40 bg-background text-xs px-1"><option value="all">全部状态</option>{Object.entries(LIFECYCLE).map(([k,v])=><option key={k} value={k}>{v.label}</option>)}</select>
         <select value={filterType} onChange={(e)=>setFilterType(e.target.value)} className="h-7 rounded border border-border/40 bg-background text-xs px-1"><option value="all">品类</option>{types.map((t)=><option key={t}>{t}</option>)}</select>
         <select value={filterVendor} onChange={(e)=>setFilterVendor(e.target.value)} className="h-7 rounded border border-border/40 bg-background text-xs px-1"><option value="all">供应商</option>{vendors.map((v)=><option key={v}>{v}</option>)}</select>
         <select value={filterStatus} onChange={(e)=>setFilterStatus(e.target.value)} className="h-7 rounded border border-border/40 bg-background text-xs px-1"><option value="all">上架</option><option value="ACTIVE">上架</option><option value="DRAFT">下架</option></select>
@@ -177,7 +178,7 @@ export default function ProductAnalyticsPanel({ isDemo, shopUrl, accessToken, sh
                     <td className={`py-2 px-2 text-right tabular-nums font-semibold ${profitColor}`}>{r.profitRate.toFixed(1)}%</td>
                     <td className={`py-2 px-2 text-right tabular-nums ${r.returnRate > 10 ? "text-destructive-text" : "text-muted-foreground"}`}>{r.returnRate.toFixed(1)}%</td>
                     <td className={`py-2 px-2 text-right tabular-nums ${r.weekGrowth >= 0 ? "text-success" : "text-destructive-text"}`}>{r.weekGrowth > 0 ? "+" : ""}{r.weekGrowth}%</td>
-                    <td className="py-2 px-2 text-center"><Badge className={`text-[8px] px-1 py-0 ${lc.bg} ${lc.color}`}>{lc.emoji} {lc.label}</Badge></td>
+                    <td className="py-2 px-2 text-center"><Badge className={`text-[8px] px-1 py-0 gap-1 ${lc.bg} ${lc.color}`}><lc.icon className="h-2.5 w-2.5" />{lc.label}</Badge></td>
                     <td className="py-2 px-2 text-center"><button onClick={(e)=>{e.stopPropagation();toggleCompare(r.productId);}} className="text-muted-foreground hover:text-info">{compareIds.has(r.productId)?<Star className="h-3 w-3 text-info"/>:<StarOff className="h-3 w-3"/>}</button></td>
                   </tr>
                 );
@@ -196,9 +197,9 @@ export default function ProductAnalyticsPanel({ isDemo, shopUrl, accessToken, sh
               <Button size="sm" variant="ghost" onClick={()=>setExpandedId(null)}><X className="h-4 w-4"/></Button>
             </div>
             <div className="flex gap-1">
-              {(["trend","profit","returns","orders"] as typeof detailTab[]).map((t)=>(
-                <button key={t} onClick={()=>setDetailTab(t)} className={`px-3 py-1 rounded text-xs font-medium ${detailTab===t?"bg-info-bg text-info":"text-muted-foreground"}`}>
-                  {t==="trend"?"📈 趋势":t==="profit"?"💰 利润":t==="returns"?"🔄 退货":"📋 订单"}
+              {([["trend",TrendingUp],["profit",DollarSign],["returns",RotateCcw],["orders",ClipboardList]] as const).map(([t,TI])=>(
+                <button key={t} onClick={()=>setDetailTab(t)} className={`px-3 py-1 rounded text-xs font-medium inline-flex items-center gap-1 ${detailTab===t?"bg-info-bg text-info":"text-muted-foreground"}`}>
+                  <TI className="h-3 w-3" />{t==="trend"?"趋势":t==="profit"?"利润":t==="returns"?"退货":"订单"}
                 </button>
               ))}
             </div>

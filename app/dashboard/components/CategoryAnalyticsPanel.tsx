@@ -4,7 +4,9 @@ import { useState, useMemo } from "react";
 import {
   PieChart, Grid, Download, BarChart4, TrendingUp, TrendingDown, Star,
   ChevronDown, X, CheckCircle2, AlertCircle, FileText, Eye, Table,
+  Circle, AlertTriangle, XCircle, Rocket, Zap, Moon, DollarSign, Package,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,14 +21,14 @@ interface CategoryAnalyticsPanelProps {
 
 /* ─── Helpers ─────────────────────────────────────────── */
 
-const HEALTH: Record<string, { label: string; emoji: string; color: string; bg: string }> = {
-  healthy: { label: "健康", emoji: "🟢", color: "text-success", bg: "bg-success-bg" },
-  ok: { label: "一般", emoji: "🟡", color: "text-warning", bg: "bg-warning-bg" },
-  watch: { label: "需关注", emoji: "🟠", color: "text-warning", bg: "bg-warning-bg" },
-  danger: { label: "危险", emoji: "🔴", color: "text-destructive-text", bg: "bg-destructive-bg" },
+const HEALTH: Record<string, { label: string; icon: LucideIcon; color: string; bg: string }> = {
+  healthy: { label: "健康", icon: CheckCircle2, color: "text-success", bg: "bg-success-bg" },
+  ok: { label: "一般", icon: Circle, color: "text-warning", bg: "bg-warning-bg" },
+  watch: { label: "需关注", icon: AlertTriangle, color: "text-warning", bg: "bg-warning-bg" },
+  danger: { label: "危险", icon: XCircle, color: "text-destructive-text", bg: "bg-destructive-bg" },
 };
 
-const QUADRANTS = { star: "🌟 明星品类", potential: "💎 潜力品类", problem: "⚡ 问题品类", eliminate: "💤 淘汰候选" };
+const QUADRANTS = { star: "明星品类", potential: "潜力品类", problem: "问题品类", eliminate: "淘汰候选" };
 const GRADES = [
   { grade: "S", label: "核心品类", min: 0.2, color: "text-warning" },
   { grade: "A", label: "重要品类", min: 0.1, color: "text-info" },
@@ -133,7 +135,7 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
                       <Badge className={`text-[9px] px-1.5 py-0 ${cat.rank <= 3 ? (cat.rank === 1 ? "bg-warning-bg text-warning" : cat.rank === 2 ? "bg-muted text-muted-foreground" : "bg-warning-bg text-warning") : "bg-muted/20 text-muted-foreground"}`}>#{cat.rank}</Badge>
                       <p className="font-semibold text-foreground">{cat.name}</p>
                     </div>
-                    <Badge className={`text-[8px] px-1 py-0 ${h.bg} ${h.color}`}>{h.emoji} {h.label}</Badge>
+                    <Badge className={`text-[8px] px-1 py-0 gap-1 ${h.bg} ${h.color}`}><h.icon className="h-2.5 w-2.5" />{h.label}</Badge>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1"><span>GMV: <span className="text-foreground font-semibold">{formatCny(cat.gmv * EXCHANGE_RATE)}</span></span><span className="ml-auto">占全店 {cat.gmvShare.toFixed(1)}%</span></div>
                   <div className="h-1.5 rounded bg-muted/20 mb-2"><div className="h-full bg-info/50 rounded" style={{ width: `${cat.gmvShare * 100}%` }} /></div>
@@ -143,7 +145,7 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
                     <div><p className="text-muted-foreground">退货率</p><p className={`tabular-nums ${cat.returnRate > 8 ? "text-destructive-text" : ""}`}>{cat.returnRate.toFixed(1)}%</p></div>
                     <div><p className="text-muted-foreground">周增长</p><p className={`tabular-nums ${cat.weekGrowth >= 0 ? "text-success" : "text-destructive-text"}`}>{cat.weekGrowth > 0 ? "+" : ""}{cat.weekGrowth}%</p></div>
                   </div>
-                  <p className="text-[9px] text-muted-foreground mt-1.5">{cat.productCount} 件商品 · 趋势: {cat.trend === "rising" ? "🔥 上升" : cat.trend === "declining" ? "📉 下降" : "➡ 平稳"}</p>
+                  <p className="text-[9px] text-muted-foreground mt-1.5">{cat.productCount} 件商品 · 趋势: {cat.trend === "rising" ? "上升" : cat.trend === "declining" ? "下降" : "平稳"}</p>
                 </CardContent>
               </Card>
             );
@@ -166,7 +168,7 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
                 <td className={`py-2 px-2 text-right tabular-nums ${cat.profitRate >= avgProfitRate ? "text-success" : "text-destructive-text"}`}>{cat.profitRate.toFixed(1)}%</td>
                 <td className={`py-2 px-2 text-right tabular-nums ${cat.returnRate > 8 ? "text-destructive-text" : ""}`}>{cat.returnRate.toFixed(1)}%</td>
                 <td className={`py-2 px-2 text-right tabular-nums ${cat.weekGrowth >= 0 ? "text-success" : "text-destructive-text"}`}>{cat.weekGrowth > 0 ? "+" : ""}{cat.weekGrowth}%</td>
-                <td className="py-2 px-2 text-center"><Badge className={`text-[8px] px-1 py-0 ${h.bg} ${h.color}`}>{cat.healthScore}</Badge></td>
+                <td className="py-2 px-2 text-center"><Badge className={`text-[8px] px-1 py-0 gap-1 ${h.bg} ${h.color}`}><h.icon className="h-2.5 w-2.5" />{h.label}</Badge></td>
               </tr>);
             })}</tbody>
           </table>
@@ -201,8 +203,8 @@ export default function CategoryAnalyticsPanel({ isDemo, shopUrl, accessToken, s
         <Card className="border-border/40 bg-card/60 shadow-xl border-l-2 border-l-info-border">
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center justify-between"><p className="text-base font-semibold text-foreground">{expanded.name}</p><Button size="sm" variant="ghost" onClick={()=>setExpandedCat(null)}><X className="h-4 w-4"/></Button></div>
-            <div className="flex gap-1">{(["overview","finance","inventory","compare"] as const).map((t)=>{const l=t==="overview"?"📊 总览":t==="finance"?"💰 财务":t==="inventory"?"📦 库存":"🆚 对比";return(<button key={t} onClick={()=>setDetailTab(t)} className={`px-3 py-1 rounded text-xs font-medium ${detailTab===t?"bg-info-bg text-info":"text-muted-foreground"}`}>{l}</button>);})}</div>
-            {detailTab === "overview" && <p className="text-xs text-muted-foreground">GMV: {formatCny(expanded.gmv*EXCHANGE_RATE)} · 利润率: {expanded.profitRate.toFixed(1)}% · {expanded.productCount} 件商品 · 健康状况: {HEALTH[expanded.healthLabel].emoji} {HEALTH[expanded.healthLabel].label}</p>}
+            <div className="flex gap-1">{([["overview",Grid,"总览"],["finance",DollarSign,"财务"],["inventory",Package,"库存"],["compare",BarChart4,"对比"]] as const).map(([t,TI,label])=>(<button key={t} onClick={()=>setDetailTab(t)} className={`px-3 py-1 rounded text-xs font-medium inline-flex items-center gap-1 ${detailTab===t?"bg-info-bg text-info":"text-muted-foreground"}`}><TI className="h-3 w-3" />{label}</button>))}</div>
+            {detailTab === "overview" && <p className="text-xs text-muted-foreground">GMV: {formatCny(expanded.gmv*EXCHANGE_RATE)} · 利润率: {expanded.profitRate.toFixed(1)}% · {expanded.productCount} 件商品 · 健康状况: {HEALTH[expanded.healthLabel].label}</p>}
             {detailTab === "finance" && <p className="text-xs text-muted-foreground">采购成本 ~{(45).toFixed(0)}% · 物流 ~{(12).toFixed(0)}% · 网关 ~{(3.5).toFixed(0)}% · 建议: {expanded.profitRate<avgProfitRate?"该品类利润率低于全店均值，建议优化成本结构":"该品类表现良好"}</p>}
             {detailTab === "inventory" && <p className="text-xs text-muted-foreground">库存分布: 充足 {Math.round(expanded.productCount*0.4)}件 · 偏低 {Math.round(expanded.productCount*0.3)}件 · 滞销 {Math.round(expanded.productCount*0.2)}件</p>}
             {detailTab === "compare" && (
