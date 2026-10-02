@@ -430,7 +430,7 @@ export default function BatchOperationPanel({ isDemo, shopUrl, accessToken, shop
                   <select value={invMode} onChange={(e)=>setInvMode(e.target.value)} className="h-9 rounded border border-border/40 bg-background text-sm text-foreground px-2"><option value="set">设为绝对值</option><option value="add">增加库存</option><option value="subtract">减少库存</option></select>
                   <Input type="number" value={invVal} onChange={(e)=>setInvVal(e.target.value)} className="h-9 w-32 text-sm" />
                 </div>
-                {invPreviews.some((p)=>p.new<0) && <p className="text-xs text-destructive-text">⚠ 以下商品的库存将被设为负数</p>}
+                {invPreviews.some((p)=>p.new<0) && <p className="text-xs text-destructive-text inline-flex items-center gap-1"><AlertCircle className="h-3 w-3" /> 以下商品的库存将被设为负数</p>}
                 {invPreviews.length > 0 && (
                   <table className="w-full text-sm"><thead><tr className="border-b border-border/20 text-xs text-muted-foreground"><th className="py-1 text-left">商品</th><th className="py-1 text-left">SKU</th><th className="py-1 text-right">当前</th><th className="py-1 text-center w-6"></th><th className="py-1 text-right">新库存</th></tr></thead>
                     <tbody>{invPreviews.map((pv,i)=>(

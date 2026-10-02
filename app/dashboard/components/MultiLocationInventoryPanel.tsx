@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import {
   Warehouse, MapPin, Search, ChevronDown, ChevronRight, X, Save, Download,
-  AlertCircle, CheckCircle2, ArrowRightLeft, TrendingUp, BarChart3,
+  AlertCircle, CheckCircle2, ArrowRightLeft, TrendingUp, BarChart3, AlertTriangle,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -173,8 +173,8 @@ export default function MultiLocationInventoryPanel({ isDemo, shopUrl, accessTok
           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
             {locations.map((l) => { const pct = totalAll > 0 ? ((totalPerLoc[l.id] || 0) / totalAll) * 100 : 0; return <span key={l.id}>{l.name}: <span className="text-foreground tabular-nums">{totalPerLoc[l.id] || 0}</span> ({pct.toFixed(1)}%)</span>; })}
           </div>
-          {locations.some((l) => !totalPerLoc[l.id]) && <p className="text-xs text-destructive-text">⚠ 以下仓库库存为 0：{locations.filter((l) => !totalPerLoc[l.id]).map((l) => l.name).join(", ")}</p>}
-          {Object.values(totalPerLoc).some((v) => totalAll > 0 && v / totalAll > 0.8) && <p className="text-xs text-warning">⚠ 库存集中度过高，建议分散以降低风险</p>}
+          {locations.some((l) => !totalPerLoc[l.id]) && <p className="text-xs text-destructive-text inline-flex items-center gap-1"><AlertCircle className="h-3 w-3" /> 以下仓库库存为 0：{locations.filter((l) => !totalPerLoc[l.id]).map((l) => l.name).join(", ")}</p>}
+          {Object.values(totalPerLoc).some((v) => totalAll > 0 && v / totalAll > 0.8) && <p className="text-xs text-warning inline-flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> 库存集中度过高，建议分散以降低风险</p>}
         </CardContent></Card>
       )}
 
