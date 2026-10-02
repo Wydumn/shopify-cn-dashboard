@@ -150,7 +150,7 @@ function StoreHealthCard({ profile }: { profile: StoreRiskProfile }) {
   const style = getRiskStyle(profile.overallRisk);
 
   return (
-    <Card className={`border-border/40 bg-card/60 shadow-lg backdrop-blur-lg transition-all hover:border-border/60 ${profile.overallRisk === "critical" ? "ring-2 ring-red-500/20" : profile.overallRisk === "warning" ? "ring-1 ring-amber-500/20" : ""}`}>
+    <Card className={`border-border/40 bg-card/60 shadow-lg backdrop-blur-lg transition-all hover:border-border/60 ${profile.overallRisk === "critical" ? "ring-2 ring-destructive/20" : profile.overallRisk === "warning" ? "ring-1 ring-warning/20" : ""}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
@@ -203,7 +203,7 @@ function DisputesTable({ disputes }: { disputes: DisputeEntry[] }) {
     <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
-          <Scale className="h-4 w-4 text-amber-400" />
+          <Scale className="h-4 w-4 text-warning" />
           未决争议申诉控制台
         </CardTitle>
         <CardDescription>所有未解决的争议与拒付申诉 · 按开启天数降序</CardDescription>
@@ -225,7 +225,7 @@ function DisputesTable({ disputes }: { disputes: DisputeEntry[] }) {
               {disputes.map((d) => (
                 <TableRow key={d.id} className="group transition-colors hover:bg-muted/20">
                   <TableCell className="font-mono text-sm text-muted-foreground">#{d.orderId}</TableCell>
-                  <TableCell className="text-right tabular-nums font-medium text-red-400">
+                  <TableCell className="text-right tabular-nums font-medium text-destructive-text">
                     {d.currency === "EUR" ? "€" : "$"}{d.amount.toFixed(2)}
                   </TableCell>
                   <TableCell>
@@ -240,9 +240,9 @@ function DisputesTable({ disputes }: { disputes: DisputeEntry[] }) {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
-                    <span className={`text-base font-medium ${d.daysOpen > 14 ? "text-red-400" : d.daysOpen > 7 ? "text-amber-400" : "text-muted-foreground"}`}>
+                    <span className={`text-base font-medium ${d.daysOpen > 14 ? "text-destructive-text" : d.daysOpen > 7 ? "text-warning" : "text-muted-foreground"}`}>
                       {d.daysOpen} 天
-                      {d.daysOpen > 14 && <AlertCircle className="ml-1 inline h-3 w-3 text-red-400" />}
+                      {d.daysOpen > 14 && <AlertCircle className="ml-1 inline h-3 w-3 text-destructive-text" />}
                     </span>
                   </TableCell>
                 </TableRow>
@@ -251,7 +251,7 @@ function DisputesTable({ disputes }: { disputes: DisputeEntry[] }) {
           </Table>
         ) : (
           <div className="flex flex-col items-center gap-2 py-8 text-base text-muted-foreground">
-            <CheckCircle2 className="h-9 w-8 text-emerald-400/50" />
+            <CheckCircle2 className="h-9 w-8 text-success/50" />
             <p>暂无未决争议</p>
             <p className="text-sm text-muted-foreground/60">店铺风控状态健康</p>
           </div>
@@ -307,9 +307,9 @@ function RiskTimelineBar({ disputeRate }: { disputeRate: number }) {
     <div className="w-full">
       <div className="flex items-center justify-between text-xs font-medium text-muted-foreground mb-1.5">
         <span>0%</span>
-        <span className="text-emerald-400">1.0%</span>
-        <span className="text-amber-400">1.5%</span>
-        <span className="text-red-400">3.0%+</span>
+        <span className="text-success">1.0%</span>
+        <span className="text-warning">1.5%</span>
+        <span className="text-destructive-text">3.0%+</span>
       </div>
       <div className="relative h-3 w-full rounded-full bg-gradient-to-r from-success-bg via-warning-bg to-destructive-bg">
         <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-3 rounded-full overflow-hidden">
@@ -486,7 +486,7 @@ export default function RiskRadarDashboard({
         </h2>
         <p className="mt-1 text-base text-muted-foreground">
           {isDemo ? "多店风控推演 (演示模式)" : shopName} · 滚动纠纷率 · Merchant Review · 拒付追踪
-          {isDemo && <span className="ml-2 text-sm text-amber-400">(包含 MinimalHome 高危风控演示数据)</span>}
+          {isDemo && <span className="ml-2 text-sm text-warning">(包含 MinimalHome 高危风控演示数据)</span>}
         </p>
       </div>
 
@@ -561,7 +561,7 @@ export default function RiskRadarDashboard({
         <Card className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <FileWarning className="h-4 w-4 text-amber-400" />
+              <FileWarning className="h-4 w-4 text-warning" />
               跨店风控指标实时对比
             </CardTitle>
           </CardHeader>
@@ -586,15 +586,15 @@ export default function RiskRadarDashboard({
                     <TableRow key={p.storeId} className="group transition-colors hover:bg-muted/20">
                       <TableCell className="font-medium text-foreground">{p.storeName}</TableCell>
                       <TableCell className="text-right tabular-nums">
-                        <span className={`font-semibold ${p.healthScore >= 80 ? "text-emerald-400" : p.healthScore >= 50 ? "text-amber-400" : "text-red-400"}`}>{p.healthScore}</span>
+                        <span className={`font-semibold ${p.healthScore >= 80 ? "text-success" : p.healthScore >= 50 ? "text-warning" : "text-destructive-text"}`}>{p.healthScore}</span>
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
-                        <span className={`font-semibold ${p.rollingDisputeRate >= 1.5 ? "text-red-400" : p.rollingDisputeRate >= 1.0 ? "text-amber-400" : "text-emerald-400"}`}>
+                        <span className={`font-semibold ${p.rollingDisputeRate >= 1.5 ? "text-destructive-text" : p.rollingDisputeRate >= 1.0 ? "text-warning" : "text-success"}`}>
                           {p.rollingDisputeRate.toFixed(2)}%
                         </span>
                       </TableCell>
                       <TableCell className="text-right tabular-nums">{p.chargebackCount}</TableCell>
-                      <TableCell className="text-right tabular-nums text-red-400">{formatCny(p.chargebackAmount)}</TableCell>
+                      <TableCell className="text-right tabular-nums text-destructive-text">{formatCny(p.chargebackAmount)}</TableCell>
                       <TableCell className="text-right tabular-nums">{p.refundRate.toFixed(2)}%</TableCell>
                       <TableCell className="text-right tabular-nums">{p.avgFulfillmentHours}h</TableCell>
                       <TableCell>

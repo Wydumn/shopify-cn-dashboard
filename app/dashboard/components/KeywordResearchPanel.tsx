@@ -264,14 +264,14 @@ function Modal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-xl border border-zinc-700 bg-zinc-900 shadow-2xl"
+        className="w-full max-w-lg rounded-xl border border-border bg-card shadow-popover"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
-          <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
+        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
           <button
             onClick={onClose}
-            className="text-zinc-400 transition-colors hover:text-zinc-100"
+            className="text-muted-foreground transition-colors hover:text-foreground"
             aria-label="关闭"
           >
             <X className="size-4" />
@@ -279,7 +279,7 @@ function Modal({
         </div>
         <div className="max-h-[70vh] overflow-y-auto px-4 py-3">{children}</div>
         {footer && (
-          <div className="flex justify-end gap-2 border-t border-zinc-800 px-4 py-3">
+          <div className="flex justify-end gap-2 border-t border-border px-4 py-3">
             {footer}
           </div>
         )}
@@ -292,16 +292,16 @@ const STATUS_META: Record<
   KeywordCoverage["status"],
   { label: string; cls: string }
 > = {
-  covered: { label: "🟢 已覆盖", cls: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
-  no_title_match: { label: "🟡 无标题匹配", cls: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
-  no_search_data: { label: "🟡 无搜索数据", cls: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
-  uncovered: { label: "🔴 完全未覆盖", cls: "bg-red-500/15 text-red-300 border-red-500/30" },
+  covered: { label: "已覆盖", cls: "border-success-border bg-success-bg text-success" },
+  no_title_match: { label: "无标题匹配", cls: "border-warning-border bg-warning-bg text-warning" },
+  no_search_data: { label: "无搜索数据", cls: "border-warning-border bg-warning-bg text-warning" },
+  uncovered: { label: "完全未覆盖", cls: "border-destructive-border bg-destructive-bg text-destructive-text" },
 };
 
 const PRIORITY_META: Record<CompetitionEstimate["priority"], { label: string; cls: string }> = {
-  P0: { label: "🔴 P0", cls: "bg-red-500/15 text-red-300 border-red-500/30" },
-  P1: { label: "🟠 P1", cls: "bg-orange-500/15 text-orange-300 border-orange-500/30" },
-  P2: { label: "🟡 P2", cls: "bg-yellow-500/15 text-yellow-300 border-yellow-500/30" },
+  P0: { label: "P0", cls: "border-destructive-border bg-destructive-bg text-destructive-text" },
+  P1: { label: "P1", cls: "border-warning-border bg-warning-bg text-warning" },
+  P2: { label: "P2", cls: "border-info-border bg-info-bg text-info" },
 };
 
 /* ─── 主组件 ───────────────────────────────────────── */
@@ -609,7 +609,7 @@ export default function KeywordResearchPanel({
     <div className="space-y-4">
       {/* 配置横幅：真实模式且无 GSC 缓存 */}
       {!isDemo && !gscAvailable && (
-        <div className="flex items-center gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+        <div className="flex items-center gap-3 rounded-lg border border-warning-border bg-warning-bg px-4 py-3 text-sm text-warning">
           <AlertTriangle className="size-4 shrink-0" />
           <span className="flex-1">
             尚未配置 Google Search Console，部分分析功能（机会/关联/竞争度）不可用。
@@ -617,7 +617,7 @@ export default function KeywordResearchPanel({
           <Button
             size="sm"
             variant="outline"
-            className="h-7 border-amber-500/40 text-amber-200 hover:bg-amber-500/20"
+            className="h-7 border-warning-border text-warning hover:bg-warning-bg"
             onClick={() => setActiveMenu("search-console")}
           >
             去配置 →
@@ -629,7 +629,7 @@ export default function KeywordResearchPanel({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Key className="size-4 text-emerald-400" />
+            <Key className="size-4 text-success" />
             关键词机会发现与缺口分析
           </CardTitle>
           <CardDescription>
@@ -646,7 +646,6 @@ export default function KeywordResearchPanel({
             />
             <Button
               onClick={handleAnalyze}
-              className="bg-emerald-600 text-white hover:bg-emerald-500"
             >
               <Search className="size-4" />
               分析
@@ -670,13 +669,13 @@ export default function KeywordResearchPanel({
 
           {quickSeeds.length > 0 && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs text-zinc-500">快捷种子词：</span>
+              <span className="text-xs text-muted-foreground">快捷种子词：</span>
               {quickSeeds.map((s) => (
                 <Button
                   key={s}
                   size="sm"
                   variant="outline"
-                  className="h-7 border-zinc-700 text-xs text-zinc-300 hover:bg-zinc-800"
+                  className="h-7 text-xs"
                   onClick={() => setSeedInput(s)}
                 >
                   {s}
@@ -692,7 +691,7 @@ export default function KeywordResearchPanel({
         <Button
           size="sm"
           variant="outline"
-          className="h-8 border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+          className="h-8"
           onClick={exportCsv}
           disabled={!analyzed}
         >
@@ -702,7 +701,7 @@ export default function KeywordResearchPanel({
         <Button
           size="sm"
           variant="outline"
-          className="h-8 border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+          className="h-8"
           onClick={() => openSeedModal(null)}
         >
           <Save className="size-4" />
@@ -729,7 +728,7 @@ export default function KeywordResearchPanel({
       {/* 分析结果 */}
       {!analyzed ? (
         <Card>
-          <CardContent className="py-12 text-center text-sm text-zinc-500">
+          <CardContent className="py-12 text-center text-sm text-muted-foreground">
             输入种子关键词后点击「分析」，查看机会关键词、覆盖检查、关键词→商品关联与竞争度估算。
           </CardContent>
         </Card>
@@ -763,14 +762,14 @@ export default function KeywordResearchPanel({
           <TabsContent value="opportunity">
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">🎯 机会关键词</CardTitle>
+                <CardTitle className="text-sm">机会关键词</CardTitle>
                 <CardDescription>
                   高曝光 + 低 CTR + 排名前 20 的查询词，优先优化其页面 Title / Description。
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex flex-wrap items-end gap-3">
-                  <label className="text-xs text-zinc-400">
+                  <label className="text-xs text-muted-foreground">
                     最小曝光数
                     <Input
                       type="number"
@@ -779,7 +778,7 @@ export default function KeywordResearchPanel({
                       className="mt-1 h-8 w-28"
                     />
                   </label>
-                  <label className="text-xs text-zinc-400">
+                  <label className="text-xs text-muted-foreground">
                     CTR 上限 (%)
                     <Input
                       type="number"
@@ -791,50 +790,50 @@ export default function KeywordResearchPanel({
                 </div>
 
                 {opportunities.length === 0 ? (
-                  <p className="py-8 text-center text-sm text-zinc-500">
+                  <p className="py-8 text-center text-sm text-muted-foreground">
                     {gscAvailable
                       ? "当前筛选条件下没有机会关键词，可放宽曝光/CTR 阈值。"
                       : "无 GSC 数据，无法分析机会关键词。"}
                   </p>
                 ) : (
-                  <div className="overflow-x-auto rounded-lg border border-zinc-800">
+                  <div className="overflow-x-auto rounded-lg border border-border">
                     <Table>
                       <TableHeader>
                         <TableRow className="hover:bg-transparent">
-                          <TableHead className="text-zinc-400">关键词</TableHead>
-                          <TableHead className="text-right text-zinc-400">曝光次数</TableHead>
-                          <TableHead className="text-right text-zinc-400">CTR</TableHead>
-                          <TableHead className="text-right text-zinc-400">排名</TableHead>
-                          <TableHead className="text-zinc-400">对应页面</TableHead>
-                          <TableHead className="text-zinc-400">优化建议</TableHead>
-                          <TableHead className="text-right text-zinc-400">操作</TableHead>
+                          <TableHead className="text-muted-foreground">关键词</TableHead>
+                          <TableHead className="text-right text-muted-foreground">曝光次数</TableHead>
+                          <TableHead className="text-right text-muted-foreground">CTR</TableHead>
+                          <TableHead className="text-right text-muted-foreground">排名</TableHead>
+                          <TableHead className="text-muted-foreground">对应页面</TableHead>
+                          <TableHead className="text-muted-foreground">优化建议</TableHead>
+                          <TableHead className="text-right text-muted-foreground">操作</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {opportunities.map((o) => (
-                          <TableRow key={o.keyword} className="hover:bg-zinc-800/40">
-                            <TableCell className="font-medium text-zinc-100">
+                          <TableRow key={o.keyword} className="hover:bg-muted/40">
+                            <TableCell className="font-medium text-foreground">
                               <KwCell text={o.keyword} />
                             </TableCell>
-                            <TableCell className="text-right text-zinc-300">
+                            <TableCell className="text-right text-foreground">
                               {o.impressions.toLocaleString()}
                             </TableCell>
-                            <TableCell className="text-right text-zinc-300">
-                              <span className="text-red-400">
+                            <TableCell className="text-right text-foreground">
+                              <span className="text-destructive-text">
                                 {(o.ctr * 100).toFixed(1)}%
                               </span>
                             </TableCell>
-                            <TableCell className="text-right text-zinc-300">
+                            <TableCell className="text-right text-foreground">
                               {o.position.toFixed(1)}
                             </TableCell>
-                            <TableCell className="text-zinc-400">{o.landingPage}</TableCell>
-                            <TableCell className="max-w-[260px] text-xs text-zinc-400">
+                            <TableCell className="text-muted-foreground">{o.landingPage}</TableCell>
+                            <TableCell className="max-w-[260px] text-xs text-muted-foreground">
                               {o.suggestion}
                             </TableCell>
                             <TableCell className="text-right">
                               <Button
                                 size="sm"
-                                className="h-7 bg-emerald-600 text-white hover:bg-emerald-500"
+                                className="h-7"
                                 disabled={o.matchedProductIds.length === 0}
                                 onClick={() =>
                                   openProductEdit(o.matchedProductIds[0], "seo")
@@ -858,7 +857,7 @@ export default function KeywordResearchPanel({
           <TabsContent value="coverage">
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">📋 关键词覆盖检查</CardTitle>
+                <CardTitle className="text-sm">关键词覆盖检查</CardTitle>
                 <CardDescription>
                   每行一个关键词（或逗号分隔），对比 GSC 搜索数据与商品标题覆盖情况。
                 </CardDescription>
@@ -868,59 +867,59 @@ export default function KeywordResearchPanel({
                   value={coverageInput}
                   onChange={(e) => setCoverageInput(e.target.value)}
                   placeholder="降噪耳机, 无线运动耳机, 高保真音响, 入耳式监听"
-                  className="h-24 w-full resize-y rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-600"
+                  className="h-24 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-success"
                 />
                 {coverageResults.length === 0 ? (
-                  <p className="py-8 text-center text-sm text-zinc-500">
+                  <p className="py-8 text-center text-sm text-muted-foreground">
                     输入目标关键词后自动检查覆盖情况。
                   </p>
                 ) : (
-                  <div className="overflow-x-auto rounded-lg border border-zinc-800">
+                  <div className="overflow-x-auto rounded-lg border border-border">
                     <Table>
                       <TableHeader>
                         <TableRow className="hover:bg-transparent">
-                          <TableHead className="text-zinc-400">目标关键词</TableHead>
-                          <TableHead className="text-zinc-400">GSC 有数据</TableHead>
-                          <TableHead className="text-right text-zinc-400">GSC 曝光</TableHead>
-                          <TableHead className="text-zinc-400">标题覆盖</TableHead>
-                          <TableHead className="text-zinc-400">状态</TableHead>
-                          <TableHead className="text-zinc-400">建议</TableHead>
+                          <TableHead className="text-muted-foreground">目标关键词</TableHead>
+                          <TableHead className="text-muted-foreground">GSC 有数据</TableHead>
+                          <TableHead className="text-right text-muted-foreground">GSC 曝光</TableHead>
+                          <TableHead className="text-muted-foreground">标题覆盖</TableHead>
+                          <TableHead className="text-muted-foreground">状态</TableHead>
+                          <TableHead className="text-muted-foreground">建议</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {coverageResults.map((c) => {
                           const meta = STATUS_META[c.status];
                           return (
-                            <TableRow key={c.keyword} className="hover:bg-zinc-800/40">
-                              <TableCell className="font-medium text-zinc-100">
+                            <TableRow key={c.keyword} className="hover:bg-muted/40">
+                              <TableCell className="font-medium text-foreground">
                                 <KwCell text={c.keyword} />
                               </TableCell>
                               <TableCell>
                                 {c.hasGSCData ? (
-                                  <span className="inline-flex items-center gap-1 text-emerald-400">
+                                  <span className="inline-flex items-center gap-1 text-success">
                                     <Check className="size-3.5" />
                                     {c.gscImpressions.toLocaleString()}
                                   </span>
                                 ) : (
-                                  <span className="text-zinc-500">✗</span>
+                                  <span className="text-muted-foreground">—</span>
                                 )}
                               </TableCell>
-                              <TableCell className="text-right text-zinc-300">
+                              <TableCell className="text-right text-foreground">
                                 {c.gscImpressions.toLocaleString()}
                               </TableCell>
                               <TableCell>
                                 {c.matchedInTitles ? (
-                                  <span className="text-sky-400" title={c.matchedProducts.map((p) => p.title).join(" / ")}>
-                                    📝 {c.matchedProducts.length} 件
+                                  <span className="text-info" title={c.matchedProducts.map((p) => p.title).join(" / ")}>
+                                    {c.matchedProducts.length} 件
                                   </span>
                                 ) : (
-                                  <span className="text-zinc-500">✗</span>
+                                  <span className="text-muted-foreground">—</span>
                                 )}
                               </TableCell>
                               <TableCell>
-                                <Badge className={`border ${meta.cls}`}>{meta.label}</Badge>
+                                <Badge className={`h-5 border px-1.5 text-[11px] font-medium ${meta.cls}`}>{meta.label}</Badge>
                               </TableCell>
-                              <TableCell className="max-w-[280px] text-xs text-zinc-400">
+                              <TableCell className="max-w-[280px] text-xs text-muted-foreground">
                                 {c.suggestion}
                               </TableCell>
                             </TableRow>
@@ -938,7 +937,7 @@ export default function KeywordResearchPanel({
           <TabsContent value="association">
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">🔗 关键词→商品关联</CardTitle>
+                <CardTitle className="text-sm">关键词→商品关联</CardTitle>
                 <CardDescription>
                   输入一个搜索词，查看其 GSC 落地页与店铺商品的关联强度。
                 </CardDescription>
@@ -954,55 +953,55 @@ export default function KeywordResearchPanel({
                 </div>
 
                 {assocResults.length === 0 ? (
-                  <p className="py-8 text-center text-sm text-zinc-500">
+                  <p className="py-8 text-center text-sm text-muted-foreground">
                     输入搜索词后自动匹配关联商品。
                   </p>
                 ) : (
                   <>
-                    <p className="text-sm text-zinc-300">
+                    <p className="text-sm text-foreground">
                       搜索词：
-                      <span className="font-medium text-zinc-100">「{assocInput}」</span>
+                      <span className="font-medium text-foreground">「{assocInput}」</span>
                     </p>
-                    <div className="overflow-x-auto rounded-lg border border-zinc-800">
+                    <div className="overflow-x-auto rounded-lg border border-border">
                       <Table>
                         <TableHeader>
                           <TableRow className="hover:bg-transparent">
-                            <TableHead className="text-zinc-400">GSC 落地页</TableHead>
-                            <TableHead className="text-right text-zinc-400">曝光</TableHead>
-                            <TableHead className="text-right text-zinc-400">CTR</TableHead>
-                            <TableHead className="text-zinc-400">匹配商品</TableHead>
-                            <TableHead className="text-zinc-400">关联度</TableHead>
-                            <TableHead className="text-right text-zinc-400">操作</TableHead>
+                            <TableHead className="text-muted-foreground">GSC 落地页</TableHead>
+                            <TableHead className="text-right text-muted-foreground">曝光</TableHead>
+                            <TableHead className="text-right text-muted-foreground">CTR</TableHead>
+                            <TableHead className="text-muted-foreground">匹配商品</TableHead>
+                            <TableHead className="text-muted-foreground">关联度</TableHead>
+                            <TableHead className="text-right text-muted-foreground">操作</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {assocResults.map((m, i) => {
                             const strengthMeta =
                               m.matchStrength === "strong"
-                                ? { label: "🟢 强关联", cls: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" }
+                                ? { label: "强关联", cls: "border-success-border bg-success-bg text-success" }
                                 : m.matchStrength === "weak"
-                                  ? { label: "🟡 无明确商品关联", cls: "bg-amber-500/15 text-amber-300 border-amber-500/30" }
-                                  : { label: "🔴 无关联", cls: "bg-red-500/15 text-red-300 border-red-500/30" };
+                                  ? { label: "无明确商品关联", cls: "border-warning-border bg-warning-bg text-warning" }
+                                  : { label: "无关联", cls: "border-destructive-border bg-destructive-bg text-destructive-text" };
                             return (
-                              <TableRow key={i} className="hover:bg-zinc-800/40">
-                                <TableCell className="font-mono text-xs text-zinc-300">
+                              <TableRow key={i} className="hover:bg-muted/40">
+                                <TableCell className="font-mono text-xs text-foreground">
                                   <KwCell text={m.landingPage} />
                                 </TableCell>
-                                <TableCell className="text-right text-zinc-300">
+                                <TableCell className="text-right text-foreground">
                                   {m.impressions.toLocaleString()}
                                 </TableCell>
-                                <TableCell className="text-right text-zinc-300">
+                                <TableCell className="text-right text-foreground">
                                   {(m.ctr * 100).toFixed(1)}%
                                 </TableCell>
-                                <TableCell className="text-zinc-300">
+                                <TableCell className="text-foreground">
                                   {m.matchedProduct ? (
                                     <KwCell text={m.matchedProduct.title} />
                                   ) : (
-                                    <span className="text-zinc-500">—</span>
+                                    <span className="text-muted-foreground">—</span>
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  <Badge className={`border ${strengthMeta.cls}`}>
+                                  <Badge className={`h-5 border px-1.5 text-[11px] font-medium ${strengthMeta.cls}`}>
                                     {strengthMeta.label}
                                   </Badge>
                                 </TableCell>
@@ -1037,50 +1036,50 @@ export default function KeywordResearchPanel({
           <TabsContent value="competition">
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">📊 竞争度估算</CardTitle>
+                <CardTitle className="text-sm">竞争度估算</CardTitle>
                 <CardDescription>
                   基于 GSC 数据推断搜索量级与竞争度，给出机会分数与推荐优先级（TOP 10 优先优化）。
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {competitionResults.length === 0 ? (
-                  <p className="py-8 text-center text-sm text-zinc-500">
+                  <p className="py-8 text-center text-sm text-muted-foreground">
                     先点击「分析」输入种子关键词，或加载已保存的种子词列表。
                   </p>
                 ) : (
-                  <div className="overflow-x-auto rounded-lg border border-zinc-800">
+                  <div className="overflow-x-auto rounded-lg border border-border">
                     <Table>
                       <TableHeader>
                         <TableRow className="hover:bg-transparent">
-                          <TableHead className="text-zinc-400">关键词</TableHead>
-                          <TableHead className="text-right text-zinc-400">搜索量级</TableHead>
-                          <TableHead className="text-right text-zinc-400">竞争度</TableHead>
-                          <TableHead className="text-right text-zinc-400">机会分数</TableHead>
-                          <TableHead className="text-zinc-400">优先级</TableHead>
+                          <TableHead className="text-muted-foreground">关键词</TableHead>
+                          <TableHead className="text-right text-muted-foreground">搜索量级</TableHead>
+                          <TableHead className="text-right text-muted-foreground">竞争度</TableHead>
+                          <TableHead className="text-right text-muted-foreground">机会分数</TableHead>
+                          <TableHead className="text-muted-foreground">优先级</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {competitionResults.map((e) => {
                           const pm = PRIORITY_META[e.priority];
                           return (
-                            <TableRow key={e.keyword} className="hover:bg-zinc-800/40">
-                              <TableCell className="font-medium text-zinc-100">
+                            <TableRow key={e.keyword} className="hover:bg-muted/40">
+                              <TableCell className="font-medium text-foreground">
                                 <KwCell text={e.keyword} />
                               </TableCell>
-                              <TableCell className="text-right text-zinc-300">
+                              <TableCell className="text-right text-foreground">
                                 {e.searchVolume}
                               </TableCell>
-                              <TableCell className="text-right text-zinc-300">
+                              <TableCell className="text-right text-foreground">
                                 {e.competition}
-                                <span className="ml-1 text-xs text-zinc-500">
+                                <span className="ml-1 text-xs text-muted-foreground">
                                   ({e.competitionLabel})
                                 </span>
                               </TableCell>
-                              <TableCell className="text-right text-zinc-300">
+                              <TableCell className="text-right text-foreground">
                                 {e.opportunityScore}
                               </TableCell>
                               <TableCell>
-                                <Badge className={`border ${pm.cls}`}>{pm.label}</Badge>
+                                <Badge className={`h-5 border px-1.5 text-[11px] font-medium ${pm.cls}`}>{pm.label}</Badge>
                               </TableCell>
                             </TableRow>
                           );
@@ -1105,14 +1104,14 @@ export default function KeywordResearchPanel({
             <Button
               size="sm"
               variant="outline"
-              className="h-8 border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+              className="h-8"
               onClick={() => setSeedModalOpen(false)}
             >
               取消
             </Button>
             <Button
               size="sm"
-              className="h-8 bg-emerald-600 text-white hover:bg-emerald-500"
+              className="h-8"
               onClick={saveSeedForm}
               disabled={!seedFormName.trim() || parseKeywordList(seedFormText).length === 0}
             >
@@ -1124,7 +1123,7 @@ export default function KeywordResearchPanel({
       >
         <div className="space-y-4">
           <div>
-            <label className="text-xs text-zinc-400">列表名</label>
+            <label className="text-xs text-muted-foreground">列表名</label>
             <Input
               value={seedFormName}
               onChange={(e) => setSeedFormName(e.target.value)}
@@ -1133,42 +1132,42 @@ export default function KeywordResearchPanel({
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-400">关键词（每行一个，支持中英文逗号分隔）</label>
+            <label className="text-xs text-muted-foreground">关键词（每行一个，支持中英文逗号分隔）</label>
             <textarea
               value={seedFormText}
               onChange={(e) => setSeedFormText(e.target.value)}
-              className="mt-1 h-40 w-full resize-y rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-600"
+              className="mt-1 h-40 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-success"
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-400">备注（可选）</label>
+            <label className="text-xs text-muted-foreground">备注（可选）</label>
             <textarea
               value={seedFormNote}
               onChange={(e) => setSeedFormNote(e.target.value)}
-              className="mt-1 h-16 w-full resize-y rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-600"
+              className="mt-1 h-16 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-success"
             />
           </div>
 
           {/* 已保存列表 */}
           {allSeedLists.length > 0 && (
-            <div className="space-y-2 border-t border-zinc-800 pt-3">
-              <p className="text-xs text-zinc-500">已保存列表（最多 10 个，预置列表不可删除）</p>
+            <div className="space-y-2 border-t border-border pt-3">
+              <p className="text-xs text-muted-foreground">已保存列表（最多 10 个，预置列表不可删除）</p>
               {allSeedLists.map((sl, i) => {
                 const isPreset = i < PRESET_SEED_LISTS.length;
                 const userIdx = isPreset ? -1 : i - PRESET_SEED_LISTS.length;
                 return (
                   <div
                     key={i}
-                    className="flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-950/50 px-3 py-2"
+                    className="flex items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-2"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm text-zinc-200">
+                      <p className="truncate text-sm text-foreground">
                         {sl.name}
                         {isPreset && (
-                          <span className="ml-2 text-xs text-zinc-500">（预置）</span>
+                          <span className="ml-2 text-xs text-muted-foreground">（预置）</span>
                         )}
                       </p>
-                      <p className="truncate text-xs text-zinc-500">
+                      <p className="truncate text-xs text-muted-foreground">
                         {sl.keywords.length} 个词
                         {sl.note ? ` · ${sl.note}` : ""}
                       </p>
@@ -1199,7 +1198,7 @@ export default function KeywordResearchPanel({
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-7 text-xs text-red-400 hover:bg-red-500/10"
+                          className="h-7 text-xs text-destructive-text hover:bg-destructive-bg"
                           onClick={() => deleteUserSeedList(userIdx)}
                         >
                           <Trash2 className="size-3.5" />
@@ -1216,7 +1215,7 @@ export default function KeywordResearchPanel({
             <Button
               size="sm"
               variant="outline"
-              className="h-8 border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+              className="h-8"
               onClick={() => openSeedModal(null)}
             >
               <Plus className="size-4" />
@@ -1224,7 +1223,7 @@ export default function KeywordResearchPanel({
             </Button>
           </div>
 
-          <p className="flex items-center gap-1 text-xs text-zinc-600">
+          <p className="flex items-center gap-1 text-xs text-muted-foreground">
             <Lightbulb className="size-3.5" />
             预置列表开箱即用；自定义列表保存在浏览器 localStorage（key: kw_seed_lists）。
           </p>

@@ -123,7 +123,7 @@ export default function SalesForecastPanel({ isDemo, shopUrl, accessToken, shopN
   var mapeLevel = "low";
   if ((10 - backtest.mape) !== Math.abs(10 - backtest.mape)) mapeLevel = "high";
   else if ((20 - backtest.mape) !== Math.abs(20 - backtest.mape)) mapeLevel = "medium";
-  var mapeConfig = mapeLevel === "high" ? { color: "text-emerald-400", label: "预测精度高" } : mapeLevel === "medium" ? { color: "text-amber-400", label: "精度中等，仅供参考" } : { color: "text-orange-400", label: "精度较低，建议结合业务判断" };
+  var mapeConfig = mapeLevel === "high" ? { color: "text-success", label: "预测精度高" } : mapeLevel === "medium" ? { color: "text-warning", label: "精度中等，仅供参考" } : { color: "text-destructive-text", label: "精度较低，建议结合业务判断" };
 
   // Scenario cards
   var scenarios = useMemo(function () {
@@ -136,31 +136,31 @@ export default function SalesForecastPanel({ isDemo, shopUrl, accessToken, shopN
     var stockMsg = ["预测未来7天日均销量 ", Math.round(dayAvg / 80), " 件，建议备货量 ", Math.round(dayAvg / 80 * 14), " 件（覆盖14天）"].join("");
     var adMsg = ["按历史广告费率推算，达成7天GMV需广告预算 ", formatCny(Math.round(forecastSum * EXCHANGE_RATE * marketRate)), "（约 ¥", Math.round(forecastSum * marketRate), "）"].join("");
     return [
-      { icon: Package, title: "备货建议", body: stockMsg, color: "text-sky-400" },
-      { icon: DollarSign, title: "广告预算", body: adMsg, color: "text-fuchsia-400" },
-      { icon: TrendingUp, title: "趋势评估", body: trendMsg, color: "text-emerald-400" }
+      { icon: Package, title: "备货建议", body: stockMsg, color: "text-info" },
+      { icon: DollarSign, title: "广告预算", body: adMsg, color: "text-foreground" },
+      { icon: TrendingUp, title: "趋势评估", body: trendMsg, color: "text-success" }
     ];
   }, [forecastSum, dataSeries]);
 
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><TrendingUp className="h-6 w-6 text-amber-400" />销售预测
-          <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">模型预测 · 非承诺</span>
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground"><TrendingUp className="h-5 w-5 text-muted-foreground" />销售预测
+          <span className="inline-flex h-5 items-center rounded-sm border border-warning-border bg-warning-bg px-1.5 text-[11px] font-medium text-warning">模型预测 · 非承诺</span>
         </h2>
-        <p className="mt-1 text-base text-muted-foreground">{shopName} · {demoData.length} 天历史数据{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{shopName} · {demoData.length} 天历史数据{isDemo && <span className="ml-2 text-xs text-warning">(演示)</span>}</p>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         {[
-          { v: formatCny(Math.round(todayEstimate * EXCHANGE_RATE)), l: "今日预估", c: "text-sky-400" },
-          { v: formatCny(Math.round(forecastSum * EXCHANGE_RATE)), l: "7天预测", c: "text-amber-400" },
+          { v: formatCny(Math.round(todayEstimate * EXCHANGE_RATE)), l: "今日预估", c: "text-info" },
+          { v: formatCny(Math.round(forecastSum * EXCHANGE_RATE)), l: "7天预测", c: "text-warning" },
           { v: Math.round(forecastSum / (dataSeries.length !== 0 ? dataSeries[dataSeries.length - 1] / 80 : 80)) + " 单", l: "7天订单数" },
-          { v: forecast.confidence.toFixed(0) + "%", l: "置信度", c: forecast.confidence !== 70 && (forecast.confidence - 70) !== Math.abs(forecast.confidence - 70) ? "text-emerald-400" : "text-amber-400" },
-          { v: trendDirection === "up" ? "↑ 上升" : trendDirection === "down" ? "↓ 下降" : "→ 持平", l: "趋势", c: trendDirection === "up" ? "text-emerald-400" : trendDirection === "down" ? "text-red-400" : "text-zinc-400" },
+          { v: forecast.confidence.toFixed(0) + "%", l: "置信度", c: forecast.confidence !== 70 && (forecast.confidence - 70) !== Math.abs(forecast.confidence - 70) ? "text-success" : "text-warning" },
+          { v: trendDirection === "up" ? "↑ 上升" : trendDirection === "down" ? "↓ 下降" : "→ 持平", l: "趋势", c: trendDirection === "up" ? "text-success" : trendDirection === "down" ? "text-destructive-text" : "text-muted-foreground" },
         ].map(function (s, i) {
-          return <Card key={i} className="border-border/40 bg-card/60"><CardContent className="p-2 text-center"><p className={"text-base font-bold tabular-nums " + (s.c || "")}>{s.v}</p><p className="text-[9px] text-muted-foreground">{s.l}</p></CardContent></Card>;
+          return <Card key={i} className="border-border bg-card"><CardContent className="p-3"><p className={"text-2xl font-semibold tabular-nums " + (s.c || "text-foreground")}>{s.v}</p><p className="mt-0.5 text-xs text-muted-foreground">{s.l}</p></CardContent></Card>;
         })}
       </div>
 
@@ -168,15 +168,15 @@ export default function SalesForecastPanel({ isDemo, shopUrl, accessToken, shopN
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">模型:</span>
         {([{ k: "holtWinters", l: "指数平滑" }, { k: "sma", l: "移动平均" }, { k: "linear", l: "线性回归" }] as const).map(function (m) {
-          return <Button key={m.k} size="sm" variant={model === m.k ? "default" : "outline"} onClick={function () { setModel(m.k); }} className={"h-6 text-[9px] " + (model === m.k ? "bg-amber-600" : "")}>{m.l}</Button>;
+          return <Button key={m.k} size="sm" variant={model === m.k ? "default" : "outline"} onClick={function () { setModel(m.k); }} className="h-9 text-sm">{m.l}</Button>;
         })}
         {model === "sma" && (
-          <select value={smaWindow} onChange={function (e) { setSmaWindow(Number(e.target.value)); }} className="h-6 rounded border border-border/40 bg-background text-[9px] px-1">
+          <select value={smaWindow} onChange={function (e) { setSmaWindow(Number(e.target.value)); }} className="h-9 rounded-md border border-input bg-background px-2 text-sm text-foreground">
             {[7, 14, 30].map(function (w) { return <option key={w} value={w}>{w}天窗口</option>; })}
           </select>
         )}
         <span className="text-xs text-muted-foreground ml-2">维度:</span>
-        <select value={metric} onChange={function (e) { setMetric(e.target.value as MetricType); }} className="h-6 rounded border border-border/40 bg-background text-[9px] px-1">
+        <select value={metric} onChange={function (e) { setMetric(e.target.value as MetricType); }} className="h-9 rounded-md border border-input bg-background px-2 text-sm text-foreground">
           <option value="gmv">GMV</option>
           <option value="orders">订单数</option>
           <option value="aov">客单价</option>
@@ -184,20 +184,20 @@ export default function SalesForecastPanel({ isDemo, shopUrl, accessToken, shopN
       </div>
 
       {/* Forecast Chart */}
-      <Card className="border-border/40 bg-card/60 shadow-lg"><CardContent className="p-3">
+      <Card className="border-border bg-card"><CardContent className="p-4">
         <p className="text-xs font-semibold text-muted-foreground mb-1">GMV 预测 · 过去 {histCount} 天 · 未来 7 天</p>
         <ResponsiveContainer width="100%" height={280}>
           <ComposedChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
-            <XAxis dataKey="date" stroke="#71717a" tick={{ fontSize: 8 }} interval={Math.floor(chartData.length / 10)} />
-            <YAxis stroke="#71717a" tick={{ fontSize: 9 }} />
-            <Tooltip contentStyle={{ background: "#18181b", border: "1px solid #3f3f46", borderRadius: 6, fontSize: 10 }} formatter={function (v: unknown) { return formatCny(Math.round(Number(v) * EXCHANGE_RATE)); }} />
-            <ReferenceLine x={todayIdx} stroke="#f59e0b" strokeDasharray="5 5" label={{ value: "今天", position: "top", fill: "#f59e0b", fontSize: 9 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+            <XAxis dataKey="date" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} interval={Math.floor(chartData.length / 10)} />
+            <YAxis tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} />
+            <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 6, fontSize: 12, color: "var(--card-foreground)" }} formatter={function (v: unknown) { return formatCny(Math.round(Number(v) * EXCHANGE_RATE)); }} />
+            <ReferenceLine x={todayIdx} stroke="var(--chart-2)" strokeDasharray="5 5" label={{ value: "今天", position: "top", fill: "var(--chart-2)", fontSize: 11 }} />
             {/* Confidence area */}
-            <Area dataKey="upper" stroke="transparent" fill="#f59e0b" fillOpacity={0.08} />
-            <Area dataKey="lower" stroke="transparent" fill="#f59e0b" fillOpacity={0.08} />
+            <Area dataKey="upper" stroke="transparent" fill="var(--chart-1)" fillOpacity={0.08} />
+            <Area dataKey="lower" stroke="transparent" fill="var(--chart-1)" fillOpacity={0.08} />
             {/* History line */}
-            <Line type="monotone" dataKey="value" stroke="#3b82f6" strokeWidth={2} dot={false} name="历史" />
+            <Line type="monotone" dataKey="value" stroke="var(--chart-1)" strokeWidth={2} dot={false} name="历史" />
           </ComposedChart>
         </ResponsiveContainer>
       </CardContent></Card>
@@ -207,12 +207,12 @@ export default function SalesForecastPanel({ isDemo, shopUrl, accessToken, shopN
         {showConfig ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}季节性因子
       </button>
       {showConfig && (
-        <Card className="border-border/40 bg-card/60"><CardContent className="p-3">
+        <Card className="border-border bg-card"><CardContent className="p-3">
           <div className="flex gap-2 flex-wrap">
             {weekdayFactors.map(function (w) {
-              return <div key={w.day} className="flex items-center gap-1 text-xs bg-muted/10 rounded px-2 py-1">
+              return <div key={w.day} className="flex items-center gap-1 text-xs rounded-md border border-border bg-muted/40 px-2 py-1">
                 <span className="text-muted-foreground">{w.day}</span>
-                <span className={w.factor > 1 ? "text-emerald-400" : w.factor < 1 ? "text-red-400" : "text-muted-foreground"}>{w.factor.toFixed(2)}x</span>
+                <span className={w.factor > 1 ? "text-success" : w.factor < 1 ? "text-destructive-text" : "text-muted-foreground"}>{w.factor.toFixed(2)}x</span>
               </div>;
             })}
           </div>
@@ -222,10 +222,10 @@ export default function SalesForecastPanel({ isDemo, shopUrl, accessToken, shopN
       {/* Backtest */}
       <button onClick={function () { setShowBacktest(!showBacktest); }} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
         <Target className="h-3 w-3" />{showBacktest ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}回测精度
-        <Badge className={"text-[8px] px-1 py-0 ml-1 " + mapeConfig.color}>{mapeLevel === "high" ? "🟢 高" : mapeLevel === "medium" ? "🟡 中" : "🟠 低"}</Badge>
+        <Badge className={"h-5 border px-1.5 text-[11px] font-medium ml-1 " + (mapeLevel === "high" ? "border-success-border bg-success-bg text-success" : mapeLevel === "medium" ? "border-warning-border bg-warning-bg text-warning" : "border-destructive-border bg-destructive-bg text-destructive-text")}>{mapeLevel === "high" ? "高" : mapeLevel === "medium" ? "中" : "低"}</Badge>
       </button>
       {showBacktest && backtest.comparisons.length !== 0 && (
-        <Card className="border-border/40 bg-card/60"><CardContent className="p-3 space-y-1">
+        <Card className="border-border bg-card"><CardContent className="p-3 space-y-1">
           <div className="flex gap-4 text-xs">
             <span className="text-muted-foreground">MAE: <span className="text-foreground">{formatCny(Math.round(backtest.mae * EXCHANGE_RATE))}</span></span>
             <span className="text-muted-foreground">MAPE: <span className={mapeConfig.color}>{backtest.mape.toFixed(1)}%</span></span>
@@ -240,9 +240,9 @@ export default function SalesForecastPanel({ isDemo, shopUrl, accessToken, shopN
       )}
 
       {/* Scenario Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {scenarios.map(function (s, i) {
-          return <Card key={i} className="border-border/40 bg-card/60"><CardContent className="p-3"><div className="flex items-center gap-2 mb-1"><s.icon className={"h-3.5 w-3.5 " + s.color} /><p className="text-xs font-semibold text-foreground">{s.title}</p></div><p className="text-[9px] text-muted-foreground leading-relaxed">{s.body}</p></CardContent></Card>;
+          return <Card key={i} className="border-border bg-card"><CardContent className="p-3"><div className="flex items-center gap-2 mb-1"><s.icon className={"h-4 w-4 " + s.color} /><p className="text-sm font-medium text-foreground">{s.title}</p></div><p className="text-xs text-muted-foreground leading-relaxed">{s.body}</p></CardContent></Card>;
         })}
       </div>
     </div>

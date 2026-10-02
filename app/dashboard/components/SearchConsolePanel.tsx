@@ -66,13 +66,13 @@ const GSC_CACHE_KEY = "gsc_last_result";
 const GSC_DETAIL_KEY = "gsc_detail_cache";
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 小时
 
-const PIE_COLORS = ["#34d399", "#60a5fa", "#fbbf24", "#f472b6", "#a78bfa", "#f87171"];
+const PIE_COLORS = ["var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--chart-6)", "var(--chart-1)"];
 
 const tooltipStyle = {
-  background: "#18181b",
-  border: "1px solid #27272a",
+  background: "var(--card)",
+  border: "1px solid var(--border)",
   borderRadius: 8,
-  color: "#e4e4e7",
+  color: "var(--foreground)",
   fontSize: 12,
 } as const;
 
@@ -107,9 +107,9 @@ function isBrandQuery(q: string, shop: string): boolean {
 
 function ctrToneClass(ctr: number): string {
   const pct = ctr * 100;
-  if (pct > 5) return "text-emerald-400";
-  if (pct >= 2) return "text-amber-400";
-  return "text-red-400";
+  if (pct > 5) return "text-success";
+  if (pct >= 2) return "text-warning";
+  return "text-destructive-text";
 }
 
 function slug(s: string): string {
@@ -358,12 +358,12 @@ function Modal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl"
+        className="w-full max-w-lg rounded-xl border border-border bg-card p-5 shadow-popover"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-base font-semibold text-zinc-100">{title}</h3>
-          <button onClick={onClose} className="text-zinc-500 transition-colors hover:text-zinc-300">
+          <h3 className="text-base font-semibold text-foreground">{title}</h3>
+          <button onClick={onClose} className="text-muted-foreground transition-colors hover:text-foreground">
             <XCircle className="h-5 w-5" />
           </button>
         </div>
@@ -596,8 +596,8 @@ export default function SearchConsolePanel({
   }
 
   function sortIndicator(key: SortKey): ReactNode {
-    if (sortKey !== key) return <span className="text-zinc-600">↕</span>;
-    return <span className="text-emerald-400">{sortDir === "asc" ? "↑" : "↓"}</span>;
+    if (sortKey !== key) return <span className="text-muted-foreground">↕</span>;
+    return <span className="text-success">{sortDir === "asc" ? "↑" : "↓"}</span>;
   }
 
   /* 保存配置 */
@@ -642,10 +642,10 @@ export default function SearchConsolePanel({
         rowLimit: 1,
       });
       setConfigStatus("ok");
-      showToast("✅ GSC 连接正常");
+      showToast("GSC 连接正常");
     } catch (e: any) {
       setConfigStatus("fail");
-      showToast("❌ 验证失败：" + (e?.message || "未知错误"));
+      showToast("验证失败：" + (e?.message || "未知错误"));
     } finally {
       setVerifying(false);
     }
@@ -772,13 +772,13 @@ export default function SearchConsolePanel({
       className={cn(
         "gap-1",
         configStatus === "ok"
-          ? "bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20"
+          ? "bg-success-bg text-success ring-1 ring-success-border"
           : configStatus === "fail"
-            ? "bg-red-500/15 text-red-400 ring-1 ring-red-500/20"
-            : "bg-zinc-700/30 text-zinc-400 ring-1 ring-zinc-600/30"
+            ? "bg-destructive-bg text-destructive-text ring-1 ring-destructive-border"
+            : "bg-muted text-muted-foreground ring-1 ring-border"
       )}
     >
-      {configStatus === "ok" ? "🟢 已配置" : configStatus === "fail" ? "🔴 验证失败" : "⚪ 未配置"}
+      {configStatus === "ok" ? "已配置" : configStatus === "fail" ? "验证失败" : "未配置"}
     </Badge>
   );
 
@@ -787,11 +787,11 @@ export default function SearchConsolePanel({
       {/* ── 顶部配置区 ── */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
-            <BarChart4 className="h-5 w-5 text-emerald-400" />
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+            <BarChart4 className="h-5 w-5 text-success" />
             Google Search Console 搜索分析
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             本地代理调用 Google 官方 API · 密钥仅存于浏览器，服务端不持久化
           </p>
         </div>
@@ -814,17 +814,17 @@ export default function SearchConsolePanel({
       </div>
 
       {/* 站点 + 日期范围 + 刷新 + 导出 */}
-      <Card className="border-zinc-800 bg-zinc-900">
+      <Card className="border-border bg-card">
         <CardContent className="flex flex-col gap-3 p-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex flex-wrap items-end gap-3">
             <div>
-              <p className="mb-1 text-xs text-zinc-500">站点 URL</p>
-              <p className="max-w-xs truncate text-sm font-medium text-zinc-200" title={siteUrl || "未配置"}>
+              <p className="mb-1 text-xs text-muted-foreground">站点 URL</p>
+              <p className="max-w-xs truncate text-sm font-medium text-foreground" title={siteUrl || "未配置"}>
                 {siteUrl || "未配置"}
               </p>
             </div>
             <div>
-              <p className="mb-1 text-xs text-zinc-500">日期范围</p>
+              <p className="mb-1 text-xs text-muted-foreground">日期范围</p>
               <Select value={rangeType} onValueChange={(v) => setRangeType(v as RangeType)}>
                 <SelectTrigger className="h-9 w-36">
                   <SelectValue placeholder="选择范围" />
@@ -840,7 +840,7 @@ export default function SearchConsolePanel({
             {rangeType === "custom" && (
               <div className="flex items-end gap-2">
                 <div>
-                  <p className="mb-1 text-xs text-zinc-500">开始</p>
+                  <p className="mb-1 text-xs text-muted-foreground">开始</p>
                   <Input
                     type="date"
                     value={customStart}
@@ -849,7 +849,7 @@ export default function SearchConsolePanel({
                   />
                 </div>
                 <div>
-                  <p className="mb-1 text-xs text-zinc-500">结束</p>
+                  <p className="mb-1 text-xs text-muted-foreground">结束</p>
                   <Input
                     type="date"
                     value={customEnd}
@@ -862,7 +862,7 @@ export default function SearchConsolePanel({
           </div>
           <div className="flex items-center gap-2">
             {cachedAt && (
-              <span className="text-xs text-zinc-600">
+              <span className="text-xs text-muted-foreground">
                 {fromCache ? "缓存于" : "更新于"} {new Date(cachedAt).toLocaleString("zh-CN")}
               </span>
             )}
@@ -880,8 +880,8 @@ export default function SearchConsolePanel({
 
       {/* 排名告警横幅 */}
       {alertRows.length > 0 && (
-        <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4">
-          <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-red-300">
+        <div className="rounded-xl border border-destructive-border bg-destructive-bg p-4">
+          <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-destructive-text">
             <AlertTriangle className="h-4 w-4" />
             排名告警：{alertRows.length} 个核心关键词排名显著下滑（下降 &gt; 5 位）
           </div>
@@ -889,7 +889,7 @@ export default function SearchConsolePanel({
             {alertRows.map((r) => (
               <Badge
                 key={r.query}
-                className="bg-red-500/15 text-red-300 ring-1 ring-red-500/20"
+                className="border-destructive-border bg-destructive-bg text-destructive-text"
               >
                 <span className="truncate max-w-[200px] inline-block" title={r.query}>
                   {r.query}
@@ -901,11 +901,11 @@ export default function SearchConsolePanel({
       )}
 
       {/* 机会发现 Tabs + 表格 */}
-      <Card className="border-zinc-800 bg-zinc-900">
+      <Card className="border-border bg-card">
         <CardContent className="p-4">
           <Tabs value={oppTab} onValueChange={(v) => setOppTab(v as OppTab)}>
             <div className="mb-3 flex items-center justify-between">
-              <TabsList className="bg-zinc-800/60">
+              <TabsList className="bg-muted">
                 <TabsTrigger value="all">全部（{sortedRows.length}）</TabsTrigger>
                 <TabsTrigger value="lowctr">高曝光低点击</TabsTrigger>
                 <TabsTrigger value="lowrank">高点击低排名</TabsTrigger>
@@ -923,90 +923,90 @@ export default function SearchConsolePanel({
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-zinc-800 hover:bg-transparent">
+                  <TableRow className="border-border hover:bg-transparent">
                     <TableHead
-                      className="cursor-pointer select-none text-zinc-400"
+                      className="cursor-pointer select-none text-muted-foreground"
                       onClick={() => toggleSort("query")}
                     >
                       关键词 {sortIndicator("query")}
                     </TableHead>
                     <TableHead
-                      className="cursor-pointer select-none text-right text-zinc-400"
+                      className="cursor-pointer select-none text-right text-muted-foreground"
                       onClick={() => toggleSort("impressions")}
                     >
                       曝光次数 {sortIndicator("impressions")}
                     </TableHead>
                     <TableHead
-                      className="cursor-pointer select-none text-right text-zinc-400"
+                      className="cursor-pointer select-none text-right text-muted-foreground"
                       onClick={() => toggleSort("clicks")}
                     >
                       点击次数 {sortIndicator("clicks")}
                     </TableHead>
                     <TableHead
-                      className="cursor-pointer select-none text-right text-zinc-400"
+                      className="cursor-pointer select-none text-right text-muted-foreground"
                       onClick={() => toggleSort("ctr")}
                     >
                       CTR {sortIndicator("ctr")}
                     </TableHead>
                     <TableHead
-                      className="cursor-pointer select-none text-right text-zinc-400"
+                      className="cursor-pointer select-none text-right text-muted-foreground"
                       onClick={() => toggleSort("position")}
                     >
                       平均排名 {sortIndicator("position")}
                     </TableHead>
                     <TableHead
-                      className="cursor-pointer select-none text-right text-zinc-400"
+                      className="cursor-pointer select-none text-right text-muted-foreground"
                       onClick={() => toggleSort("positionDelta")}
                     >
                       趋势 {sortIndicator("positionDelta")}
                     </TableHead>
-                    <TableHead className="text-right text-zinc-400">操作</TableHead>
+                    <TableHead className="text-right text-muted-foreground">操作</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="py-10 text-center text-sm text-zinc-500">
+                      <TableCell colSpan={7} className="py-10 text-center text-sm text-muted-foreground">
                         <RefreshCw className="mx-auto mb-2 h-5 w-5 animate-spin" />
                         正在加载 Search Console 数据…
                       </TableCell>
                     </TableRow>
                   ) : oppRows.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="py-10 text-center text-sm text-zinc-500">
+                      <TableCell colSpan={7} className="py-10 text-center text-sm text-muted-foreground">
                         暂无数据
                       </TableCell>
                     </TableRow>
                   ) : (
                     oppRows.map((r) => (
                       <Fragment key={r.query}>
-                        <TableRow className="border-zinc-800 hover:bg-zinc-800/40">
-                          <TableCell className="font-medium text-zinc-100">
+                        <TableRow className="border-border hover:bg-muted/40">
+                          <TableCell className="font-medium text-foreground">
                             <div className="max-w-[220px] truncate" title={r.query}>
                               {r.query}
                             </div>
                           </TableCell>
-                          <TableCell className="text-right text-zinc-300">
+                          <TableCell className="text-right text-foreground">
                             {r.impressions.toLocaleString()}
                           </TableCell>
-                          <TableCell className="text-right text-zinc-300">
+                          <TableCell className="text-right text-foreground">
                             {r.clicks.toLocaleString()}
                           </TableCell>
                           <TableCell className={cn("text-right font-medium", ctrToneClass(r.ctr))}>
                             {(r.ctr * 100).toFixed(1)}%
                           </TableCell>
-                          <TableCell className="text-right text-zinc-300">
+                          <TableCell className="text-right text-foreground">
                             {r.position.toFixed(1)}
                           </TableCell>
                           <TableCell className="text-right">
                             {r.positionDelta === 0 ? (
-                              <span className="text-zinc-500">—</span>
+                              <span className="text-muted-foreground">—</span>
                             ) : r.positionDelta < 0 ? (
-                              <span className="font-medium text-emerald-400">
+                              <span className="font-medium text-success">
                                 ↑{Math.abs(r.positionDelta).toFixed(1)}
                               </span>
                             ) : (
-                              <span className="font-medium text-red-400">
+                              <span className="font-medium text-destructive-text">
                                 ↓{r.positionDelta.toFixed(1)}
                               </span>
                             )}
@@ -1016,7 +1016,7 @@ export default function SearchConsolePanel({
                               variant="ghost"
                               size="sm"
                               onClick={() => toggleDetail(r.query)}
-                              className="text-emerald-400 hover:text-emerald-300"
+                              className="text-success hover:text-success"
                             >
                               {expanded === r.query ? (
                                 <ChevronDown className="h-4 w-4" />
@@ -1029,10 +1029,10 @@ export default function SearchConsolePanel({
                         </TableRow>
 
                         {expanded === r.query && (
-                          <TableRow className="border-zinc-800 bg-zinc-950/40">
+                          <TableRow className="border-border bg-muted/40">
                             <TableCell colSpan={7} className="p-4">
                               {detailLoading ? (
-                                <div className="flex items-center justify-center py-8 text-sm text-zinc-500">
+                                <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
                                   <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
                                   加载详情…
                                 </div>
@@ -1045,7 +1045,7 @@ export default function SearchConsolePanel({
                                   shopName={shopName}
                                 />
                               ) : (
-                                <div className="py-8 text-center text-sm text-zinc-500">
+                                <div className="py-8 text-center text-sm text-muted-foreground">
                                   无详情数据
                                 </div>
                               )}
@@ -1066,16 +1066,16 @@ export default function SearchConsolePanel({
       <Modal open={configOpen} onClose={() => setConfigOpen(false)} title="配置 Google Search Console 密钥">
         <div className="space-y-3">
           <div>
-            <label className="mb-1 block text-xs text-zinc-400">Service Account JSON（完整内容）</label>
+            <label className="mb-1 block text-xs text-muted-foreground">Service Account JSON（完整内容）</label>
             <textarea
               value={credJson}
               onChange={(e) => setCredJson(e.target.value)}
               placeholder='粘贴 { "type": "service_account", "project_id": "...", "private_key": "-----BEGIN PRIVATE KEY-----\n...", "client_email": "..." }'
-              className="h-44 w-full resize-none rounded-lg border border-zinc-700 bg-zinc-950 p-3 font-mono text-xs text-zinc-200 outline-none focus:border-emerald-500/50"
+              className="h-44 w-full resize-none rounded-lg border border-input bg-background p-3 font-mono text-xs text-foreground outline-none focus:border-success"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-zinc-400">站点 URL</label>
+            <label className="mb-1 block text-xs text-muted-foreground">站点 URL</label>
             <Input
               value={siteUrl}
               onChange={(e) => setSiteUrl(e.target.value)}
@@ -1092,7 +1092,7 @@ export default function SearchConsolePanel({
               保存配置
             </Button>
           </div>
-          <p className="text-xs leading-relaxed text-zinc-500">
+          <p className="text-xs leading-relaxed text-muted-foreground">
             密钥仅以 base64 混淆形式保存在本机浏览器 localStorage，通过 Next.js API Route 代理转发至 Google，
             服务端不持久化。建议为 Service Account 仅授予 Search Console 只读权限。
           </p>
@@ -1120,7 +1120,7 @@ function DetailView({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-zinc-200">「{query}」详情分析</p>
+        <p className="text-sm font-semibold text-foreground">「{query}」详情分析</p>
         <Button variant="outline" size="sm" onClick={onCheckOrders}>
           <Link2 className="h-4 w-4" />
           查看关联订单
@@ -1129,21 +1129,21 @@ function DetailView({
 
       {/* 逐日趋势（双轴） */}
       <div>
-        <p className="mb-1 text-xs text-zinc-400">逐日趋势（曝光量 / 点击量）</p>
-        <div className="h-56 w-full rounded-lg border border-zinc-800 bg-zinc-950 p-2">
+        <p className="mb-1 text-xs text-muted-foreground">逐日趋势（曝光量 / 点击量）</p>
+        <div className="h-56 w-full rounded-lg border border-border bg-muted/40 p-2">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={detail.daily} margin={{ top: 8, right: 12, bottom: 0, left: -8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis dataKey="date" stroke="#71717a" fontSize={11} tickLine={false} />
-              <YAxis yAxisId="left" stroke="#71717a" fontSize={11} tickLine={false} />
-              <YAxis yAxisId="right" orientation="right" stroke="#71717a" fontSize={11} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <XAxis dataKey="date" stroke="var(--muted-foreground)" fontSize={11} tickLine={false} />
+              <YAxis yAxisId="left" stroke="var(--muted-foreground)" fontSize={11} tickLine={false} />
+              <YAxis yAxisId="right" orientation="right" stroke="var(--muted-foreground)" fontSize={11} tickLine={false} />
               <Tooltip contentStyle={tooltipStyle} />
               <Line
                 yAxisId="left"
                 type="monotone"
                 dataKey="impressions"
                 name="曝光"
-                stroke="#60a5fa"
+                stroke="var(--chart-3)"
                 strokeWidth={2}
                 dot={false}
               />
@@ -1152,7 +1152,7 @@ function DetailView({
                 type="monotone"
                 dataKey="clicks"
                 name="点击"
-                stroke="#34d399"
+                stroke="var(--chart-2)"
                 strokeWidth={2}
                 dot={false}
               />
@@ -1164,26 +1164,26 @@ function DetailView({
       {/* 落地页 + 设备分布 */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <p className="mb-1 text-xs text-zinc-400">带来流量的落地页 TOP 5</p>
-          <div className="overflow-x-auto rounded-lg border border-zinc-800">
+          <p className="mb-1 text-xs text-muted-foreground">带来流量的落地页 TOP 5</p>
+          <div className="overflow-x-auto rounded-lg border border-border">
             <Table>
               <TableHeader>
-                <TableRow className="border-zinc-800 hover:bg-transparent">
-                  <TableHead className="text-zinc-400">URL</TableHead>
-                  <TableHead className="text-right text-zinc-400">曝光</TableHead>
-                  <TableHead className="text-right text-zinc-400">点击</TableHead>
-                  <TableHead className="text-right text-zinc-400">CTR</TableHead>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="text-muted-foreground">URL</TableHead>
+                  <TableHead className="text-right text-muted-foreground">曝光</TableHead>
+                  <TableHead className="text-right text-muted-foreground">点击</TableHead>
+                  <TableHead className="text-right text-muted-foreground">CTR</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {detail.landing.map((l, i) => (
-                  <TableRow key={i} className="border-zinc-800 hover:bg-zinc-800/40">
-                    <TableCell className="max-w-[260px] truncate text-xs text-zinc-300" title={l.url}>
+                  <TableRow key={i} className="border-border hover:bg-muted/40">
+                    <TableCell className="max-w-[260px] truncate text-xs text-foreground" title={l.url}>
                       {l.url}
                     </TableCell>
-                    <TableCell className="text-right text-zinc-300">{l.impressions.toLocaleString()}</TableCell>
-                    <TableCell className="text-right text-zinc-300">{l.clicks.toLocaleString()}</TableCell>
-                    <TableCell className="text-right text-zinc-300">{(l.ctr * 100).toFixed(1)}%</TableCell>
+                    <TableCell className="text-right text-foreground">{l.impressions.toLocaleString()}</TableCell>
+                    <TableCell className="text-right text-foreground">{l.clicks.toLocaleString()}</TableCell>
+                    <TableCell className="text-right text-foreground">{(l.ctr * 100).toFixed(1)}%</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -1192,8 +1192,8 @@ function DetailView({
         </div>
 
         <div>
-          <p className="mb-1 text-xs text-zinc-400">设备分布</p>
-          <div className="h-44 rounded-lg border border-zinc-800 bg-zinc-950 p-2">
+          <p className="mb-1 text-xs text-muted-foreground">设备分布</p>
+          <div className="h-44 rounded-lg border border-border bg-muted/40 p-2">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -1211,7 +1211,7 @@ function DetailView({
                   ))}
                 </Pie>
                 <Tooltip contentStyle={tooltipStyle} />
-                <Legend wrapperStyle={{ fontSize: 11, color: "#a1a1aa" }} />
+                <Legend wrapperStyle={{ fontSize: 11, color: "var(--muted-foreground)" }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -1220,24 +1220,24 @@ function DetailView({
 
       {/* 国家分布 */}
       <div>
-        <p className="mb-1 text-xs text-zinc-400">国家/地区分布 TOP 5</p>
-        <div className="overflow-x-auto rounded-lg border border-zinc-800">
+        <p className="mb-1 text-xs text-muted-foreground">国家/地区分布 TOP 5</p>
+        <div className="overflow-x-auto rounded-lg border border-border">
           <Table>
             <TableHeader>
-              <TableRow className="border-zinc-800 hover:bg-transparent">
-                <TableHead className="text-zinc-400">国家/地区</TableHead>
-                <TableHead className="text-right text-zinc-400">曝光</TableHead>
-                <TableHead className="text-right text-zinc-400">占比</TableHead>
+              <TableRow className="border-border hover:bg-transparent">
+                <TableHead className="text-muted-foreground">国家/地区</TableHead>
+                <TableHead className="text-right text-muted-foreground">曝光</TableHead>
+                <TableHead className="text-right text-muted-foreground">占比</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {detail.country.map((c, i) => {
                 const total = detail.country.reduce((s, x) => s + x.value, 0) || 1;
                 return (
-                  <TableRow key={i} className="border-zinc-800 hover:bg-zinc-800/40">
-                    <TableCell className="text-zinc-300">{c.name}</TableCell>
-                    <TableCell className="text-right text-zinc-300">{c.value.toLocaleString()}</TableCell>
-                    <TableCell className="text-right text-zinc-300">
+                  <TableRow key={i} className="border-border hover:bg-muted/40">
+                    <TableCell className="text-foreground">{c.name}</TableCell>
+                    <TableCell className="text-right text-foreground">{c.value.toLocaleString()}</TableCell>
+                    <TableCell className="text-right text-foreground">
                       {((c.value / total) * 100).toFixed(1)}%
                     </TableCell>
                   </TableRow>
@@ -1250,34 +1250,34 @@ function DetailView({
 
       {/* 关联订单结果 */}
       {orderView && orderView.query === query && (
-        <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
-          <p className="mb-2 text-xs font-medium text-zinc-300">
+        <div className="rounded-lg border border-border bg-muted/40 p-3">
+          <p className="mb-2 text-xs font-medium text-foreground">
             关联订单（匹配 landing_site 包含「{query}」）
           </p>
           {orderView.matched === null ? (
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               暂无订单关联数据（订单中无 landing_site 字段，或未匹配到该搜索词）
             </p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-zinc-800 hover:bg-transparent">
-                    <TableHead className="text-zinc-400">订单号</TableHead>
-                    <TableHead className="text-right text-zinc-400">金额</TableHead>
-                    <TableHead className="text-zinc-400">创建时间</TableHead>
+                  <TableRow className="border-border hover:bg-transparent">
+                    <TableHead className="text-muted-foreground">订单号</TableHead>
+                    <TableHead className="text-right text-muted-foreground">金额</TableHead>
+                    <TableHead className="text-muted-foreground">创建时间</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {orderView.matched.slice(0, 10).map((o: any, i: number) => (
-                    <TableRow key={i} className="border-zinc-800 hover:bg-zinc-800/40">
-                      <TableCell className="text-zinc-300">
+                    <TableRow key={i} className="border-border hover:bg-muted/40">
+                      <TableCell className="text-foreground">
                         #{o.order_number || o.id}
                       </TableCell>
-                      <TableCell className="text-right text-zinc-300">
+                      <TableCell className="text-right text-foreground">
                         {o.total_price || "-"}
                       </TableCell>
-                      <TableCell className="text-zinc-300">
+                      <TableCell className="text-foreground">
                         {o.created_at || "-"}
                       </TableCell>
                     </TableRow>

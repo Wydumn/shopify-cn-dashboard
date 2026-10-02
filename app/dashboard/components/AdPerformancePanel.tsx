@@ -943,7 +943,7 @@ export default function AdPerformancePanel({
 
           <div className="flex items-center justify-end gap-2">
             <Button variant="outline" onClick={() => setConfigOpen(false)}>取消</Button>
-            <Button onClick={handleSaveConfig} disabled={verifying} className="gap-1.5 bg-amber-600 hover:bg-amber-500">
+            <Button onClick={handleSaveConfig} disabled={verifying} className="gap-1.5">
               {verifying ? <RefreshCw className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
               {verifying ? "校验中..." : "保存并校验"}
             </Button>

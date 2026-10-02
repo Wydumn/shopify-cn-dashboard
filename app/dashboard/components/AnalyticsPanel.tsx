@@ -61,13 +61,13 @@ const GA4_CRED_KEY = "ga4_credentials";
 const GA4_CACHE_KEY = "ga4_last_result";
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 小时
 
-const PIE_COLORS = ["#34d399", "#60a5fa", "#fbbf24", "#f472b6", "#a78bfa", "#fb923c", "#2dd4bf", "#38bdf8"];
+const PIE_COLORS = ["var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--chart-6)", "var(--chart-7)", "var(--chart-8)", "var(--chart-1)"];
 
 const tooltipStyle = {
-  background: "#18181b",
-  border: "1px solid #27272a",
+  background: "var(--card)",
+  border: "1px solid var(--border)",
   borderRadius: 8,
-  color: "#e4e4e7",
+  color: "var(--foreground)",
   fontSize: 12,
 } as const;
 
@@ -291,12 +291,12 @@ function Modal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl"
+        className="w-full max-w-lg rounded-xl border border-border bg-card p-5 shadow-popover"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-base font-semibold text-zinc-100">{title}</h3>
-          <button onClick={onClose} className="text-zinc-500 transition-colors hover:text-zinc-300">
+          <h3 className="text-base font-semibold text-foreground">{title}</h3>
+          <button onClick={onClose} className="text-muted-foreground transition-colors hover:text-foreground">
             <XCircle className="h-5 w-5" />
           </button>
         </div>
@@ -615,11 +615,11 @@ export default function AnalyticsPanel({
       {/* 顶部栏 */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-zinc-100">
-            <Activity className="h-5 w-5 text-emerald-400" />
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+            <Activity className="h-5 w-5 text-success" />
             GA4 流量分析
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             基于 Google Analytics 4 Data API · 全店流量全景视角
           </p>
         </div>
@@ -630,10 +630,10 @@ export default function AnalyticsPanel({
             className={cn(
               "flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors",
               configStatus === "ok"
-                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                ? "border-success-border bg-success-bg text-success"
                 : configStatus === "fail"
-                  ? "border-red-500/30 bg-red-500/10 text-red-400"
-                  : "border-zinc-700 bg-zinc-800/60 text-zinc-400 hover:text-zinc-200",
+                  ? "border-destructive-border bg-destructive-bg text-destructive-text"
+                  : "border-border bg-muted text-muted-foreground hover:text-foreground",
             )}
           >
             {configStatus === "ok" ? <CheckCircle2 className="h-4 w-4" /> : configStatus === "fail" ? <XCircle className="h-4 w-4" /> : <KeyRound className="h-4 w-4" />}
@@ -647,16 +647,16 @@ export default function AnalyticsPanel({
       </div>
 
       {/* 日期范围 + 缓存提示 */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/50 px-4 py-3">
         <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-zinc-500" />
+          <Calendar className="h-4 w-4 text-muted-foreground" />
           {(["7", "30", "90"] as RangeType[]).map((r) => (
             <button
               key={r}
               onClick={() => setRangeType(r)}
               className={cn(
                 "rounded-md px-3 py-1 text-sm font-medium transition-colors",
-                rangeType === r ? "bg-emerald-500/15 text-emerald-400" : "text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300",
+                rangeType === r ? "bg-success-bg text-success" : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
               {r} 天
@@ -666,7 +666,7 @@ export default function AnalyticsPanel({
             onClick={() => setRangeType("custom")}
             className={cn(
               "rounded-md px-3 py-1 text-sm font-medium transition-colors",
-              rangeType === "custom" ? "bg-emerald-500/15 text-emerald-400" : "text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300",
+              rangeType === "custom" ? "bg-success-bg text-success" : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
             自定义
@@ -677,26 +677,26 @@ export default function AnalyticsPanel({
                 type="date"
                 value={customStart}
                 onChange={(e) => setCustomStart(e.target.value)}
-                className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-1 text-sm text-zinc-200"
+                className="rounded-md border border-input bg-background px-2 py-1 text-sm text-foreground"
               />
-              <span className="text-zinc-600">→</span>
+              <span className="text-muted-foreground">→</span>
               <input
                 type="date"
                 value={customEnd}
                 onChange={(e) => setCustomEnd(e.target.value)}
-                className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-1 text-sm text-zinc-200"
+                className="rounded-md border border-input bg-background px-2 py-1 text-sm text-foreground"
               />
             </div>
           )}
         </div>
-        <div className="flex items-center gap-2 text-xs text-zinc-500">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           {fromCache && cachedAt && (
             <span className="flex items-center gap-1">
-              <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
+              <Sparkles className="h-3.5 w-3.5 text-success" />
               缓存于 {new Date(cachedAt).toLocaleTimeString("zh-CN")}
             </span>
           )}
-          {isDemo && <Badge variant="outline" className="border-amber-500/30 text-amber-400">Demo 演示数据</Badge>}
+          {isDemo && <Badge variant="outline" className="border-warning-border text-warning">Demo 演示数据</Badge>}
         </div>
       </div>
 
@@ -704,16 +704,16 @@ export default function AnalyticsPanel({
         <div className="space-y-4">
           <div className="grid grid-cols-4 gap-4">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="h-24 animate-pulse rounded-xl bg-zinc-800" />
+              <div key={i} className="h-24 animate-pulse rounded-xl bg-muted" />
             ))}
           </div>
-          <div className="h-72 animate-pulse rounded-xl bg-zinc-800" />
+          <div className="h-72 animate-pulse rounded-xl bg-muted" />
         </div>
       )}
 
       {!loading && bundle && (
         <Tabs defaultValue="traffic" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 rounded-lg bg-zinc-800/60 p-1">
+          <TabsList className="grid w-full grid-cols-4 rounded-lg bg-muted p-1">
             <TabsTrigger value="traffic" className="gap-1.5">
               <TrendingUp className="h-4 w-4" />流量趋势
             </TabsTrigger>
@@ -736,25 +736,25 @@ export default function AnalyticsPanel({
               <StatCard label="页面浏览量" value={trendSummary ? trendSummary.totalPageviews.toLocaleString() : "0"} icon={<FileText className="h-4 w-4" />} />
               <StatCard label="平均互动率" value={trendSummary ? fmtPct(trendSummary.avgEngagementRate) : "0%"} icon={<Sparkles className="h-4 w-4" />} />
             </div>
-            <Card className="border-zinc-800 bg-zinc-900/50">
+            <Card className="border-border bg-card">
               <CardContent className="p-4">
-                <h3 className="mb-3 text-sm font-medium text-zinc-300">每日流量趋势（会话 / 活跃用户）</h3>
+                <h3 className="mb-3 text-sm font-medium text-foreground">每日流量趋势（会话 / 活跃用户）</h3>
                 <div className="h-72 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart data={trafficSeries} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="sessFill" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#34d399" stopOpacity={0.4} />
-                          <stop offset="100%" stopColor="#34d399" stopOpacity={0} />
+                          <stop offset="0%" stopColor="var(--chart-2)" stopOpacity={0.4} />
+                          <stop offset="100%" stopColor="var(--chart-2)" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-                      <XAxis dataKey="label" tick={{ fill: "#a1a1aa", fontSize: 11 }} interval="preserveStartEnd" stroke="#3f3f46" />
-                      <YAxis tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                      <XAxis dataKey="label" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} interval="preserveStartEnd" stroke="var(--border)" />
+                      <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} stroke="var(--border)" />
                       <Tooltip contentStyle={tooltipStyle} />
-                      <Legend wrapperStyle={{ fontSize: 12, color: "#a1a1aa" }} />
-                      <Area type="monotone" dataKey="sessions" name="会话数" stroke="#34d399" strokeWidth={2} fill="url(#sessFill)" />
-                      <Line type="monotone" dataKey="users" name="活跃用户" stroke="#60a5fa" strokeWidth={2} dot={false} />
+                      <Legend wrapperStyle={{ fontSize: 12, color: "var(--muted-foreground)" }} />
+                      <Area type="monotone" dataKey="sessions" name="会话数" stroke="var(--chart-2)" strokeWidth={2} fill="url(#sessFill)" />
+                      <Line type="monotone" dataKey="users" name="活跃用户" stroke="var(--chart-3)" strokeWidth={2} dot={false} />
                     </ComposedChart>
                   </ResponsiveContainer>
                 </div>
@@ -765,9 +765,9 @@ export default function AnalyticsPanel({
           {/* ── 流量来源 ── */}
           <TabsContent value="sources" className="mt-4 space-y-4">
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <Card className="border-zinc-800 bg-zinc-900/50">
+              <Card className="border-border bg-card">
                 <CardContent className="p-4">
-                  <h3 className="mb-3 text-sm font-medium text-zinc-300">来源渠道占比（会话）</h3>
+                  <h3 className="mb-3 text-sm font-medium text-foreground">来源渠道占比（会话）</h3>
                   <div className="h-72 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -794,16 +794,16 @@ export default function AnalyticsPanel({
                   </div>
                 </CardContent>
               </Card>
-              <Card className="border-zinc-800 bg-zinc-900/50">
+              <Card className="border-border bg-card">
                 <CardContent className="p-4">
-                  <h3 className="mb-3 text-sm font-medium text-zinc-300">各渠道会话量</h3>
+                  <h3 className="mb-3 text-sm font-medium text-foreground">各渠道会话量</h3>
                   <div className="h-72 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={bundle.sources} layout="vertical" margin={{ top: 4, right: 16, left: 8, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" horizontal={false} />
-                        <XAxis type="number" tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" />
-                        <YAxis type="category" dataKey="name" tick={{ fill: "#a1a1aa", fontSize: 11 }} width={80} stroke="#3f3f46" />
-                        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#27272a" }} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+                        <XAxis type="number" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} stroke="var(--border)" />
+                        <YAxis type="category" dataKey="name" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} width={80} stroke="var(--border)" />
+                        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--muted)" }} />
                         <Bar dataKey="value" name="会话" radius={[0, 4, 4, 0]}>
                           {bundle.sources.map((s, i) => (
                             <Cell key={i} fill={s.color} />
@@ -829,65 +829,65 @@ export default function AnalyticsPanel({
               />
             </div>
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <Card className="border-zinc-800 bg-zinc-900/50">
+              <Card className="border-border bg-card">
                 <CardContent className="p-4">
-                  <h3 className="mb-3 text-sm font-medium text-zinc-300">设备分布（会话）</h3>
+                  <h3 className="mb-3 text-sm font-medium text-foreground">设备分布（会话）</h3>
                   <div className="h-64 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={bundle.device} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                        <XAxis dataKey="name" tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" />
-                        <YAxis tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" />
-                        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#27272a" }} />
-                        <Bar dataKey="sessions" name="会话" radius={[4, 4, 0, 0]} fill="#60a5fa" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                        <XAxis dataKey="name" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} stroke="var(--border)" />
+                        <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} stroke="var(--border)" />
+                        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--muted)" }} />
+                        <Bar dataKey="sessions" name="会话" radius={[4, 4, 0, 0]} fill="var(--chart-3)" />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
                 </CardContent>
               </Card>
-              <Card className="border-zinc-800 bg-zinc-900/50">
+              <Card className="border-border bg-card">
                 <CardContent className="p-4">
-                  <h3 className="mb-3 text-sm font-medium text-zinc-300">新老用户互动对比</h3>
+                  <h3 className="mb-3 text-sm font-medium text-foreground">新老用户互动对比</h3>
                   <div className="h-64 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={bundle.newReturning} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                        <XAxis dataKey="name" tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" />
-                        <YAxis tick={{ fill: "#a1a1aa", fontSize: 11 }} stroke="#3f3f46" />
-                        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#27272a" }} />
-                        <Bar dataKey="engagementRate" name="互动率" radius={[4, 4, 0, 0]} fill="#34d399" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                        <XAxis dataKey="name" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} stroke="var(--border)" />
+                        <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} stroke="var(--border)" />
+                        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--muted)" }} />
+                        <Bar dataKey="engagementRate" name="互动率" radius={[4, 4, 0, 0]} fill="var(--chart-2)" />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
                 </CardContent>
               </Card>
             </div>
-            <Card className="border-zinc-800 bg-zinc-900/50">
+            <Card className="border-border bg-card">
               <CardContent className="p-4">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-zinc-800 hover:bg-transparent">
-                      <TableHead className="text-zinc-400">用户分群</TableHead>
-                      <TableHead className="text-right text-zinc-400">会话数</TableHead>
-                      <TableHead className="text-right text-zinc-400">互动率</TableHead>
-                      <TableHead className="text-right text-zinc-400">平均时长</TableHead>
+                    <TableRow className="border-border hover:bg-transparent">
+                      <TableHead className="text-muted-foreground">用户分群</TableHead>
+                      <TableHead className="text-right text-muted-foreground">会话数</TableHead>
+                      <TableHead className="text-right text-muted-foreground">互动率</TableHead>
+                      <TableHead className="text-right text-muted-foreground">平均时长</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {bundle.newReturning.map((b, i) => (
-                      <TableRow key={i} className="border-zinc-800">
-                        <TableCell className="font-medium text-zinc-200">{b.name}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{b.sessions.toLocaleString()}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtPct(b.engagementRate)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtDuration(b.avgDuration)}</TableCell>
+                      <TableRow key={i} className="border-border">
+                        <TableCell className="font-medium text-foreground">{b.name}</TableCell>
+                        <TableCell className="text-right text-foreground">{b.sessions.toLocaleString()}</TableCell>
+                        <TableCell className="text-right text-foreground">{fmtPct(b.engagementRate)}</TableCell>
+                        <TableCell className="text-right text-foreground">{fmtDuration(b.avgDuration)}</TableCell>
                       </TableRow>
                     ))}
                     {bundle.device.map((b, i) => (
-                      <TableRow key={"d" + i} className="border-zinc-800">
-                        <TableCell className="font-medium text-zinc-200">{b.name}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{b.sessions.toLocaleString()}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtPct(b.engagementRate)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtDuration(b.avgDuration)}</TableCell>
+                      <TableRow key={"d" + i} className="border-border">
+                        <TableCell className="font-medium text-foreground">{b.name}</TableCell>
+                        <TableCell className="text-right text-foreground">{b.sessions.toLocaleString()}</TableCell>
+                        <TableCell className="text-right text-foreground">{fmtPct(b.engagementRate)}</TableCell>
+                        <TableCell className="text-right text-foreground">{fmtDuration(b.avgDuration)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -899,65 +899,65 @@ export default function AnalyticsPanel({
           {/* ── 页面分析 ── */}
           <TabsContent value="pages" className="mt-4 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium text-zinc-300">热门页面（与 Shopify 实体关联）</h3>
+              <h3 className="text-sm font-medium text-foreground">热门页面（与 Shopify 实体关联）</h3>
               <Button variant="outline" size="sm" className="gap-1.5" onClick={exportPages}>
                 <Download className="h-4 w-4" />导出 CSV
               </Button>
             </div>
-            <Card className="border-zinc-800 bg-zinc-900/50">
+            <Card className="border-border bg-card">
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-zinc-800 hover:bg-transparent">
-                      <TableHead className="text-zinc-400">页面</TableHead>
-                      <TableHead className="text-zinc-400">匹配实体</TableHead>
-                      <TableHead className="text-right text-zinc-400">浏览量</TableHead>
-                      <TableHead className="text-right text-zinc-400">会话</TableHead>
-                      <TableHead className="text-right text-zinc-400">互动率</TableHead>
-                      <TableHead className="text-right text-zinc-400">平均时长</TableHead>
-                      <TableHead className="text-right text-zinc-400">转化</TableHead>
+                    <TableRow className="border-border hover:bg-transparent">
+                      <TableHead className="text-muted-foreground">页面</TableHead>
+                      <TableHead className="text-muted-foreground">匹配实体</TableHead>
+                      <TableHead className="text-right text-muted-foreground">浏览量</TableHead>
+                      <TableHead className="text-right text-muted-foreground">会话</TableHead>
+                      <TableHead className="text-right text-muted-foreground">互动率</TableHead>
+                      <TableHead className="text-right text-muted-foreground">平均时长</TableHead>
+                      <TableHead className="text-right text-muted-foreground">转化</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {bundle.pages.map((p, i) => (
-                      <TableRow key={i} className="border-zinc-800">
+                      <TableRow key={i} className="border-border">
                         <TableCell>
                           <div className="max-w-[260px]">
-                            <div className="truncate font-medium text-zinc-200" title={p.path}>{p.path}</div>
-                            {p.title && <div className="truncate text-xs text-zinc-500" title={p.title}>{p.title}</div>}
+                            <div className="truncate font-medium text-foreground" title={p.path}>{p.path}</div>
+                            {p.title && <div className="truncate text-xs text-muted-foreground" title={p.title}>{p.title}</div>}
                           </div>
                         </TableCell>
                         <TableCell>
                           {p.matched ? (
                             <span className={cn(
                               "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium",
-                              p.matched.type === "product" && "bg-emerald-500/10 text-emerald-400",
-                              p.matched.type === "collection" && "bg-blue-500/10 text-blue-400",
-                              p.matched.type === "page" && "bg-amber-500/10 text-amber-400",
-                              p.matched.type === "blog" && "bg-purple-500/10 text-purple-400",
-                              p.matched.type === "home" && "bg-zinc-500/10 text-zinc-300",
-                              p.matched.type === "system" && "bg-zinc-700/30 text-zinc-400",
-                              p.matched.type === "unknown" && "bg-zinc-700/20 text-zinc-500",
+                              p.matched.type === "product" && "bg-success-bg text-success",
+                              p.matched.type === "collection" && "bg-info-bg text-info",
+                              p.matched.type === "page" && "bg-warning-bg text-warning",
+                              p.matched.type === "blog" && "bg-muted text-foreground",
+                              p.matched.type === "home" && "bg-muted text-foreground",
+                              p.matched.type === "system" && "bg-muted text-muted-foreground",
+                              p.matched.type === "unknown" && "bg-muted text-muted-foreground",
                             )}>
                               <Link2 className="h-3 w-3" />
                               {p.matched.label}
                             </span>
                           ) : (
-                            <span className="text-zinc-600">—</span>
+                            <span className="text-muted-foreground">—</span>
                           )}
                         </TableCell>
-                        <TableCell className="text-right text-zinc-300">{p.pageviews.toLocaleString()}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{p.sessions.toLocaleString()}</TableCell>
-                        <TableCell className={cn("text-right", p.engagementRate >= 0.6 ? "text-emerald-400" : p.engagementRate >= 0.4 ? "text-amber-400" : "text-red-400")}>
+                        <TableCell className="text-right text-foreground">{p.pageviews.toLocaleString()}</TableCell>
+                        <TableCell className="text-right text-foreground">{p.sessions.toLocaleString()}</TableCell>
+                        <TableCell className={cn("text-right", p.engagementRate >= 0.6 ? "text-success" : p.engagementRate >= 0.4 ? "text-warning" : "text-destructive-text")}>
                           {fmtPct(p.engagementRate)}
                         </TableCell>
-                        <TableCell className="text-right text-zinc-300">{fmtDuration(p.avgEngagementTime)}</TableCell>
-                        <TableCell className="text-right text-zinc-300">{p.conversions.toLocaleString()}</TableCell>
+                        <TableCell className="text-right text-foreground">{fmtDuration(p.avgEngagementTime)}</TableCell>
+                        <TableCell className="text-right text-foreground">{p.conversions.toLocaleString()}</TableCell>
                       </TableRow>
                     ))}
                     {bundle.pages.length === 0 && (
-                      <TableRow className="border-zinc-800">
-                        <TableCell colSpan={7} className="py-8 text-center text-zinc-500">暂无页面数据</TableCell>
+                      <TableRow className="border-border">
+                        <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">暂无页面数据</TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -971,36 +971,36 @@ export default function AnalyticsPanel({
       {/* 配置弹窗 */}
       <Modal open={configOpen} onClose={() => setConfigOpen(false)} title="配置 Google Analytics 4">
         <div className="space-y-4">
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950/60 p-3 text-xs leading-relaxed text-zinc-400">
-            <p className="mb-1 flex items-center gap-1.5 font-medium text-zinc-300">
+          <div className="rounded-lg border border-border bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground">
+            <p className="mb-1 flex items-center gap-1.5 font-medium text-foreground">
               <KeyRound className="h-3.5 w-3.5" />凭证说明
             </p>
-            <p>1. 在 Google Cloud 创建<strong className="text-zinc-200">服务账号</strong>，生成 JSON 密钥。</p>
-            <p>2. 在 GA4 媒体资源「账号访问管理」中，将该服务账号邮箱添加为<strong className="text-zinc-200">查看者</strong>角色。</p>
+            <p>1. 在 Google Cloud 创建<strong className="text-foreground">服务账号</strong>，生成 JSON 密钥。</p>
+            <p>2. 在 GA4 媒体资源「账号访问管理」中，将该服务账号邮箱添加为<strong className="text-foreground">查看者</strong>角色。</p>
             <p>3. 粘贴完整 JSON 并填写「媒体资源 ID」（属性设置中的数字 ID）。</p>
-            <p className="mt-1 text-zinc-500">凭证仅经 base64 混淆后保存在本地浏览器，不会上传服务器。</p>
+            <p className="mt-1 text-muted-foreground">凭证仅经 base64 混淆后保存在本地浏览器，不会上传服务器。</p>
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-zinc-300">媒体资源 ID（propertyId）</label>
+            <label className="text-sm font-medium text-foreground">媒体资源 ID（propertyId）</label>
             <Input
               value={propertyId}
               onChange={(e) => setPropertyId(e.target.value)}
               placeholder="例如 123456789"
-              className="border-zinc-700 bg-zinc-800 text-zinc-100"
+              className="border-border bg-background text-foreground"
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-zinc-300">服务账号 JSON 密钥</label>
+            <label className="text-sm font-medium text-foreground">服务账号 JSON 密钥</label>
             <textarea
               value={credJson}
               onChange={(e) => setCredJson(e.target.value)}
               placeholder='{"type":"service_account","project_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...","client_email":"...@....iam.gserviceaccount.com",...}'
-              className="h-40 w-full resize-none rounded-lg border border-zinc-700 bg-zinc-800 p-3 font-mono text-xs text-zinc-100 outline-none focus:border-emerald-500"
+              className="h-40 w-full resize-none rounded-lg border border-border bg-background p-3 font-mono text-xs text-foreground outline-none focus:border-success"
             />
           </div>
           <div className="flex items-center justify-end gap-2">
             <Button variant="outline" onClick={() => setConfigOpen(false)}>取消</Button>
-            <Button onClick={handleSaveConfig} disabled={verifying} className="gap-1.5 bg-emerald-600 hover:bg-emerald-500">
+            <Button onClick={handleSaveConfig} disabled={verifying} className="gap-1.5">
               {verifying ? <RefreshCw className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
               {verifying ? "校验中..." : "保存并校验"}
             </Button>
@@ -1015,14 +1015,14 @@ export default function AnalyticsPanel({
 
 function StatCard({ label, value, icon }: { label: string; value: string; icon: ReactNode }) {
   return (
-    <Card className="border-zinc-800 bg-zinc-900/50">
+    <Card className="border-border bg-card">
       <CardContent className="flex items-center gap-3 p-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success-bg text-success">
           {icon}
         </div>
         <div>
-          <p className="text-xs text-zinc-500">{label}</p>
-          <p className="text-lg font-semibold text-zinc-100">{value}</p>
+          <p className="text-xs text-muted-foreground">{label}</p>
+          <p className="text-lg font-semibold text-foreground tabular-nums">{value}</p>
         </div>
       </CardContent>
     </Card>

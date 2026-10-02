@@ -64,22 +64,22 @@ interface HistoryItem { query: string; timestamp: number; topProductTitle: strin
 function Bar({ value, max = 100, color }: { value: number; max?: number; color?: string }) {
   const pct = Math.max(0, Math.min(100, (value / max) * 100));
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-700">
-      <div className="h-2 rounded-full" style={{ width: `${pct}%`, background: color || "#10b981" }} />
+    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+      <div className="h-2 rounded-full" style={{ width: `${pct}%`, background: color || "var(--chart-2)" }} />
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: "high" | "medium" | "low" }) {
-  if (status === "high") return <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">🟢 高</Badge>;
-  if (status === "medium") return <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">🟡 中</Badge>;
-  return <Badge className="bg-rose-500/15 text-rose-400 border-rose-500/30">🔴 低</Badge>;
+  if (status === "high") return <Badge className="h-5 border border-success-border bg-success-bg px-1.5 text-[11px] font-medium text-success">高</Badge>;
+  if (status === "medium") return <Badge className="h-5 border border-warning-border bg-warning-bg px-1.5 text-[11px] font-medium text-warning">中</Badge>;
+  return <Badge className="h-5 border border-destructive-border bg-destructive-bg px-1.5 text-[11px] font-medium text-destructive-text">低</Badge>;
 }
 
 function scoreColor(v: number): string {
-  if (v >= 70) return "#10b981";
-  if (v >= 40) return "#f59e0b";
-  return "#f43f5e";
+  if (v >= 70) return "var(--chart-2)";
+  if (v >= 40) return "var(--chart-4)";
+  return "var(--destructive)";
 }
 
 /* ─── 主面板 ──────────────────────────────────────────── */
@@ -191,7 +191,7 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
 
   const SortHead = ({ k, label }: { k: typeof sortKey; label: string }) => (
     <th
-      className="cursor-pointer select-none px-3 py-2 text-right font-medium text-zinc-400 hover:text-zinc-100"
+      className="cursor-pointer select-none px-3 py-2 text-right font-medium text-muted-foreground hover:text-foreground"
       onClick={() => toggleSort(k)}
     >
       <span className="inline-flex items-center gap-1">
@@ -240,13 +240,13 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={() => setDetail(null)}>
-        <div className="max-h-[88vh] w-full max-w-5xl overflow-auto rounded-xl border border-zinc-700 bg-zinc-900 p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="max-h-[88vh] w-full max-w-5xl overflow-auto rounded-xl border border-border bg-card p-5 shadow-popover" onClick={(e) => e.stopPropagation()}>
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
-              <div className="text-lg font-semibold text-zinc-100">{r.productTitle}</div>
-              <div className="mt-1 flex items-center gap-2 text-base text-zinc-400">
+              <div className="text-lg font-semibold text-foreground">{r.productTitle}</div>
+              <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                 <span>综合引用概率</span>
-                <span className="text-xl font-bold" style={{ color: scoreColor(r.compositeScore) }}>{Math.round(r.compositeScore)}%</span>
+                <span className="text-xl font-bold tabular-nums" style={{ color: scoreColor(r.compositeScore) }}>{Math.round(r.compositeScore)}%</span>
                 <StatusBadge status={r.status} />
               </div>
             </div>
@@ -260,40 +260,40 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {/* 左：得分明细 */}
-            <div className="rounded-lg border border-zinc-800 bg-zinc-950/40 p-3">
-              <div className="mb-2 text-base font-semibold text-zinc-200">得分明细</div>
+            <div className="rounded-lg border border-border bg-muted/40 p-3">
+              <div className="mb-2 text-sm font-semibold text-foreground">得分明细</div>
               <div className="mb-3">
-                <div className="mb-1 text-sm text-zinc-400">语义匹配（40%）· {Math.round(r.semanticScore)}</div>
+                <div className="mb-1 text-xs text-muted-foreground">语义匹配（40%）· {Math.round(r.semanticScore)}</div>
                 <Bar value={r.semanticScore} color={scoreColor(r.semanticScore)} />
-                <div className="mt-1 space-y-0.5 text-sm">
+                <div className="mt-1 space-y-0.5 text-xs">
                   {(["category", "brand", "attribute", "scene", "price", "title"] as const).map((dim) => {
                     const ok = r.semanticMatchedDimensions.includes(dim);
                     const wasEval = ok || r.semanticMissedDimensions.includes(dim);
                     if (!wasEval) return null;
                     return (
                       <div key={dim} className="flex items-center gap-1">
-                        {ok ? <CheckCircle2 size={13} className="text-emerald-400" /> : <XCircle size={13} className="text-rose-400" />}
-                        <span className={ok ? "text-emerald-300" : "text-rose-300"}>{dim}</span>
+                        {ok ? <CheckCircle2 size={13} className="text-success" /> : <XCircle size={13} className="text-destructive-text" />}
+                        <span className={ok ? "text-success" : "text-destructive-text"}>{dim}</span>
                       </div>
                     );
                   })}
                 </div>
               </div>
               <div className="mb-3">
-                <div className="mb-1 text-sm text-zinc-400">Schema 完整度（35%）· {Math.round(r.schemaCompletenessScore)}</div>
+                <div className="mb-1 text-xs text-muted-foreground">Schema 完整度（35%）· {Math.round(r.schemaCompletenessScore)}</div>
                 <Bar value={r.schemaCompletenessScore} color={scoreColor(r.schemaCompletenessScore)} />
-                <div className="mt-1 text-sm text-zinc-400">
+                <div className="mt-1 text-xs text-muted-foreground">
                   缺失类型：{r.schemaMissingTypes.length ? r.schemaMissingTypes.join("、") : "无"}
                 </div>
               </div>
               <div>
-                <div className="mb-1 text-sm text-zinc-400">内容权威度（25%）· {Math.round(r.contentAuthorityScore)}</div>
+                <div className="mb-1 text-xs text-muted-foreground">内容权威度（25%）· {Math.round(r.contentAuthorityScore)}</div>
                 <Bar value={r.contentAuthorityScore} color={scoreColor(r.contentAuthorityScore)} />
                 <div className="mt-1 space-y-1">
                   {Object.entries(r.contentAuthorityFactors).map(([k, v]) => (
                     <div key={k}>
-                      <div className="flex justify-between text-[11px] text-zinc-400">
-                        <span>{k}</span><span>{Math.round(v.actual)}/{v.max}</span>
+                      <div className="flex justify-between text-[11px] text-muted-foreground">
+                        <span>{k}</span><span className="tabular-nums">{Math.round(v.actual)}/{v.max}</span>
                       </div>
                       <Bar value={v.actual} max={v.max} color={scoreColor(v.actual / v.max * 100)} />
                     </div>
@@ -303,18 +303,18 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
             </div>
 
             {/* 中：缺失要素 */}
-            <div className="rounded-lg border border-zinc-800 bg-zinc-950/40 p-3">
-              <div className="mb-2 text-base font-semibold text-zinc-200">缺失要素</div>
-              <div className="mb-2 rounded-md bg-zinc-800/50 px-2 py-1 text-sm text-amber-300">
+            <div className="rounded-lg border border-border bg-muted/40 p-3">
+              <div className="mb-2 text-sm font-semibold text-foreground">缺失要素</div>
+              <div className="mb-2 rounded-md bg-warning-bg px-2 py-1 text-xs text-warning">
                 提升到 80% 还需 +{Math.round(gapTo80)} 个百分点
               </div>
               {missingFacts.length === 0 ? (
-                <div className="text-sm text-emerald-400">要素已较完整，保持即可。</div>
+                <div className="text-xs text-success">要素已较完整，保持即可。</div>
               ) : (
                 <ul className="space-y-1.5">
                   {missingFacts.map((f, i) => (
-                    <li key={i} className="flex items-start gap-1 text-sm text-zinc-300">
-                      <span className="mt-0.5 text-rose-400">•</span><span>{f}</span>
+                    <li key={i} className="flex items-start gap-1 text-xs text-muted-foreground">
+                      <span className="mt-0.5 text-destructive-text">•</span><span>{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -322,21 +322,21 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
             </div>
 
             {/* 右：优化建议 */}
-            <div className="rounded-lg border border-zinc-800 bg-zinc-950/40 p-3">
-              <div className="mb-2 text-base font-semibold text-zinc-200">优化建议（按优先级）</div>
+            <div className="rounded-lg border border-border bg-muted/40 p-3">
+              <div className="mb-2 text-sm font-semibold text-foreground">优化建议（按优先级）</div>
               {r.optimizationSuggestions.length === 0 ? (
-                <div className="text-sm text-emerald-400">暂无明确优化项，引用概率已较高。</div>
+                <div className="text-xs text-success">暂无明确优化项，引用概率已较高。</div>
               ) : (
                 <ol className="space-y-2">
                   {r.optimizationSuggestions.map((s) => (
-                    <li key={s.priority} className="rounded-md border border-zinc-800 bg-zinc-900/60 p-2">
+                    <li key={s.priority} className="rounded-md border border-border bg-card/60 p-2">
                       <div className="flex items-start gap-2">
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-[11px] font-bold text-indigo-300">{s.priority}</span>
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-info-bg text-[11px] font-bold text-info">{s.priority}</span>
                         <div className="flex-1">
-                          <div className="text-sm text-zinc-200">{s.action}</div>
+                          <div className="text-sm text-foreground">{s.action}</div>
                           {s.linkTo && (
                             <button
-                              className="mt-1 inline-flex items-center gap-1 text-[11px] text-indigo-300 hover:text-indigo-200 hover:underline"
+                              className="mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-info hover:text-foreground hover:underline"
                               onClick={() => { setDetail(null); setActiveMenu(s.linkTo as any); }}
                             >
                               去处理 <ArrowUpRight size={12} />
@@ -364,13 +364,13 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Sparkles size={20} className="text-indigo-400" />
+        <Sparkles size={20} className="text-muted-foreground" />
         <div>
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-100">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
             AI 引用概率模拟
-            <span className="inline-flex h-5 items-center rounded-sm border border-amber-500/40 bg-amber-500/15 px-1.5 text-[11px] font-medium text-amber-500">模拟 · 非真实测量</span>
+            <span className="inline-flex h-5 items-center rounded-sm border border-warning-border bg-warning-bg px-1.5 text-[11px] font-medium text-warning">模拟 · 非真实测量</span>
           </h2>
-          <p className="text-sm text-zinc-500">模拟 AI 搜索引擎的引用决策：语义匹配 40% + Schema 完整度 35% + 内容权威度 25%</p>
+          <p className="text-sm text-muted-foreground">模拟 AI 搜索引擎的引用决策：语义匹配 40% + Schema 完整度 35% + 内容权威度 25%</p>
         </div>
       </div>
 
@@ -382,7 +382,7 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
             <CardContent className="space-y-3 p-4">
               <div className="flex flex-col gap-2 sm:flex-row">
                 <div className="relative flex-1">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     className="pl-9"
                     placeholder="例如：推荐一款 $100 以内适合运动的无线耳机"
@@ -397,9 +397,9 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
 
               {/* 历史下拉 */}
               <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-1 text-sm text-zinc-500"><History size={13} /> 历史</div>
+                <div className="flex items-center gap-1 text-sm text-muted-foreground"><History size={13} /> 历史</div>
                 <select
-                  className="rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-sm text-zinc-300 outline-none"
+                  className="rounded-md border border-input bg-background px-2 py-1 text-sm text-foreground outline-none"
                   value=""
                   onChange={(e) => { if (e.target.value) { setQuery(e.target.value); runSimulation(e.target.value); } }}
                 >
@@ -432,9 +432,9 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
                 <Card>
                   <CardContent className="p-4">
                     <div className="mb-3 flex items-center gap-2">
-                      <span className="text-base text-zinc-400">选择商品</span>
+                      <span className="text-sm text-muted-foreground">选择商品</span>
                       <select
-                        className="rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-base text-zinc-200 outline-none"
+                        className="rounded-md border border-input bg-background px-2 py-1 text-sm text-foreground outline-none"
                         value={selectedProductId ?? ""}
                         onChange={(e) => setSelectedProductId(Number(e.target.value))}
                       >
@@ -454,21 +454,21 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
           {hasResults && (
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               <Card><CardContent className="p-3">
-                <div className="text-sm text-zinc-500">候选商品</div>
-                <div className="text-2xl font-bold text-zinc-100">{products.length}</div>
+                <div className="text-xs text-muted-foreground">候选商品</div>
+                <div className="text-2xl font-semibold tabular-nums text-foreground">{products.length}</div>
               </CardContent></Card>
               <Card><CardContent className="p-3">
-                <div className="text-sm text-zinc-500">平均综合概率</div>
-                <div className="text-2xl font-bold" style={{ color: scoreColor(kpiAvg) }}>{kpiAvg}%</div>
+                <div className="text-xs text-muted-foreground">平均综合概率</div>
+                <div className="text-2xl font-semibold tabular-nums" style={{ color: scoreColor(kpiAvg) }}>{kpiAvg}%</div>
               </CardContent></Card>
               <Card><CardContent className="p-3">
-                <div className="text-sm text-zinc-500">最高概率商品</div>
-                <div className="truncate text-base font-semibold text-zinc-100" title={kpiTop?.productTitle}>{kpiTop?.productTitle || "—"}</div>
-                <div className="text-sm" style={{ color: scoreColor(kpiTop?.compositeScore || 0) }}>{kpiTop ? Math.round(kpiTop.compositeScore) + "%" : "—"}</div>
+                <div className="text-xs text-muted-foreground">最高概率商品</div>
+                <div className="truncate text-sm font-semibold text-foreground" title={kpiTop?.productTitle}>{kpiTop?.productTitle || "—"}</div>
+                <div className="text-sm tabular-nums" style={{ color: scoreColor(kpiTop?.compositeScore || 0) }}>{kpiTop ? Math.round(kpiTop.compositeScore) + "%" : "—"}</div>
               </CardContent></Card>
               <Card><CardContent className="p-3">
-                <div className="text-sm text-zinc-500">高概率商品数</div>
-                <div className="text-2xl font-bold text-emerald-400">{kpiHigh}</div>
+                <div className="text-xs text-muted-foreground">高概率商品数</div>
+                <div className="text-2xl font-semibold tabular-nums text-success">{kpiHigh}</div>
               </CardContent></Card>
             </div>
           )}
@@ -478,12 +478,12 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
             <Card>
               <CardContent className="p-0">
                 <div className="flex items-center justify-between px-4 py-2">
-                  <span className="text-base font-medium text-zinc-300">引用概率排行（{allResults.length}）</span>
+                  <span className="text-sm font-medium text-foreground">引用概率排行（{allResults.length}）</span>
                   <Button size="sm" variant="outline" onClick={exportReport}><Download size={14} /> 导出报告</Button>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-base">
-                    <thead className="border-y border-zinc-800 text-sm text-zinc-500">
+                  <table className="w-full text-sm">
+                    <thead className="border-y border-border bg-muted text-xs text-muted-foreground">
                       <tr>
                         <th className="px-3 py-2 text-left">排名</th>
                         <th className="px-3 py-2 text-left">商品</th>
@@ -498,22 +498,22 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
                       {sortedResults.map((r) => (
                         <tr
                           key={r.productId}
-                          className="cursor-pointer border-b border-zinc-800/60 hover:bg-zinc-800/40"
+                          className="cursor-pointer border-b border-border bg-card hover:bg-accent"
                           onClick={() => setDetail(r)}
                         >
-                          <td className="px-3 py-2 text-zinc-400">#{r.rank}</td>
-                          <td className="px-3 py-2 text-zinc-100">{r.productTitle}</td>
-                          <td className="px-3 py-2 text-right" style={{ color: scoreColor(r.semanticScore) }}>{Math.round(r.semanticScore)}</td>
-                          <td className="px-3 py-2 text-right" style={{ color: scoreColor(r.schemaCompletenessScore) }}>{Math.round(r.schemaCompletenessScore)}</td>
-                          <td className="px-3 py-2 text-right" style={{ color: scoreColor(r.contentAuthorityScore) }}>{Math.round(r.contentAuthorityScore)}</td>
-                          <td className="px-3 py-2 text-right font-semibold" style={{ color: scoreColor(r.compositeScore) }}>{Math.round(r.compositeScore)}%</td>
+                          <td className="px-3 py-2 text-muted-foreground">#{r.rank}</td>
+                          <td className="px-3 py-2 text-foreground">{r.productTitle}</td>
+                          <td className="px-3 py-2 text-right tabular-nums" style={{ color: scoreColor(r.semanticScore) }}>{Math.round(r.semanticScore)}</td>
+                          <td className="px-3 py-2 text-right tabular-nums" style={{ color: scoreColor(r.schemaCompletenessScore) }}>{Math.round(r.schemaCompletenessScore)}</td>
+                          <td className="px-3 py-2 text-right tabular-nums" style={{ color: scoreColor(r.contentAuthorityScore) }}>{Math.round(r.contentAuthorityScore)}</td>
+                          <td className="px-3 py-2 text-right font-semibold tabular-nums" style={{ color: scoreColor(r.compositeScore) }}>{Math.round(r.compositeScore)}%</td>
                           <td className="px-3 py-2"><StatusBadge status={r.status} /></td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <div className="px-4 py-2 text-sm text-zinc-500">点击任意行查看三栏详情分析。</div>
+                <div className="px-4 py-2 text-xs text-muted-foreground">点击任意行查看三栏详情分析。</div>
               </CardContent>
             </Card>
           )}
@@ -522,7 +522,7 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
           {mode === "single" && singleResult && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-base font-medium text-zinc-300">单商品引用分析</span>
+                <span className="text-sm font-medium text-foreground">单商品引用分析</span>
                 <Button size="sm" variant="outline" onClick={exportReport}><Download size={14} /> 导出</Button>
               </div>
               <DetailDialog r={singleResult} />
@@ -531,7 +531,7 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
 
           {/* 空态 */}
           {!hasResults && (
-            <Card><CardContent className="p-8 text-center text-base text-zinc-500">
+            <Card><CardContent className="p-8 text-center text-sm text-muted-foreground">
               输入查询语句（或点击上方预设按钮）后，这里会展示 AI 引用概率排行与逐商品分析。
             </CardContent></Card>
           )}
@@ -543,21 +543,21 @@ export default function AISimulationPanel(props: AISimulationPanelProps) {
             <Card>
               <CardContent className="p-3">
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-base font-semibold text-zinc-200">收藏的查询</span>
-                  <button className="text-sm text-zinc-500 hover:text-zinc-300" onClick={() => setShowFav(false)}>收起</button>
+                  <span className="text-sm font-semibold text-foreground">收藏的查询</span>
+                  <button className="text-xs text-muted-foreground hover:text-foreground" onClick={() => setShowFav(false)}>收起</button>
                 </div>
                 {favorites.length === 0 ? (
-                  <div className="text-sm text-zinc-500">暂无收藏。在详情弹窗中点击「收藏查询」即可保存。</div>
+                  <div className="text-xs text-muted-foreground">暂无收藏。在详情弹窗中点击「收藏查询」即可保存。</div>
                 ) : (
                   <ul className="space-y-1.5">
                     {favorites.map((f, i) => (
-                      <li key={i} className="group rounded-md border border-zinc-800 bg-zinc-900/60 p-2">
-                        <button className="block w-full text-left text-sm text-zinc-200 hover:text-indigo-300" onClick={() => loadFavorite(f)}>
+                      <li key={i} className="group rounded-md border border-border bg-card/60 p-2">
+                        <button className="block w-full text-left text-sm text-foreground hover:text-info" onClick={() => loadFavorite(f)}>
                           {f.query.length > 32 ? f.query.slice(0, 32) + "…" : f.query}
                         </button>
                         <div className="mt-1 flex items-center justify-between">
-                          <span className="text-[11px] text-zinc-500">Top: {Math.round(f.topProductScore)}%</span>
-                          <button className="text-[11px] text-rose-400 hover:underline" onClick={() => removeFavorite(f.query)}>移除</button>
+                          <span className="text-[11px] text-muted-foreground">Top: {Math.round(f.topProductScore)}%</span>
+                          <button className="text-[11px] text-destructive-text hover:underline" onClick={() => removeFavorite(f.query)}>移除</button>
                         </div>
                       </li>
                     ))}
