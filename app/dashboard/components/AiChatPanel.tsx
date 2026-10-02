@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Brain, Send, Copy, Download, X, ChevronDown, Sparkles, Trash2, Globe, Package, Target } from "lucide-react";
+import { Brain, Send, Copy, Download, X, ChevronDown, Sparkles, Trash2, Globe, Package, Target, BarChart4, RotateCcw, DollarSign, GitCompareArrows } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,12 +31,12 @@ const DEMO_RESPONSES: Record<string, string> = {
   "compare": "🏪 **多店对比分析（TechGear vs MinimalHome）：**\n\n| 指标 | TechGear | MinimalHome | 差异 |\n|------|----------|-------------|------|\n| GMV | ¥41,800 | ¥11,000 | TechGear +280% |\n| 利润率 | 38% | 28% | TechGear +10pp |\n| 退货率 | 3.2% | 5.8% | MinimalHome 偏高 |\n| 客单价 | ¥245 | ¥89 | TechGear +175% |\n\n📊 **分析结论：** MinimalHome 客单价低但退货率高，主要受服装品类12.3%退货率拖累。建议该店铺聚焦家居品类（退货率仅2.1%）。\n\n---\n*数据来源：2026-07-06 双店数据对比*",
 };
 
-const QUICK_PROMPTS = [
-  { key: "gmv", label: "📊 GMV 概览" },
-  { key: "return", label: "📉 退货分析" },
-  { key: "profit", label: "💰 利润诊断" },
-  { key: "top10", label: "📦 热销 TOP10" },
-  { key: "compare", label: "🏪 多店对比" },
+const QUICK_PROMPTS: Array<{ key: string; label: string; icon: LucideIcon }> = [
+  { key: "gmv", label: "GMV 概览", icon: BarChart4 },
+  { key: "return", label: "退货分析", icon: RotateCcw },
+  { key: "profit", label: "利润诊断", icon: DollarSign },
+  { key: "top10", label: "热销 TOP10", icon: Package },
+  { key: "compare", label: "多店对比", icon: GitCompareArrows },
 ];
 
 /* ─── Component ───────────────────────────────────────── */
@@ -168,9 +169,7 @@ export default function AiChatPanel({ isDemo, shopUrl, accessToken, shopName, me
       <div className="flex flex-wrap gap-1.5 shrink-0">
         {QUICK_PROMPTS.map(function (p) {
           return (
-            <button key={p.key} onClick={function () { sendMessage(p.label); }} className="px-2.5 py-1 rounded-full text-xs border border-border/40 bg-muted/10 hover:bg-success-bg hover:border-success-border transition-colors">
-              {p.label}
-            </button>
+            <button key={p.key} onClick={function () { sendMessage(p.label); }} className="px-2.5 py-1 rounded-full text-xs border border-border/40 bg-muted/10 hover:bg-success-bg hover:border-success-border transition-colors inline-flex items-center gap-1"><p.icon className="h-3 w-3" />{p.label}</button>
           );
         })}
       </div>

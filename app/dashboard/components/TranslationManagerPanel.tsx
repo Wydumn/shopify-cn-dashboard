@@ -3,8 +3,9 @@
 import { useState, useMemo, useEffect } from "react";
 import {
   Languages, Search, Download, Upload, Save, Bot, X, CheckCircle2, AlertCircle,
-  Globe, FileText, Package, FolderOpen, BookOpen, Store,
+  Globe, FileText, Package, FolderOpen, BookOpen, Store, PenLine, Newspaper,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -215,7 +216,7 @@ export default function TranslationManagerPanel({ isDemo, shopUrl, accessToken, 
         {[...grouped.entries()].map(([key, items]) => {
           const allDone = items.every((i) => i.translated);
           const first = items[0];
-          const typeIcons: Record<string, string> = { product: "📦", collection: "📁", page: "📄", blog: "📝", article: "📰", shop: "🏪" };
+          const typeIcons: Record<string, LucideIcon> = { product: Package, collection: FolderOpen, page: FileText, blog: PenLine, article: Newspaper, shop: Store };
 
           if (expandedId === key) {
             // Expanded full editor
@@ -223,7 +224,7 @@ export default function TranslationManagerPanel({ isDemo, shopUrl, accessToken, 
               <Card key={key} className={`border-border/40 bg-card/60 shadow-lg ${allDone ? "border-l-2 border-l-info-border" : ""}`}>
                 <CardContent className="p-3 space-y-2">
                   <div className="flex items-center justify-between">
-                    <p className="text-base font-semibold text-foreground">{typeIcons[first.resourceType] || ""} {first.resourceName}</p>
+                    <p className="text-base font-semibold text-foreground">{(() => { const TI = typeIcons[first.resourceType]; return TI ? <TI className="h-4 w-4 inline" /> : null; })()} {first.resourceName}</p>
                     <div className="flex gap-1">
                       <Button size="sm" variant="ghost" onClick={() => items.forEach((i) => machineTranslateOne(i))} className="h-6 text-[9px]"><Bot className="h-3 w-3"/></Button>
                       <Button size="sm" variant="ghost" onClick={() => setExpandedId(null)} className="h-6"><X className="h-3 w-3"/></Button>
@@ -250,7 +251,7 @@ export default function TranslationManagerPanel({ isDemo, shopUrl, accessToken, 
               <CardContent className="p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span>{typeIcons[first.resourceType] || ""}</span>
+                    <span>{(() => { const TI = typeIcons[first.resourceType]; return TI ? <TI className="h-3.5 w-3.5 inline" /> : null; })()}</span>
                     <span className="text-base font-semibold text-foreground">{first.resourceName}</span>
                     <Badge className={`text-[8px] px-1 py-0 ${allDone ? "bg-info-bg text-info" : "bg-warning-bg text-warning"}`}>{allDone ? "已完成" : "待翻译"}</Badge>
                   </div>

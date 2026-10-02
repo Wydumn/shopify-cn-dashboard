@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import {
   Workflow, Zap, Plus, X, Save, Trash2, Edit3, Play,
   CheckCircle2, AlertCircle, GripVertical, Bell, Tag, FileText, Clock,
-  ChevronDown, ChevronRight, RotateCcw,
+  ChevronDown, ChevronRight, RotateCcw, XCircle,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -163,7 +163,7 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
       } catch { allOk = false; }
     }
 
-    const entry: ExecutionLog = { id: genId(), timestamp: new Date().toISOString(), ruleName: rule.name, targetName: targetInfo.name, success: allOk, summary: `${allOk ? "✅" : "⚠️"} 执行${rule.actions.length}个动作` };
+    const entry: ExecutionLog = { id: genId(), timestamp: new Date().toISOString(), ruleName: rule.name, targetName: targetInfo.name, success: allOk, summary: `${allOk ? "成功" : "失败"} 执行${rule.actions.length}个动作` };
     setLogs((p) => { const n = [entry, ...p]; saveLogs(n); return n; });
     setRules((p) => p.map((r) => r.id === rule.id ? { ...r, hitCount: r.hitCount + 1, lastTriggered: new Date().toISOString() } : r));
     if (isDemo) showToast(`规则"${rule.name}"已触发 (演示)`);
@@ -357,7 +357,7 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
           {logs.length === 0 ? <p className="text-xs text-muted-foreground/50">暂无执行记录</p> :
             logs.map((l) => (
               <div key={l.id} className="flex items-center gap-2 text-xs py-0.5">
-                <span>{l.success ? "✅" : "❌"}</span>
+                <span>{l.success ? <CheckCircle2 className="h-3.5 w-3.5 text-success" /> : <XCircle className="h-3.5 w-3.5 text-destructive-text" />}</span>
                 <span className="text-muted-foreground tabular-nums">{new Date(l.timestamp).toLocaleString("zh-CN")}</span>
                 <span className="text-info font-medium">{l.ruleName}</span>
                 <span className="text-muted-foreground">{l.targetName}</span>
