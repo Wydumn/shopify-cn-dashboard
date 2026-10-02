@@ -22,13 +22,13 @@ interface OperationHistoryPanelProps {
 /* ─── Helpers ─────────────────────────────────────────── */
 
 const ACTION_ICONS: Record<string, React.ReactNode> = {
-  batch_price: <TrendingUp className="h-4 w-4 text-amber-400" />,
-  batch_inventory: <Package className="h-4 w-4 text-sky-400" />,
-  batch_tags: <Tag className="h-4 w-4 text-purple-400" />,
-  batch_status: <FileText className="h-4 w-4 text-emerald-400" />,
-  single_price: <TrendingUp className="h-4 w-4 text-amber-300" />,
-  single_inventory: <Package className="h-4 w-4 text-sky-300" />,
-  product_update: <Edit3 className="h-4 w-4 text-zinc-400" />,
+  batch_price: <TrendingUp className="h-4 w-4 text-warning" />,
+  batch_inventory: <Package className="h-4 w-4 text-info" />,
+  batch_tags: <Tag className="h-4 w-4 text-info" />,
+  batch_status: <FileText className="h-4 w-4 text-success" />,
+  single_price: <TrendingUp className="h-4 w-4 text-warning" />,
+  single_inventory: <Package className="h-4 w-4 text-info" />,
+  product_update: <Edit3 className="h-4 w-4 text-muted-foreground" />,
 };
 
 const ACTION_LABELS: Record<string, string> = {
@@ -155,8 +155,8 @@ export default function OperationHistoryPanel({ isDemo, shopUrl, accessToken, sh
 
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><History className="h-6 w-6 text-orange-400" />操作历史</h2>
-          <p className="mt-1 text-base text-muted-foreground">{isDemo && <span className="text-sm text-amber-400">(演示)</span>}</p>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><History className="h-6 w-6 text-warning" />操作历史</h2>
+          <p className="mt-1 text-base text-muted-foreground">{isDemo && <span className="text-sm text-warning">(演示)</span>}</p>
         </div>
         <div className="flex items-center gap-2">
           <select value={filterAction} onChange={(e) => setFilterAction(e.target.value)} className="h-9 rounded border border-border/40 bg-background text-sm text-foreground px-2">
@@ -174,7 +174,7 @@ export default function OperationHistoryPanel({ isDemo, shopUrl, accessToken, sh
       <div className="space-y-4">
         {[...grouped.entries()].map(([date, items]) => (
           <div key={date}>
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 sticky top-0 bg-zinc-950/80 backdrop-blur-sm py-1 z-10">{date}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 sticky top-0 bg-background/80 backdrop-blur-sm py-1 z-10">{date}</p>
             <div className="space-y-2">
               {items.map((log) => (
                 <Card key={log.id} className="border-border/40 bg-card/60 shadow-lg backdrop-blur-lg">
@@ -184,19 +184,19 @@ export default function OperationHistoryPanel({ isDemo, shopUrl, accessToken, sh
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="text-base font-semibold text-foreground">{log.summary}</p>
-                          <Badge className={`text-[9px] px-1.5 py-0 ${log.status === "completed" ? "bg-emerald-500/15 text-emerald-400" : log.status === "rolled_back" ? "bg-sky-500/15 text-sky-400" : "bg-red-500/15 text-red-400"}`}>
+                          <Badge className={`text-[9px] px-1.5 py-0 ${log.status === "completed" ? "bg-success-bg text-success" : log.status === "rolled_back" ? "bg-info-bg text-info" : "bg-destructive-bg text-destructive-text"}`}>
                             {log.status === "completed" ? "已完成" : log.status === "rolled_back" ? "已回滚" : "失败"}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
                           <span title={new Date(log.timestamp).toLocaleString("zh-CN")}>{relativeTime(log.timestamp)}</span>
-                          <span>共 {log.totalItems} 项 · 成功 {log.successCount}{log.failCount > 0 && <span className="text-red-400"> · 失败 {log.failCount}</span>}</span>
+                          <span>共 {log.totalItems} 项 · 成功 {log.successCount}{log.failCount > 0 && <span className="text-destructive-text"> · 失败 {log.failCount}</span>}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
                         <button onClick={() => setExpandedId(expandedId === log.id ? null : log.id)} className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted/20">{expandedId === log.id ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}</button>
                         {log.status === "completed" && log.details.length > 0 && (
-                          <Button size="sm" variant="outline" onClick={() => setRollbackId(log.id)} className="h-7 gap-1 text-xs text-amber-400"><RotateCcw className="h-3 w-3" />回滚</Button>
+                          <Button size="sm" variant="outline" onClick={() => setRollbackId(log.id)} className="h-7 gap-1 text-xs text-warning"><RotateCcw className="h-3 w-3" />回滚</Button>
                         )}
                       </div>
                     </div>
@@ -211,7 +211,7 @@ export default function OperationHistoryPanel({ isDemo, shopUrl, accessToken, sh
                               <tr key={i} className="border-t border-border/10">
                                 <td className="py-1 truncate max-w-[140px]">{d.targetName}</td>
                                 <td className="py-1 text-muted-foreground">{d.field}</td>
-                                <td className="py-1 text-right tabular-nums text-zinc-400">{String(d.oldValue)}</td>
+                                <td className="py-1 text-right tabular-nums text-muted-foreground">{String(d.oldValue)}</td>
                                 <td className="py-1 text-center">→</td>
                                 <td className="py-1 text-right tabular-nums">{String(d.newValue)}</td>
                               </tr>
@@ -235,7 +235,7 @@ export default function OperationHistoryPanel({ isDemo, shopUrl, accessToken, sh
           <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setRollbackId(null)} />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="w-full max-w-sm bg-card border border-border/40 rounded-xl shadow-2xl p-5 space-y-3">
-              <RotateCcw className="h-9 w-8 text-amber-400" />
+              <RotateCcw className="h-9 w-8 text-warning" />
               <h3 className="text-base font-semibold">确定要回滚以下操作？</h3>
               <div className="text-sm text-muted-foreground space-y-1 bg-muted/10 rounded-lg p-3">
                 <p><span className="text-muted-foreground">操作：</span>{rollbackLog.summary}</p>
@@ -244,12 +244,12 @@ export default function OperationHistoryPanel({ isDemo, shopUrl, accessToken, sh
               </div>
               {rollingBack ? (
                 <div>
-                  <div className="flex items-center gap-2 text-xs text-amber-400"><Play className="h-3 w-3"/>回滚中 {progress.done}/{progress.total}</div>
-                  <div className="h-2 rounded bg-muted/20 mt-1 overflow-hidden"><div className="h-full bg-amber-500 rounded transition-all" style={{ width: `${progress.total > 0 ? (progress.done / progress.total) * 100 : 0}%` }} /></div>
+                  <div className="flex items-center gap-2 text-xs text-warning"><Play className="h-3 w-3"/>回滚中 {progress.done}/{progress.total}</div>
+                  <div className="h-2 rounded bg-muted/20 mt-1 overflow-hidden"><div className="h-full bg-warning rounded transition-all" style={{ width: `${progress.total > 0 ? (progress.done / progress.total) * 100 : 0}%` }} /></div>
                 </div>
               ) : (
                 <div className="flex gap-2">
-                  <Button onClick={executeRollback} className="flex-1 h-9 text-sm bg-amber-600 hover:bg-amber-500 text-white"><Play className="h-3 w-3 mr-1" />确认回滚</Button>
+                  <Button onClick={executeRollback} className="flex-1 h-9 text-sm bg-warning text-white"><Play className="h-3 w-3 mr-1" />确认回滚</Button>
                   <Button variant="outline" onClick={() => setRollbackId(null)} className="h-9 text-sm">取消</Button>
                 </div>
               )}

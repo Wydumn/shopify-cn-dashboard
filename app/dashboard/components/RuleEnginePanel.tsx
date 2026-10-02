@@ -213,14 +213,14 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
   /* ── Render ────────────────────────────────────────── */
   return (
     <div className="space-y-4">
-      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-emerald-600/90 px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-success px-4 py-2 text-base font-medium text-white shadow-2xl">{toast}</div>}
 
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Workflow className="h-6 w-6 text-violet-400" />规则引擎</h2>
-          <p className="mt-1 text-base text-muted-foreground">{shopName} · {rules.length} 条规则 · {logs.length} 条日志{isDemo && <span className="ml-2 text-sm text-amber-400">(演示)</span>}</p>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-foreground"><Workflow className="h-6 w-6 text-info" />规则引擎</h2>
+          <p className="mt-1 text-base text-muted-foreground">{shopName} · {rules.length} 条规则 · {logs.length} 条日志{isDemo && <span className="ml-2 text-sm text-warning">(演示)</span>}</p>
         </div>
-        <Button size="sm" onClick={openCreate} className="h-9 gap-1 bg-violet-600 hover:bg-violet-500 text-white text-sm"><Plus className="h-3 w-3"/>创建规则</Button>
+        <Button size="sm" onClick={openCreate} className="h-9 gap-1 bg-info text-white text-sm"><Plus className="h-3 w-3"/>创建规则</Button>
       </div>
 
       {rules.length === 0 && <div className="text-center py-16"><Workflow className="h-12 w-12 mx-auto mb-3 text-muted-foreground/25"/><p className="text-base text-muted-foreground">暂无规则</p></div>}
@@ -232,13 +232,13 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
             <CardContent className="p-3">
               <div className="flex items-start gap-3">
                 <GripVertical className="h-4 w-4 mt-0.5 text-muted-foreground/40 cursor-grab shrink-0" />
-                <button onClick={() => toggleRule(rule.id)} className={`mt-0.5 w-9 h-5 rounded-full relative transition-colors shrink-0 ${rule.enabled ? "bg-violet-500" : "bg-zinc-600"}`}>
+                <button onClick={() => toggleRule(rule.id)} className={`mt-0.5 w-9 h-5 rounded-full relative transition-colors shrink-0 ${rule.enabled ? "bg-info" : "bg-muted-foreground"}`}>
                   <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${rule.enabled ? "left-4" : "left-0.5"}`} />
                 </button>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-base font-semibold text-foreground truncate">{rule.name}</p>
-                    <Badge className="text-[9px] px-1.5 py-0 bg-violet-500/15 text-violet-400">{TRIGGER_LABELS[rule.trigger]}</Badge>
+                    <Badge className="text-[9px] px-1.5 py-0 bg-info-bg text-info">{TRIGGER_LABELS[rule.trigger]}</Badge>
                     <Badge className="text-[9px] px-1.5 py-0 bg-muted/20 text-muted-foreground">{RULE_TYPE_MAP[rule.trigger] === "order" ? "订单规则" : RULE_TYPE_MAP[rule.trigger] === "inventory" ? "库存规则" : RULE_TYPE_MAP[rule.trigger] === "customer" ? "客户规则" : "退款规则"}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">{rule.description || "—"}</p>
@@ -250,8 +250,8 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
                 <div className="flex items-center gap-1 shrink-0">
                   <Button size="sm" variant="ghost" onClick={() => setExpandedId(expandedId === rule.id ? null : rule.id)} className="h-7 w-7 p-0">{expandedId === rule.id ? <ChevronDown className="h-3.5 w-3.5"/> : <ChevronRight className="h-3.5 w-3.5"/>}</Button>
                   <Button size="sm" variant="ghost" onClick={() => openEdit(rule)} className="h-7 w-7 p-0"><Edit3 className="h-3.5 w-3.5 text-muted-foreground"/></Button>
-                  <Button size="sm" variant="ghost" onClick={() => deleteRule(rule.id)} className="h-7 w-7 p-0"><Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-red-400"/></Button>
-                  <Button size="sm" variant="ghost" onClick={async () => { const c = generateDemoCandidates()[0]; if (c) await triggerRule(rule, c); else showToast("无匹配数据"); }} className="h-7 w-7 p-0"><Play className="h-3.5 w-3.5 text-violet-400"/></Button>
+                  <Button size="sm" variant="ghost" onClick={() => deleteRule(rule.id)} className="h-7 w-7 p-0"><Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive-text"/></Button>
+                  <Button size="sm" variant="ghost" onClick={async () => { const c = generateDemoCandidates()[0]; if (c) await triggerRule(rule, c); else showToast("无匹配数据"); }} className="h-7 w-7 p-0"><Play className="h-3.5 w-3.5 text-info"/></Button>
                 </div>
               </div>
 
@@ -274,7 +274,7 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="w-full max-w-xl max-h-[85vh] bg-card border border-border/40 rounded-xl shadow-2xl flex flex-col">
               <div className="flex items-center justify-between px-5 py-3 border-b border-border/20 shrink-0"><h3 className="text-base font-semibold">{modalRule.id ? "编辑规则" : "创建规则"}</h3><Button size="sm" variant="ghost" onClick={() => setModalRule(null)}><X className="h-4 w-4"/></Button></div>
-              <div className="flex gap-1 px-5 py-2 border-b border-border/20 shrink-0">{[{l:"触发器"}, {l:"条件"}, {l:"动作"}].map((s, i) => (<button key={i} onClick={() => setModalStep(i)} className={`px-3 py-1 rounded text-xs font-medium ${modalStep === i ? "bg-violet-500/15 text-violet-400" : "text-muted-foreground"}`}>{i+1}. {s.l}</button>))}</div>
+              <div className="flex gap-1 px-5 py-2 border-b border-border/20 shrink-0">{[{l:"触发器"}, {l:"条件"}, {l:"动作"}].map((s, i) => (<button key={i} onClick={() => setModalStep(i)} className={`px-3 py-1 rounded text-xs font-medium ${modalStep === i ? "bg-info-bg text-info" : "text-muted-foreground"}`}>{i+1}. {s.l}</button>))}</div>
               <div className="flex-1 overflow-y-auto p-5 space-y-3">
 
                 {/* Step 0: Trigger */}
@@ -286,15 +286,15 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
                       {(Object.entries(TRIGGER_LABELS) as [TriggerType, string][]).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                     </select>
                   </div>
-                  <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={modalRule.enabled} onChange={() => setModalRule({ ...modalRule, enabled: !modalRule.enabled })} className="accent-violet-500"/>启用规则</label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={modalRule.enabled} onChange={() => setModalRule({ ...modalRule, enabled: !modalRule.enabled })} className="accent-info"/>启用规则</label>
                 </>)}
 
                 {/* Step 1: Conditions */}
                 {modalStep === 1 && (<>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground">模式:</span>
-                    <button onClick={() => setModalRule({ ...modalRule, conditionMode: "and" })} className={`px-2 py-0.5 text-xs rounded ${modalRule.conditionMode === "and" ? "bg-violet-500/15 text-violet-400" : "text-muted-foreground"}`}>AND (全部满足)</button>
-                    <button onClick={() => setModalRule({ ...modalRule, conditionMode: "or" })} className={`px-2 py-0.5 text-xs rounded ${modalRule.conditionMode === "or" ? "bg-violet-500/15 text-violet-400" : "text-muted-foreground"}`}>OR (任一满足)</button>
+                    <button onClick={() => setModalRule({ ...modalRule, conditionMode: "and" })} className={`px-2 py-0.5 text-xs rounded ${modalRule.conditionMode === "and" ? "bg-info-bg text-info" : "text-muted-foreground"}`}>AND (全部满足)</button>
+                    <button onClick={() => setModalRule({ ...modalRule, conditionMode: "or" })} className={`px-2 py-0.5 text-xs rounded ${modalRule.conditionMode === "or" ? "bg-info-bg text-info" : "text-muted-foreground"}`}>OR (任一满足)</button>
                   </div>
                   <div className="rounded-lg border border-border/20 bg-muted/10 p-3 space-y-2">
                     {modalRule.conditions.map((c) => {
@@ -310,7 +310,7 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
                             {ops.map((op) => <option key={op} value={op}>{OPERATORS[op] || op}</option>)}
                           </select>
                           <Input value={c.value} onChange={(e) => setModalRule({ ...modalRule, conditions: modalRule.conditions.map((x) => x.id === c.id ? { ...x, value: e.target.value } : x) })} className="h-7 text-sm w-24" />
-                          <button onClick={() => setModalRule({ ...modalRule, conditions: modalRule.conditions.filter((x) => x.id !== c.id) })} className="text-muted-foreground hover:text-red-400"><X className="h-3 w-3" /></button>
+                          <button onClick={() => setModalRule({ ...modalRule, conditions: modalRule.conditions.filter((x) => x.id !== c.id) })} className="text-muted-foreground hover:text-destructive-text"><X className="h-3 w-3" /></button>
                         </div>
                       );
                     })}
@@ -327,7 +327,7 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
                           <select value={a.type} onChange={(e) => setModalRule({ ...modalRule, actions: modalRule.actions.map((x) => x.id === a.id ? { ...x, type: e.target.value as RuleAction["type"], config: {} } : x) })} className="h-7 rounded border border-border/30 bg-background text-xs text-foreground px-1.5 flex-1">
                             {ACTION_TYPES.map((at) => <option key={at.value} value={at.value}>{at.label}</option>)}
                           </select>
-                          <button onClick={() => setModalRule({ ...modalRule, actions: modalRule.actions.filter((x) => x.id !== a.id) })} className="text-muted-foreground hover:text-red-400 ml-2"><X className="h-3 w-3"/></button>
+                          <button onClick={() => setModalRule({ ...modalRule, actions: modalRule.actions.filter((x) => x.id !== a.id) })} className="text-muted-foreground hover:text-destructive-text ml-2"><X className="h-3 w-3"/></button>
                         </div>
                         {a.type === "desktopNotify" && <Input value={a.config.message || ""} onChange={(e) => setModalRule({ ...modalRule, actions: modalRule.actions.map((x) => x.id === a.id ? { ...x, config: { message: e.target.value } } : x) })} placeholder="通知文案，支持 {order_id} {customer_name} {amount}" className="h-9 text-sm"/>}
                         {(a.type === "addOrderTag" || a.type === "addCustomerTag") && <Input value={a.config.tag || ""} onChange={(e) => setModalRule({ ...modalRule, actions: modalRule.actions.map((x) => x.id === a.id ? { ...x, config: { tag: e.target.value } } : x) })} placeholder="标签名" className="h-9 text-sm"/>}
@@ -339,10 +339,10 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
                 </>)}
               </div>
               <div className="flex items-center justify-between px-5 py-3 border-t border-border/20 shrink-0">
-                <div className="flex gap-1">{[0,1,2].map((s) => <span key={s} className={`h-1.5 w-6 rounded ${modalStep >= s ? "bg-violet-500" : "bg-muted/20"}`}/>)}</div>
+                <div className="flex gap-1">{[0,1,2].map((s) => <span key={s} className={`h-1.5 w-6 rounded ${modalStep >= s ? "bg-info" : "bg-muted/20"}`}/>)}</div>
                 <div className="flex gap-2">
                   {modalStep > 0 && <Button variant="outline" onClick={() => setModalStep((s) => s - 1)} className="h-9 text-sm">上一步</Button>}
-                  {modalStep < 2 ? <Button onClick={() => setModalStep((s) => s + 1)} className="h-9 text-sm bg-violet-600 text-white">下一步</Button> : <Button onClick={saveModal} disabled={!modalRule.name.trim()} className="h-9 gap-1 bg-emerald-600 text-white text-sm"><Save className="h-3 w-3"/>保存规则</Button>}
+                  {modalStep < 2 ? <Button onClick={() => setModalStep((s) => s + 1)} className="h-9 text-sm bg-info text-white">下一步</Button> : <Button onClick={saveModal} disabled={!modalRule.name.trim()} className="h-9 gap-1 bg-success text-white text-sm"><Save className="h-3 w-3"/>保存规则</Button>}
                 </div>
               </div>
             </div>
@@ -359,7 +359,7 @@ export default function RuleEnginePanel({ isDemo, shopUrl, accessToken, shopName
               <div key={l.id} className="flex items-center gap-2 text-xs py-0.5">
                 <span>{l.success ? "✅" : "❌"}</span>
                 <span className="text-muted-foreground tabular-nums">{new Date(l.timestamp).toLocaleString("zh-CN")}</span>
-                <span className="text-violet-400 font-medium">{l.ruleName}</span>
+                <span className="text-info font-medium">{l.ruleName}</span>
                 <span className="text-muted-foreground">{l.targetName}</span>
                 <span className="truncate flex-1">{l.summary}</span>
               </div>
