@@ -21,6 +21,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCny, formatTimeAgo } from "../helpers";
 import { exportCustomers } from "@/lib/export-utils";
 import OrderTags from "./OrderTags";
@@ -272,45 +273,55 @@ export default function CustomerCenterPanel({
             <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
             <Input value={filterName} onChange={(e) => setFilterName(e.target.value)} placeholder="搜索姓名或邮箱..." className="h-9 pl-7 text-sm" />
           </div>
-          <select value={filterSpend} onChange={(e) => setFilterSpend(e.target.value)} className="h-9 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground">
-            <option value="all">全部消费</option>
-            <option value="low">&lt; ¥500</option>
-            <option value="mid">¥500 - 2,000</option>
-            <option value="high">¥2,000 - 10,000</option>
-            <option value="top">&gt; ¥10,000</option>
-          </select>
-          <select value={filterOrders} onChange={(e) => setFilterOrders(e.target.value)} className="h-9 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground">
-            <option value="all">全部订单数</option>
-            <option value="once">单次客户</option>
-            <option value="2to5">2-5 次</option>
-            <option value="5plus">5 次以上</option>
-          </select>
-          <select value={filterRecency} onChange={(e) => setFilterRecency(e.target.value)} className="h-9 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground">
-            <option value="all">全部活跃度</option>
-            <option value="7d">近 7 天购买</option>
-            <option value="30d">近 30 天</option>
-            <option value="90d">近 90 天</option>
-            <option value="dormant">90 天以上未回购</option>
-          </select>
-          <select value={filterCountry} onChange={(e) => setFilterCountry(e.target.value)} className="h-9 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground">
-            <option value="all">全部国家</option>
-            {countries.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
+          <Select value={filterSpend} onValueChange={(v) => setFilterSpend(v ?? "all")}>
+            <SelectTrigger className="h-9 w-auto"><SelectValue placeholder="全部消费" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部消费</SelectItem>
+              <SelectItem value="low">&lt; ¥500</SelectItem>
+              <SelectItem value="mid">¥500 - 2,000</SelectItem>
+              <SelectItem value="high">¥2,000 - 10,000</SelectItem>
+              <SelectItem value="top">&gt; ¥10,000</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterOrders} onValueChange={(v) => setFilterOrders(v ?? "all")}>
+            <SelectTrigger className="h-9 w-auto"><SelectValue placeholder="全部订单数" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部订单数</SelectItem>
+              <SelectItem value="once">单次客户</SelectItem>
+              <SelectItem value="2to5">2-5 次</SelectItem>
+              <SelectItem value="5plus">5 次以上</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterRecency} onValueChange={(v) => setFilterRecency(v ?? "all")}>
+            <SelectTrigger className="h-9 w-auto"><SelectValue placeholder="全部活跃度" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部活跃度</SelectItem>
+              <SelectItem value="7d">近 7 天购买</SelectItem>
+              <SelectItem value="30d">近 30 天</SelectItem>
+              <SelectItem value="90d">近 90 天</SelectItem>
+              <SelectItem value="dormant">90 天以上未回购</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterCountry} onValueChange={(v) => setFilterCountry(v ?? "all")}>
+            <SelectTrigger className="h-9 w-auto"><SelectValue placeholder="全部国家" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部国家</SelectItem>
+              {countries.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            </SelectContent>
+          </Select>
           <Input value={filterTag} onChange={(e) => setFilterTag(e.target.value)} placeholder="标签关键词..." className="h-9 min-w-0 text-sm sm:w-28" />
           <label className="col-span-2 flex items-center gap-2 text-sm text-muted-foreground sm:hidden">
             排序
-            <select
-              aria-label="客户排序"
-              value={sortKey}
-              onChange={(e) => { setSortKey(e.target.value as SortKey); setSortDir("desc"); }}
-              className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-foreground"
-            >
-              <option value="total_spent">总消费</option>
-              <option value="name">客户姓名</option>
-              <option value="orders_count">订单数</option>
-              <option value="avg_order">客单价</option>
-              <option value="last_order">最近购买</option>
-            </select>
+            <Select value={sortKey} onValueChange={(v) => { setSortKey((v ?? "total_spent") as SortKey); setSortDir("desc"); }}>
+              <SelectTrigger className="h-9 w-auto" aria-label="客户排序"><SelectValue placeholder="排序" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="total_spent">总消费</SelectItem>
+                <SelectItem value="name">客户姓名</SelectItem>
+                <SelectItem value="orders_count">订单数</SelectItem>
+                <SelectItem value="avg_order">客单价</SelectItem>
+                <SelectItem value="last_order">最近购买</SelectItem>
+              </SelectContent>
+            </Select>
           </label>
           {(filterName || filterSpend !== "all" || filterOrders !== "all" || filterRecency !== "all" || filterCountry !== "all" || filterTag) && (
             <Button size="sm" variant="ghost" className="h-9 text-sm text-muted-foreground"
