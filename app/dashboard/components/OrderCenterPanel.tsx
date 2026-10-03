@@ -24,6 +24,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCny } from "../helpers";
 import OrderTags from "./OrderTags";
 
@@ -485,39 +486,36 @@ export default function OrderCenterPanel({
       {/* Filters */}
       <Card>
         <CardContent className="flex flex-wrap items-center gap-2 px-3 py-3 sm:px-4">
-          <select
-            value={filterStatus}
-            onChange={(e) => updateFilter(setFilterStatus, e.target.value)}
-            className="h-9 max-w-full rounded-md border border-input bg-background px-2 text-sm text-foreground"
-          >
-            <option value="all">全部状态</option>
-            <option value="paid">已付款</option>
-            <option value="pending">待付款</option>
-            <option value="refunded">已退款</option>
-            <option value="cancelled">已取消</option>
-          </select>
+          <Select value={filterStatus} onValueChange={(v) => updateFilter(setFilterStatus, v ?? "all")}>
+            <SelectTrigger className="h-9 w-auto"><SelectValue placeholder="全部状态" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部状态</SelectItem>
+              <SelectItem value="paid">已付款</SelectItem>
+              <SelectItem value="pending">待付款</SelectItem>
+              <SelectItem value="refunded">已退款</SelectItem>
+              <SelectItem value="cancelled">已取消</SelectItem>
+            </SelectContent>
+          </Select>
 
-          <select
-            value={filterFulfillment}
-            onChange={(e) => updateFilter(setFilterFulfillment, e.target.value)}
-            className="h-9 max-w-full rounded-md border border-input bg-background px-2 text-sm text-foreground"
-          >
-            <option value="all">全部履约</option>
-            <option value="fulfilled">已发货</option>
-            <option value="in_transit">运输中</option>
-            <option value="unfulfilled">未处理</option>
-          </select>
+          <Select value={filterFulfillment} onValueChange={(v) => updateFilter(setFilterFulfillment, v ?? "all")}>
+            <SelectTrigger className="h-9 w-auto"><SelectValue placeholder="全部履约" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部履约</SelectItem>
+              <SelectItem value="fulfilled">已发货</SelectItem>
+              <SelectItem value="in_transit">运输中</SelectItem>
+              <SelectItem value="unfulfilled">未处理</SelectItem>
+            </SelectContent>
+          </Select>
 
-          <select
-            value={filterCountry}
-            onChange={(e) => updateFilter(setFilterCountry, e.target.value)}
-            className="h-9 max-w-full rounded-md border border-input bg-background px-2 text-sm text-foreground"
-          >
-            <option value="all">全部国家</option>
-            {countries.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+          <Select value={filterCountry} onValueChange={(v) => updateFilter(setFilterCountry, v ?? "all")}>
+            <SelectTrigger className="h-9 w-auto"><SelectValue placeholder="全部国家" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部国家</SelectItem>
+              {countries.map((c) => (
+                <SelectItem key={c} value={c}>{c}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           <Input
             type="date"
